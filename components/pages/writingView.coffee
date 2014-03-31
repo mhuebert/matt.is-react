@@ -5,7 +5,9 @@ React = require("react")
 
 {Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray} = require("../../utils/firebase")
 
-Body = require("../body")
+Nav = require("../partials/nav")
+
+DynamicLoader = require("../partials/dynamicLoader")
 simplePagination = require("../partials/simplePagination")
 slugify = require("../../utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
@@ -65,15 +67,16 @@ Component = React.createClass
 
 
     render: ->
-        `<Body className={"content "+(_.isEmpty(this.props.post) ? "loading" : "")}>
+        `<div className={"content "+(_.isEmpty(this.props.post) ? "loading" : "")}>
+            <DynamicLoader />
+            <Nav>
+                <a href={"/writing/edit/"+this.props.post.slug} className="right btn btn-trans showIfUser ">Edit</a>
+            </Nav>
             <h1 className="text-center"><a href={"/writing/"+this.props.post.slug}>{this.props.post.title}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(this.props.post.body||"")}}></div>
             <simplePagination 
                 next={this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false} 
-                prev={this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} />
-            <div className="controls ideas-controls">
-                <a href={"/writing/edit/"+this.props.post.slug} className="btn btn-trans showIfUser ">Edit</a>
-            </div>    
-        </Body>`
+                prev={this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} />  
+        </div>`
 
 module.exports = Component

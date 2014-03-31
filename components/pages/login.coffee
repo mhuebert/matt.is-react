@@ -2,7 +2,7 @@
 
 React = require("react")
 DynamicLoader = require("../partials/dynamicLoader")
-
+Body = require("../body")
 Component = React.createClass
     componentDidMount: ->
       setTimeout ->
@@ -10,6 +10,6 @@ Component = React.createClass
           rememberMe: true
       , 500
     render: ->
-        `<div className="loading"><DynamicLoader /></div>`
+        `<Body className="loading"><DynamicLoader /></Body>`
 
 module.exports = Component

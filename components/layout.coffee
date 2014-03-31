@@ -7,7 +7,6 @@ RouterMixin = require("../utils/router").Mixin
 
 Head = require("./partials/head")
 NotFound = require("./pages/notFound")
-Nav = require("./partials/nav")
 
 FIREBASE_URL = require("../config").firebaseUrl
 
@@ -51,7 +50,6 @@ Layout = React.createClass
             <Head   title={metadata.title ? metadata.title : this.props.title}
                     description={metadata.description ? metadata.description : this.props.description} />
             <body className={this.props.user ? "loggedIn" : "loggedOut"}  onClick={this.handleClick}>
-                <Nav />
                 {this.transferPropsTo(<Handler firebase={firebaseData} ref="handler" />)}
             </body>
         </html>`

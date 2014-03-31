@@ -8,18 +8,20 @@ Dropdown = require("./dropdown")
 
 Component = React.createClass
     render: ->
-        `<div className='nav-main'>
+        `this.transferPropsTo(<div className='nav-main'>
             <Dropdown replaceWithSelectedLink="true">
                 <ul >
                     <li><Link href="/">Home</Link></li>
                     <li><Link href="/writing">Writing</Link></li>
                     <li><Link href="/seeing">Photography</Link></li>
                     <li><Link href="/reading">Books</Link></li>
+                    <li><Link href="/ideas" className="showIfUser">Ideas</Link></li>
                 </ul>
             </Dropdown>
-            <Link href="/ideas" className="showIfUser">Ideas</Link>
-            <Link href="/logout" className="showIfUser right">Sign Out</Link>
-            <Link href="/login" className="hideIfUser right">Sign In</Link>
-        </div>`
+            
+            <Link href="/logout" className="btn btn-standard showIfUser right">Sign Out</Link>
+            <Link href="/login" className="btn btn-standard hideIfUser right">Sign In</Link>
+            {this.props.children}
+        </div>)`
 
 module.exports = Component

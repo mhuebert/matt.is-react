@@ -112,18 +112,22 @@ body, input, textarea, select, button
     bottom 15px
     right 15px
 
-.btn
+.btn, .dropdown > a
     display inline-block
     padding 6px 10px
     position relative
     opacity 1
     transition(all, 0.2s, linear)
+    border-radius(5px)
+    box-sizing border-box
     &.disabled
         opacity 0.5
         color #777
         &:hover
             cursor default
             text-decoration none
+.btn-standard
+    lightBackground()
     
 .btn-dark
     background #4a4a4a
@@ -177,19 +181,9 @@ a.activeLink, a.activeLink:hover
     color #333 
     cursor default
     text-decoration none
-.nav-main > a
+.nav-main > .right
     margin-left 15px
-    lightBackground()
-    display inline-block
-    border-radius(5px)
-    padding 5px 10px
-    box-sizing border-box
-.ideaOptions
-    ul
-        bottom 38px
-        right 0
-        padding-top 0
-        padding-bottom 8px
+
 .dropdown
     position relative
     box-sizing border-box
@@ -208,7 +202,7 @@ a.activeLink, a.activeLink:hover
             background white  
         a
             display block
-    a
+    li a
         padding 5px 10px
         &.activeLink
             display none

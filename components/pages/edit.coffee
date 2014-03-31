@@ -7,7 +7,7 @@ React = require("react")
 
 FIREBASE_URL = require("../../config").firebaseUrl
 
-Body = require("../body")
+Nav = require("../partials/nav")
 simplePagination = require("../partials/simplePagination")
 slugify = require("../../utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
@@ -122,7 +122,30 @@ Component = React.createClass
     render: ->
         isPublished = this.props.matchedRoute.params.slug
         loading = _.isEmpty this.props.idea
-        `<Body className={"content "+(loading ? "loading" : "")}>
+        `<div className={"content "+(loading ? "loading" : "")}>
+            <Nav>    
+                
+
+                <Dropdown className="ideaOptions right showIfUser" label="Options">
+                    <ul >
+                        <li>
+                            <a  href={"/writing/"+this.props.matchedRoute.params.slug}
+                                className={(isPublished ? "" : "hidden")}>
+                                View</a>
+                        </li>
+                        <li>
+                            <a  onClick={this.publish} 
+                    className={(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")}>
+                    Publish</a>
+                        </li>
+                        <li><a onClick={this.delete}>Delete</a></li>
+                    </ul>
+                </Dropdown>
+                
+
+                <a  onClick={this.save} 
+                    className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>Save</a>
+            </Nav>
             <textareaAutosize   className="h1 text-center" 
                                 ref="title" 
                                 rows="1"
@@ -147,24 +170,7 @@ Component = React.createClass
                 <input value="Date picker?"/>
             </div>
 
-            <div className="controls ideas-controls">
-                
-                <a  href={"/writing/"+this.props.matchedRoute.params.slug}
-                    className={isPublished ? "" : "hidden"}>
-                    View</a>
-
-                <Dropdown className="ideaOptions" label="Options">
-                    <ul >
-                        <li><a onClick={this.delete}>Delete</a></li>
-                    </ul>
-                </Dropdown>
-                <a  onClick={this.publish} 
-                    className={"btn btn-trans "+(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")}>
-                    Publish</a>
-
-                <a  onClick={this.save} 
-                    className={"btn btn-dark "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>Save</a>
-            </div>
-        </Body>`
+            
+        </div>`
 
 module.exports = Component

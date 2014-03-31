@@ -8,15 +8,18 @@ window.Components = require("../components");
 
 },{"../components":3,"react":250,"underscore":254}],2:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Component, DynamicLoader, React;
+var Component, DynamicLoader, Nav, React;
 
 React = require("react");
+
+Nav = require("./partials/nav");
 
 DynamicLoader = require("./partials/dynamicLoader");
 
 Component = React.createClass({displayName: 'Component',
   render: function() {
     return this.transferPropsTo(React.DOM.div( {className:"content"}, 
+        Nav(null ),
         DynamicLoader(null ),
         this.props.children
       ));
@@ -26,7 +29,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"./partials/dynamicLoader":15,"react":250}],3:[function(require,module,exports){
+},{"./partials/dynamicLoader":15,"./partials/nav":19,"react":250}],3:[function(require,module,exports){
 /** @jsx React.DOM */this.Layout = require("./layout");
 
 this.Home = require("./pages/home");
@@ -38,7 +41,7 @@ this.Writing = require("./pages/writing");
 
 },{"./layout":4,"./pages/home":6,"./pages/photography":11,"./pages/writing":12}],4:[function(require,module,exports){
 /** @jsx React.DOM */;
-var FIREBASE_URL, Head, Layout, Nav, NotFound, React, RouterMixin, _;
+var FIREBASE_URL, Head, Layout, NotFound, React, RouterMixin, _;
 
 React = require("react");
 
@@ -49,8 +52,6 @@ RouterMixin = require("../utils/router").Mixin;
 Head = require("./partials/head");
 
 NotFound = require("./pages/notFound");
-
-Nav = require("./partials/nav");
 
 FIREBASE_URL = require("../config").firebaseUrl;
 
@@ -115,7 +116,6 @@ Layout = React.createClass({displayName: 'Layout',
             Head(   {title:metadata.title ? metadata.title : this.props.title,
                     description:metadata.description ? metadata.description : this.props.description} ),
             React.DOM.body( {className:this.props.user ? "loggedIn" : "loggedOut",  onClick:this.handleClick}, 
-                Nav(null ),
                 this.transferPropsTo(Handler( {firebase:firebaseData, ref:"handler"} ))
             )
         );
@@ -125,9 +125,9 @@ Layout = React.createClass({displayName: 'Layout',
 module.exports = Layout;
 
 
-},{"../config":23,"../utils/router":258,"./pages/notFound":10,"./partials/head":16,"./partials/nav":19,"./routes":22,"react":250,"underscore":254}],5:[function(require,module,exports){
+},{"../config":23,"../utils/router":258,"./pages/notFound":10,"./partials/head":16,"./routes":22,"react":250,"underscore":254}],5:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Body, Component, Dropdown, FIREBASE_URL, Firebase, FirebaseMixin, React, firebaseIdFromPath, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref;
+var Component, Dropdown, FIREBASE_URL, Firebase, FirebaseMixin, Nav, React, firebaseIdFromPath, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref;
 
 _ = require("underscore");
 
@@ -137,7 +137,7 @@ _ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin 
 
 FIREBASE_URL = require("../../config").firebaseUrl;
 
-Body = require("../body");
+Nav = require("../partials/nav");
 
 simplePagination = require("../partials/simplePagination");
 
@@ -319,7 +319,30 @@ Component = React.createClass({displayName: 'Component',
     var isPublished, loading;
     isPublished = this.props.matchedRoute.params.slug;
     loading = _.isEmpty(this.props.idea);
-    return Body( {className:"content "+(loading ? "loading" : "")}, 
+    return React.DOM.div( {className:"content "+(loading ? "loading" : "")}, 
+            Nav(null,     
+                
+
+                Dropdown( {className:"ideaOptions right showIfUser", label:"Options"}, 
+                    React.DOM.ul(null , 
+                        React.DOM.li(null, 
+                            React.DOM.a(  {href:"/writing/"+this.props.matchedRoute.params.slug,
+                                className:(isPublished ? "" : "hidden")}, 
+                                "View")
+                        ),
+                        React.DOM.li(null, 
+                            React.DOM.a(  {onClick:this.publish, 
+                    className:(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")}, 
+                    "Publish")
+                        ),
+                        React.DOM.li(null, React.DOM.a( {onClick:this.delete}, "Delete"))
+                    )
+                ),
+                
+
+                React.DOM.a(  {onClick:this.save, 
+                    className:"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}, "Save")
+            ),
             textareaAutosize(   {className:"h1 text-center", 
                                 ref:"title", 
                                 rows:"1",
@@ -342,26 +365,9 @@ Component = React.createClass({displayName: 'Component',
                     )
                 ),
                 React.DOM.input( {value:"Date picker?"})
-            ),
-
-            React.DOM.div( {className:"controls ideas-controls"}, 
-                
-                React.DOM.a(  {href:"/writing/"+this.props.matchedRoute.params.slug,
-                    className:isPublished ? "" : "hidden"}, 
-                    "View"),
-
-                Dropdown( {className:"ideaOptions", label:"Options"}, 
-                    React.DOM.ul(null , 
-                        React.DOM.li(null, React.DOM.a( {onClick:this.delete}, "Delete"))
-                    )
-                ),
-                React.DOM.a(  {onClick:this.publish, 
-                    className:"btn btn-trans "+(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")}, 
-                    "Publish"),
-
-                React.DOM.a(  {onClick:this.save, 
-                    className:"btn btn-dark "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}, "Save")
             )
+
+            
         );
   }
 });
@@ -369,7 +375,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../config":23,"../../utils":257,"../../utils/firebase":256,"../body":2,"../partials/dropdown":14,"../partials/simplePagination":20,"../partials/textareaAutosize":21,"react":250,"underscore":254}],6:[function(require,module,exports){
+},{"../../config":23,"../../utils":257,"../../utils/firebase":256,"../partials/dropdown":14,"../partials/nav":19,"../partials/simplePagination":20,"../partials/textareaAutosize":21,"react":250,"underscore":254}],6:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Body, Home, Photography, React, Writing;
 
@@ -499,11 +505,13 @@ module.exports = Component;
 
 },{"../../config":23,"../../utils":257,"../../utils/firebase":256,"../body":2,"../partials/linkList":18,"react":250,"react-addons":28,"underscore":254}],8:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Component, DynamicLoader, React;
+var Body, Component, DynamicLoader, React;
 
 React = require("react");
 
 DynamicLoader = require("../partials/dynamicLoader");
+
+Body = require("../body");
 
 Component = React.createClass({displayName: 'Component',
   componentDidMount: function() {
@@ -514,20 +522,22 @@ Component = React.createClass({displayName: 'Component',
     }, 500);
   },
   render: function() {
-    return React.DOM.div( {className:"loading"}, DynamicLoader(null ));
+    return Body( {className:"loading"}, DynamicLoader(null ));
   }
 });
 
 module.exports = Component;
 
 
-},{"../partials/dynamicLoader":15,"react":250}],9:[function(require,module,exports){
+},{"../body":2,"../partials/dynamicLoader":15,"react":250}],9:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Component, DynamicLoader, React;
+var Body, Component, DynamicLoader, React;
 
 React = require("react");
 
 DynamicLoader = require("../partials/dynamicLoader");
+
+Body = require("../body");
 
 Component = React.createClass({displayName: 'Component',
   componentDidMount: function() {
@@ -536,14 +546,16 @@ Component = React.createClass({displayName: 'Component',
     });
   },
   render: function() {
-    return React.DOM.div( {className:"loading"}, DynamicLoader(null ));
+    return Body( {className:"loading"}, 
+          DynamicLoader(null )
+          );
   }
 });
 
 module.exports = Component;
 
 
-},{"../partials/dynamicLoader":15,"react":250}],10:[function(require,module,exports){
+},{"../body":2,"../partials/dynamicLoader":15,"react":250}],10:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Body, Component, React;
 
@@ -660,7 +672,7 @@ module.exports = Component;
 
 },{"../../config":23,"../../utils/firebase":256,"../body":2,"react":250,"underscore":254}],13:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Body, Component, FIREBASE_URL, Firebase, FirebaseMixin, React, firebaseIdFromPath, marked, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref;
+var Component, DynamicLoader, FIREBASE_URL, Firebase, FirebaseMixin, Nav, React, firebaseIdFromPath, marked, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref;
 
 _ = require("underscore");
 
@@ -668,7 +680,9 @@ React = require("react");
 
 _ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, firebaseIdFromPath = _ref.firebaseIdFromPath, snapshotToArray = _ref.snapshotToArray;
 
-Body = require("../body");
+Nav = require("../partials/nav");
+
+DynamicLoader = require("../partials/dynamicLoader");
 
 simplePagination = require("../partials/simplePagination");
 
@@ -749,15 +763,16 @@ Component = React.createClass({displayName: 'Component',
     }
   },
   render: function() {
-    return Body( {className:"content "+(_.isEmpty(this.props.post) ? "loading" : "")}, 
+    return React.DOM.div( {className:"content "+(_.isEmpty(this.props.post) ? "loading" : "")}, 
+            DynamicLoader(null ),
+            Nav(null, 
+                React.DOM.a( {href:"/writing/edit/"+this.props.post.slug, className:"right btn btn-trans showIfUser " }, "Edit")
+            ),
             React.DOM.h1( {className:"text-center"}, React.DOM.a( {href:"/writing/"+this.props.post.slug}, this.props.post.title)),
             React.DOM.div( {className:"writing-body", dangerouslySetInnerHTML:{__html: marked(this.props.post.body||"")}}),
             simplePagination( 
                 {next:this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false, 
-                prev:this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} ),
-            React.DOM.div( {className:"controls ideas-controls"}, 
-                React.DOM.a( {href:"/writing/edit/"+this.props.post.slug, className:"btn btn-trans showIfUser " }, "Edit")
-            )    
+                prev:this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} )  
         );
   }
 });
@@ -765,7 +780,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../config":23,"../../utils":257,"../../utils/firebase":256,"../body":2,"../partials/simplePagination":20,"../partials/textareaAutosize":21,"marked":27,"react":250,"underscore":254}],14:[function(require,module,exports){
+},{"../../config":23,"../../utils":257,"../../utils/firebase":256,"../partials/dynamicLoader":15,"../partials/nav":19,"../partials/simplePagination":20,"../partials/textareaAutosize":21,"marked":27,"react":250,"underscore":254}],14:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Addons, Component, React, getRootComponent, _;
 
@@ -1048,19 +1063,21 @@ Dropdown = require("./dropdown");
 
 Component = React.createClass({displayName: 'Component',
   render: function() {
-    return React.DOM.div( {className:"nav-main"}, 
+    return this.transferPropsTo(React.DOM.div( {className:"nav-main"}, 
             Dropdown( {replaceWithSelectedLink:"true"}, 
                 React.DOM.ul(null , 
                     React.DOM.li(null, Link( {href:"/"}, "Home")),
                     React.DOM.li(null, Link( {href:"/writing"}, "Writing")),
                     React.DOM.li(null, Link( {href:"/seeing"}, "Photography")),
-                    React.DOM.li(null, Link( {href:"/reading"}, "Books"))
+                    React.DOM.li(null, Link( {href:"/reading"}, "Books")),
+                    React.DOM.li(null, Link( {href:"/ideas", className:"showIfUser"}, "Ideas"))
                 )
             ),
-            Link( {href:"/ideas", className:"showIfUser"}, "Ideas"),
-            Link( {href:"/logout", className:"showIfUser right"}, "Sign Out"),
-            Link( {href:"/login", className:"hideIfUser right"}, "Sign In")
-        );
+            
+            Link( {href:"/logout", className:"btn btn-standard showIfUser right"}, "Sign Out"),
+            Link( {href:"/login", className:"btn btn-standard hideIfUser right"}, "Sign In"),
+            this.props.children
+        ));
   }
 });
 

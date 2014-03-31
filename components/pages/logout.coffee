@@ -2,12 +2,15 @@
 
 React = require("react")
 DynamicLoader = require("../partials/dynamicLoader")
+Body = require("../body")
 
 Component = React.createClass
     componentDidMount: ->
       setTimeout ->
         auth.logout()
     render: ->
-        `<div className="loading"><DynamicLoader /></div>`
+        `<Body className="loading">
+          <DynamicLoader />
+          </Body>`
 
 module.exports = Component
