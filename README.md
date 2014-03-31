@@ -19,12 +19,17 @@ A `Handler` component declares data dependencies in a manifest located in `stati
         statics:
             firebase: ->
                 posts:
+                    # Firebase ref - useful to keep on hand to set & update
                     ref: new Firebase('https://my-site.firebaseIO.com/data')
+
+                    # add query parameters
                     query: (ref, done) ->
-                        # add query parameters
                         done(ref.limit(10))
-                    parse: (data) ->
-                        # transform data before setting into props
+                    
+                    # transform data before setting into props
+                    parse: (data) -> data
+                    
+                    # default value (avoid 'undefined' errors)
                     default: []
 ```
 
