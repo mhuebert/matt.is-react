@@ -1,10 +1,7 @@
-if !window?
-    console.log "On server"
-    Firebase = @Firebase = require("firebase")
-else
-    Firebase = @Firebase = window.Firebase
+Firebase = @Firebase = window?.Firebase || require("firebase")
 
 getRootComponent = require("./index").getRootComponent
+
 @FirebaseMixin =
     
     firebaseSubscribe: (props) ->
@@ -14,22 +11,24 @@ getRootComponent = require("./index").getRootComponent
         for path, obj of @type.firebase(props.matchedRoute)
 
             do (path, obj) =>
-                query = obj.query || (ref) -> ref
-                queryRef = query(obj.ref)
+                query = obj.query || (ref, done) -> done(ref)
 
-                callback = (snapshot) =>
-                    obj.parse = obj.parse || (snapshot) -> snapshot.val()
-                    value = obj.parse(snapshot)
+                query obj.ref, (queryRef) =>
+                    # queryRef = query(obj.ref)
 
-                    data = {}
-                    data[path] = value
-                    owner.setProps data
+                    callback = (snapshot) =>
+                        obj.parse = obj.parse || (snapshot) -> snapshot.val()
+                        value = obj.parse(snapshot)
 
-                @__firebaseSubscriptions[path] = 
-                    ref: queryRef
-                    callback: callback
+                        data = {}
+                        data[path] = value
+                        owner.setProps data
 
-                queryRef.on "value", callback
+                    @__firebaseSubscriptions[path] = 
+                        ref: queryRef
+                        callback: callback
+
+                    queryRef.on "value", callback
 
     firebaseUnsubscribe: (props) ->
         for path of this.props.firebase
@@ -76,15 +75,17 @@ async = require("async")
             .value().filter(Boolean)
     # testQuery()
     getData = (obj, callback) ->
-        obj.query = obj.query || (ref)->ref
-        t = Date.now()
-        obj.query(obj.ref).once "value", (snapshot) ->
-            console.log "Firebase query finished in #{Date.now()-t}ms"
-            data = {}
-            obj.parse = obj.parse || (snapshot) -> snapshot.val()
-            value = obj.parse(snapshot)
-            data[obj.path] = value
-            callback(null, data)
+        obj.query = obj.query || (ref, done) -> done(ref)
+
+        obj.query obj.ref, (queryRef) ->
+            t = Date.now()
+            queryRef.once "value", (snapshot) ->
+                console.log "Firebase query finished in #{Date.now()-t}ms"
+                data = {}
+                obj.parse = obj.parse || (snapshot) -> snapshot.val()
+                value = obj.parse(snapshot)
+                data[obj.path] = value
+                callback(null, data)
 
     async.map list, getData, (err, data) ->
         object = {}

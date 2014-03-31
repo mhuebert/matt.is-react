@@ -20,7 +20,7 @@ Component = React.createClass
         firebase: ->
             posts:
                 ref: new Firebase(FIREBASE_URL+'/test1/writing')
-                query: (ref) -> ref.limit(50)
+                query: (ref, done) -> done(ref.limit(50))
                 parse: (snapshot) -> 
                     _.chain(snapshot.val()).pairs().map((pair) -> 
                         post = pair[1]

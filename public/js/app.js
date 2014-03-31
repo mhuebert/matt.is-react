@@ -436,8 +436,8 @@ Component = React.createClass({displayName: 'Component',
       return {
         ideas: {
           ref: new Firebase(FIREBASE_URL + '/test1/ideas'),
-          query: function(ref) {
-            return ref.limit(50);
+          query: function(ref, done) {
+            return done(ref.limit(50));
           },
           parse: function(snapshot) {
             return _.chain(snapshot.val()).pairs().map(function(pair) {
@@ -622,8 +622,8 @@ Component = React.createClass({displayName: 'Component',
       return {
         posts: {
           ref: new Firebase(FIREBASE_URL + '/test1/writing'),
-          query: function(ref) {
-            return ref.limit(50);
+          query: function(ref, done) {
+            return done(ref.limit(50));
           },
           parse: function(snapshot) {
             return _.chain(snapshot.val()).pairs().map(function(pair) {
@@ -720,8 +720,10 @@ Component = React.createClass({displayName: 'Component',
         },
         postNext: {
           ref: new Firebase(baseUrl),
-          query: function(ref) {
-            return ref.startAt(null, id).limit(2);
+          query: function(ref, done) {
+            return ref.child(id).once("value", function(snap) {
+              return done(ref.startAt(snap.getPriority()).limit(2));
+            });
           },
           parse: function(snapshot) {
             return snapshotToArray(snapshot)[1] || {};
@@ -730,8 +732,10 @@ Component = React.createClass({displayName: 'Component',
         },
         postPrev: {
           ref: new Firebase(baseUrl),
-          query: function(ref) {
-            return ref.endAt(null, id).limit(2);
+          query: function(ref, done) {
+            return ref.child(id).once("value", function(snap) {
+              return done(ref.endAt(snap.getPriority()).limit(2));
+            });
           },
           parse: function(snapshot) {
             var idea, ideas;
@@ -2206,6 +2210,13 @@ process.title = 'browser';
 process.browser = true;
 process.env = {};
 process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.once = noop;
+process.off = noop;
+process.emit = noop;
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -24529,12 +24540,7 @@ module.exports = {
 },{}],256:[function(require,module,exports){
 /** @jsx React.DOM */var Firebase, async, getRootComponent, superagent, testQuery, _;
 
-if (typeof window === "undefined" || window === null) {
-  console.log("On server");
-  Firebase = this.Firebase = require("firebase");
-} else {
-  Firebase = this.Firebase = window.Firebase;
-}
+Firebase = this.Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
 
 getRootComponent = require("./index").getRootComponent;
 
@@ -24549,26 +24555,28 @@ this.FirebaseMixin = {
       obj = _ref[path];
       _results.push((function(_this) {
         return function(path, obj) {
-          var callback, query, queryRef;
-          query = obj.query || function(ref) {
-            return ref;
+          var query;
+          query = obj.query || function(ref, done) {
+            return done(ref);
           };
-          queryRef = query(obj.ref);
-          callback = function(snapshot) {
-            var data, value;
-            obj.parse = obj.parse || function(snapshot) {
-              return snapshot.val();
+          return query(obj.ref, function(queryRef) {
+            var callback;
+            callback = function(snapshot) {
+              var data, value;
+              obj.parse = obj.parse || function(snapshot) {
+                return snapshot.val();
+              };
+              value = obj.parse(snapshot);
+              data = {};
+              data[path] = value;
+              return owner.setProps(data);
             };
-            value = obj.parse(snapshot);
-            data = {};
-            data[path] = value;
-            return owner.setProps(data);
-          };
-          _this.__firebaseSubscriptions[path] = {
-            ref: queryRef,
-            callback: callback
-          };
-          return queryRef.on("value", callback);
+            _this.__firebaseSubscriptions[path] = {
+              ref: queryRef,
+              callback: callback
+            };
+            return queryRef.on("value", callback);
+          });
         };
       })(this)(path, obj));
     }
@@ -24622,21 +24630,23 @@ this.fetchFirebase = function(manifest, fetchCallback) {
     });
   }).value().filter(Boolean);
   getData = function(obj, callback) {
-    var t;
-    obj.query = obj.query || function(ref) {
-      return ref;
+    obj.query = obj.query || function(ref, done) {
+      return done(ref);
     };
-    t = Date.now();
-    return obj.query(obj.ref).once("value", function(snapshot) {
-      var data, value;
-      console.log("Firebase query finished in " + (Date.now() - t) + "ms");
-      data = {};
-      obj.parse = obj.parse || function(snapshot) {
-        return snapshot.val();
-      };
-      value = obj.parse(snapshot);
-      data[obj.path] = value;
-      return callback(null, data);
+    return obj.query(obj.ref, function(queryRef) {
+      var t;
+      t = Date.now();
+      return queryRef.once("value", function(snapshot) {
+        var data, value;
+        console.log("Firebase query finished in " + (Date.now() - t) + "ms");
+        data = {};
+        obj.parse = obj.parse || function(snapshot) {
+          return snapshot.val();
+        };
+        value = obj.parse(snapshot);
+        data[obj.path] = value;
+        return callback(null, data);
+      });
     });
   };
   return async.map(list, getData, function(err, data) {

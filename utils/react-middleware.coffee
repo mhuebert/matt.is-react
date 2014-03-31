@@ -1,24 +1,19 @@
 # React Middleware
-#Wherein server-side rendering happens.
+# Wherein server-side rendering happens.
 
 React = require("react")
 coffee = require('coffee-script')
 nodeJSX = require("node-jsx")
-safeStringify = require("../utils").safeStringify
 url = require("url")
 _ = require("underscore")
+
+safeStringify = require("../utils").safeStringify
 {fetchFirebase} = require("../utils/firebase")
 
-# By installing `node-jsx`, we can use JSX inside backticks in coffee-script files. The duplication below is ugly, but I don't know another way to get `node-jsx` to process both .coffee and .coffee.md files.
+# By installing `node-jsx`, we can use JSX inside backticks in coffee-script files. 
 
 nodeJSX.install
   extension: '.coffee'
-  additionalTransform: (src) ->
-    coffee.compile src,
-      'bare': true
-
-nodeJSX.install
-  extension: '.md'
   additionalTransform: (src) ->
     coffee.compile src,
       'bare': true

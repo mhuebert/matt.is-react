@@ -45,15 +45,18 @@ Component = React.createClass
 
             postNext:
                 ref: new Firebase(baseUrl)
-                query: (ref) -> 
-                    ref.startAt(null, id).limit(2)
+                query: (ref, done) -> 
+                    ref.child(id).once "value", (snap) ->
+                        done(ref.startAt(snap.getPriority()).limit(2))
                 parse: (snapshot) ->
                     snapshotToArray(snapshot)[1] || {}
                 default: {}
             
             postPrev:
                 ref: new Firebase(baseUrl)
-                query: (ref) -> ref.endAt(null, id).limit(2)
+                query: (ref, done) -> 
+                    ref.child(id).once "value", (snap) ->
+                        done(ref.endAt(snap.getPriority()).limit(2))
                 parse: (snapshot) -> 
                     ideas = snapshotToArray(snapshot)
                     idea = if ideas.length == 1 then {} else ideas[0]

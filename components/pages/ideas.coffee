@@ -24,7 +24,7 @@ Component = React.createClass
             # so the following data will be found in 'props.ideas'.
             ideas:
                 ref: new Firebase(FIREBASE_URL+'/test1/ideas')
-                query: (ref) -> ref.limit(50)
+                query: (ref, done) -> done(ref.limit(50))
                 parse: (snapshot) -> 
                     _.chain(snapshot.val())
                         .pairs()
