@@ -3,9 +3,7 @@
 _ = require("underscore")
 React = require("react")
 
-{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray} = require("../../utils/firebase")
-
-FIREBASE_URL = require("../../config").firebaseUrl
+{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
 
 Nav = require("../partials/nav")
 simplePagination = require("../partials/simplePagination")
@@ -45,9 +43,9 @@ Component = React.createClass
     
     componentWillReceiveProps: (newProps) ->
         if id = firebaseIdFromPath(newProps.matchedRoute.params.id)
-            url = FIREBASE_URL+'/test1/ideas/'+id
+            url = FIREBASE_URL+'/ideas/'+id
         if id = newProps.matchedRoute.params.slug
-            url = FIREBASE_URL+'/test1/writing/'+id
+            url = FIREBASE_URL+'/writing/'+id
         ref = new Firebase(url)
         self = this
         ref.once "value", (snapshot) =>
@@ -62,10 +60,10 @@ Component = React.createClass
         firebase: (match) ->
             if match.params.id
                 id = firebaseIdFromPath(match?.params?.id)
-                url = FIREBASE_URL+'/test1/ideas/'
+                url = FIREBASE_URL+'/ideas/'
             if match.params.slug
                 id = match.params.slug
-                url = FIREBASE_URL+'/test1/writing/'
+                url = FIREBASE_URL+'/writing/'
             baseRef = new Firebase(url)
             idea:
                 ref: baseRef.child(id)
@@ -78,7 +76,7 @@ Component = React.createClass
         if this.state.slugAvailable == false or this.props.matchedRoute.params.slug
             return
         slug = this.state.slug || this.state.id
-        publishRef = new Firebase(FIREBASE_URL+'/test1/writing/'+slug)
+        publishRef = new Firebase(FIREBASE_URL+'/writing/'+slug)
         idea = _(this.state).pick "title", "body"
         idea.publishDate = Date.now()
         this.setState loading: true
@@ -108,7 +106,7 @@ Component = React.createClass
         slug = slugify(e.target.value) || this.props.idea.id
 
         @setState slug: slug
-        ref = new Firebase(FIREBASE_URL+'/test1/writing/')
+        ref = new Firebase(FIREBASE_URL+'/writing/')
         ref.child(slug).once "value", (snapshot) =>
             slugAvailable = !snapshot.val()?
             @setState slugAvailable: slugAvailable

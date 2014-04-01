@@ -15,10 +15,10 @@ gulp.task 'stylus', ->
 gulp.task 'scripts', ->
     gulp.src('./app/app.coffee', {read: false})
         .pipe(browserify({
+            ignore: ['firebase']
             transform: ['coffeeify', [{'extension': 'coffee'}, 'reactify']]
             extensions: ['.coffee', 'js', '.md']
             noParse: ['jquery', 'underscore']
-            ignore: ['firebase']
             }))
         .pipe(rename('app.js'))
         .pipe(gulp.dest('./public/js'))

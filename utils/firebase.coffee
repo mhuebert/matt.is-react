@@ -1,5 +1,14 @@
-Firebase = @Firebase = window?.Firebase || require("firebase")
+@Firebase = Firebase = window?.Firebase || require("firebase")
 
+@FIREBASE_URL = require("../config/config").FIREBASE_URL
+
+if !window?
+    # If we require server-config directly, browserify will send it to the client
+    serverConfigLocation = "../config/server-config"
+    {firebaseSecret} = require(serverConfigLocation)
+    firebase = new Firebase(@FIREBASE_URL)
+    firebase.auth(firebaseSecret)
+    
 getRootComponent = require("./index").getRootComponent
 
 @FirebaseMixin =
@@ -56,16 +65,6 @@ getRootComponent = require("./index").getRootComponent
 _ = require("underscore")
 async = require("async")
 
-# `Firebase.enableLogging(true);
-# var connectedRef = new Firebase("https://matt-is.firebaseIO.com/.info/connected");
-# connectedRef.on("value", function(snap) {
-#   if (snap.val() === true) {
-#     console.log("connected");
-#   } else {
-#     console.log("not connected");
-#   }
-# });`
-
 @fetchFirebase = (manifest, fetchCallback) ->
     list = _.chain(manifest)
             .pairs()
@@ -110,4 +109,4 @@ testQuery = (url="www.apple.com")->
         false
     elements
     
-@FIREBASE_URL = require("../config").firebaseUrl
+

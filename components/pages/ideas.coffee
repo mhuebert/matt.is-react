@@ -4,14 +4,11 @@ _ = require("underscore")
 React = require("react")
 Addons = require("react-addons")
 
-Firebase = require("../../utils/firebase").Firebase
-FirebaseMixin = require("../../utils/firebase").FirebaseMixin
+{Firebase, FirebaseMixin, FIREBASE_URL} = require("../../utils/firebase")
 
 Body = require("../body")
 LinkList = require("../partials/linkList")
-
 slugify = require("../../utils").slugify
-FIREBASE_URL = require("../../config").firebaseUrl
 
 Component = React.createClass
 
@@ -23,7 +20,7 @@ Component = React.createClass
             # The data structure here will be mirrored in 'props',
             # so the following data will be found in 'props.ideas'.
             ideas:
-                ref: new Firebase(FIREBASE_URL+'/test1/ideas')
+                ref: new Firebase(FIREBASE_URL+'/ideas')
                 query: (ref, done) -> done(ref.limit(50))
                 parse: (snapshot) -> 
                     _.chain(snapshot.val())
@@ -48,7 +45,8 @@ Component = React.createClass
     handleKeyup: (e) ->
         if e.which == 13
             this.state.userid = user.id
-            this.props.firebase.ideas.ref.push this.state
+            idea = this.props.firebase.ideas.ref.push this.state
+            idea.setPriority Date.now()
             this.setState title: ""
 
     getInitialState: -> {}

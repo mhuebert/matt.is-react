@@ -1,0 +1,1 @@
+@firebaseSecret = "XYZ"

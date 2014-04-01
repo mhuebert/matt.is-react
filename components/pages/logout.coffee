@@ -6,8 +6,10 @@ Body = require("../body")
 
 Component = React.createClass
     componentDidMount: ->
+      auth.logout()
       setTimeout ->
-        auth.logout()
+        window.location.href = "/"
+      , 600
     render: ->
         `<Body className="loading">
           <DynamicLoader />

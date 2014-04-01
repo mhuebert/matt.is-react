@@ -27,7 +27,7 @@ Home = React.createClass
             <p className="intro">
               <span className="wordBlock">That's my name.</span> 
               <span className="wordBlock">I live in <a>Reykjavik.</a></span> 
-              <span className="wordBlock">I'm building <a>Sparkboard.</a></span>
+              <span className="wordBlock">I'm building <a href="http://www.sparkboard.com">Sparkboard.</a></span>
             </p>
             <h1><a href="/writing">Writing</a></h1>
             <ul className="writing-list link-list" >

@@ -19,7 +19,7 @@ Component = React.createClass
             title: "Photography"
         firebase: (match) ->
             id = match?.params?.id
-            baseUrl = FIREBASE_URL+'/test1/photos/'
+            baseUrl = FIREBASE_URL+'/photos/'
             ref = new Firebase(baseUrl)
             photo:
                 ref: ref.child(id)

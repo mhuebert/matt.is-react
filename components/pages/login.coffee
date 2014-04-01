@@ -10,6 +10,6 @@ Component = React.createClass
           rememberMe: true
       , 500
     render: ->
-        `<Body className="loading"><DynamicLoader /></Body>`
+        `<Body className="loading"></Body>`
 
 module.exports = Component

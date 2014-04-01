@@ -3,7 +3,7 @@
 _ = require("underscore")
 React = require("react")
 
-{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray} = require("../../utils/firebase")
+{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
 
 Nav = require("../partials/nav")
 
@@ -22,7 +22,6 @@ marked.setOptions
   smartypants: false
 
 unsafeCharacters = /[^\w\s.!?,:;'"]/
-FIREBASE_URL = require("../../config").firebaseUrl
 
 Component = React.createClass
 
@@ -34,7 +33,7 @@ Component = React.createClass
             title: props.post?.title
         firebase: (match) ->
             id = match?.params?.id
-            baseUrl = FIREBASE_URL+'/test1/writing/'
+            baseUrl = FIREBASE_URL+'/writing/'
             ref = new Firebase(baseUrl)
             post:
                 ref: ref.child(id)
@@ -75,6 +74,7 @@ Component = React.createClass
             <h1 className="text-center"><a href={"/writing/"+this.props.post.slug}>{this.props.post.title}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(this.props.post.body||"")}}></div>
             <simplePagination 
+                back="/writing"
                 next={this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false} 
                 prev={this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} />  
         </div>`

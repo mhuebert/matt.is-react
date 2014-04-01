@@ -2,14 +2,14 @@
 _ = require("underscore")
 
 @PhotoList = 
-  ref: new Firebase(FIREBASE_URL+'/test1/photos')
+  ref: new Firebase(FIREBASE_URL+'/photos')
   query: (ref, done) -> done(ref.limit(50))
   server: true
   parse: (snapshot) -> snapshotToArray(snapshot).reverse()
   default: []
 
 @WritingList = (limit=50) ->
-  ref: new Firebase(FIREBASE_URL+'/test1/writing')
+  ref: new Firebase(FIREBASE_URL+'/writing')
   query: (ref, done) -> done(ref.limit(limit))
   parse: (snapshot) -> 
       _.chain(snapshot.val()).pairs().map((pair) -> 

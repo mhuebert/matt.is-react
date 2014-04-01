@@ -57,12 +57,12 @@ Head = require("./partials/head");
 
 NotFound = require("./pages/notFound");
 
-FIREBASE_URL = require("../config").firebaseUrl;
+FIREBASE_URL = require("../utils/firebase").FIREBASE_URL;
 
 Layout = React.createClass({displayName: 'Layout',
   mixins: [RouterMixin],
   routes: require("./routes"),
-  firebaseRefCache: [FIREBASE_URL + '/test/ideas1', FIREBASE_URL + '/test/writing'],
+  firebaseRefCache: [FIREBASE_URL + '/ideas', FIREBASE_URL + '/writing'],
   _firebaseRefCache: [],
   componentDidMount: function() {
     setTimeout((function(_this) {
@@ -129,7 +129,7 @@ Layout = React.createClass({displayName: 'Layout',
 module.exports = Layout;
 
 
-},{"../config":24,"../utils/router":261,"./pages/notFound":10,"./partials/head":17,"./routes":23,"react":252,"underscore":256}],5:[function(require,module,exports){
+},{"../utils/firebase":258,"../utils/router":261,"./pages/notFound":10,"./partials/head":17,"./routes":23,"react":252,"underscore":256}],5:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Component, Dropdown, FIREBASE_URL, Firebase, FirebaseMixin, Nav, React, dateFormat, firebaseIdFromPath, moment, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref;
 
@@ -137,9 +137,7 @@ _ = require("underscore");
 
 React = require("react");
 
-_ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, firebaseIdFromPath = _ref.firebaseIdFromPath, snapshotToArray = _ref.snapshotToArray;
-
-FIREBASE_URL = require("../../config").firebaseUrl;
+_ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, firebaseIdFromPath = _ref.firebaseIdFromPath, snapshotToArray = _ref.snapshotToArray, FIREBASE_URL = _ref.FIREBASE_URL;
 
 Nav = require("../partials/nav");
 
@@ -192,10 +190,10 @@ Component = React.createClass({displayName: 'Component',
   componentWillReceiveProps: function(newProps) {
     var id, ref, self, url;
     if (id = firebaseIdFromPath(newProps.matchedRoute.params.id)) {
-      url = FIREBASE_URL + '/test1/ideas/' + id;
+      url = FIREBASE_URL + '/ideas/' + id;
     }
     if (id = newProps.matchedRoute.params.slug) {
-      url = FIREBASE_URL + '/test1/writing/' + id;
+      url = FIREBASE_URL + '/writing/' + id;
     }
     ref = new Firebase(url);
     self = this;
@@ -221,11 +219,11 @@ Component = React.createClass({displayName: 'Component',
       var baseRef, id, url, _ref1;
       if (match.params.id) {
         id = firebaseIdFromPath(match != null ? (_ref1 = match.params) != null ? _ref1.id : void 0 : void 0);
-        url = FIREBASE_URL + '/test1/ideas/';
+        url = FIREBASE_URL + '/ideas/';
       }
       if (match.params.slug) {
         id = match.params.slug;
-        url = FIREBASE_URL + '/test1/writing/';
+        url = FIREBASE_URL + '/writing/';
       }
       baseRef = new Firebase(url);
       return {
@@ -250,7 +248,7 @@ Component = React.createClass({displayName: 'Component',
       return;
     }
     slug = this.state.slug || this.state.id;
-    publishRef = new Firebase(FIREBASE_URL + '/test1/writing/' + slug);
+    publishRef = new Firebase(FIREBASE_URL + '/writing/' + slug);
     idea = _(this.state).pick("title", "body");
     idea.publishDate = Date.now();
     this.setState({
@@ -301,7 +299,7 @@ Component = React.createClass({displayName: 'Component',
     this.setState({
       slug: slug
     });
-    ref = new Firebase(FIREBASE_URL + '/test1/writing/');
+    ref = new Firebase(FIREBASE_URL + '/writing/');
     return ref.child(slug).once("value", (function(_this) {
       return function(snapshot) {
         var slugAvailable;
@@ -409,7 +407,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../config":24,"../../utils":259,"../../utils/firebase":258,"../partials/dropdown":15,"../partials/nav":20,"../partials/simplePagination":21,"../partials/textareaAutosize":22,"moment":29,"react":252,"underscore":256}],6:[function(require,module,exports){
+},{"../../utils":259,"../../utils/firebase":258,"../partials/dropdown":15,"../partials/nav":20,"../partials/simplePagination":21,"../partials/textareaAutosize":22,"moment":29,"react":252,"underscore":256}],6:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Body, FirebaseMixin, Home, Nav, PhotoList, Photography, React, Writing, WritingList, _ref;
 
@@ -450,7 +448,7 @@ Home = React.createClass({displayName: 'Home',
             React.DOM.p( {className:"intro"}, 
               React.DOM.span( {className:"wordBlock"}, "That's my name."), 
               React.DOM.span( {className:"wordBlock"}, "I live in ", React.DOM.a(null, "Reykjavik.")), 
-              React.DOM.span( {className:"wordBlock"}, "I'm building ", React.DOM.a(null, "Sparkboard."))
+              React.DOM.span( {className:"wordBlock"}, "I'm building ", React.DOM.a( {href:"http://www.sparkboard.com"}, "Sparkboard."))
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/writing"}, "Writing")),
             React.DOM.ul( {className:"writing-list link-list"} , 
@@ -470,7 +468,7 @@ module.exports = Home;
 
 },{"../../utils/firebase":258,"../../utils/queries":260,"../body":2,"../partials/nav":20,"./photography":11,"./writing":13,"react":252}],7:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Addons, Body, Component, FIREBASE_URL, Firebase, FirebaseMixin, LinkList, React, slugify, _;
+var Addons, Body, Component, FIREBASE_URL, Firebase, FirebaseMixin, LinkList, React, slugify, _, _ref;
 
 _ = require("underscore");
 
@@ -478,9 +476,7 @@ React = require("react");
 
 Addons = require("react-addons");
 
-Firebase = require("../../utils/firebase").Firebase;
-
-FirebaseMixin = require("../../utils/firebase").FirebaseMixin;
+_ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, FIREBASE_URL = _ref.FIREBASE_URL;
 
 Body = require("../body");
 
@@ -488,15 +484,13 @@ LinkList = require("../partials/linkList");
 
 slugify = require("../../utils").slugify;
 
-FIREBASE_URL = require("../../config").firebaseUrl;
-
 Component = React.createClass({displayName: 'Component',
   mixins: [FirebaseMixin],
   statics: {
     firebase: function() {
       return {
         ideas: {
-          ref: new Firebase(FIREBASE_URL + '/test1/ideas'),
+          ref: new Firebase(FIREBASE_URL + '/ideas'),
           query: function(ref, done) {
             return done(ref.limit(50));
           },
@@ -528,9 +522,11 @@ Component = React.createClass({displayName: 'Component',
     });
   },
   handleKeyup: function(e) {
+    var idea;
     if (e.which === 13) {
       this.state.userid = user.id;
-      this.props.firebase.ideas.ref.push(this.state);
+      idea = this.props.firebase.ideas.ref.push(this.state);
+      idea.setPriority(Date.now());
       return this.setState({
         title: ""
       });
@@ -558,7 +554,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../config":24,"../../utils":259,"../../utils/firebase":258,"../body":2,"../partials/linkList":19,"react":252,"react-addons":30,"underscore":256}],8:[function(require,module,exports){
+},{"../../utils":259,"../../utils/firebase":258,"../body":2,"../partials/linkList":19,"react":252,"react-addons":30,"underscore":256}],8:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Body, Component, DynamicLoader, React;
 
@@ -577,7 +573,7 @@ Component = React.createClass({displayName: 'Component',
     }, 500);
   },
   render: function() {
-    return Body( {className:"loading"}, DynamicLoader(null ));
+    return Body( {className:"loading"});
   }
 });
 
@@ -596,9 +592,10 @@ Body = require("../body");
 
 Component = React.createClass({displayName: 'Component',
   componentDidMount: function() {
+    auth.logout();
     return setTimeout(function() {
-      return auth.logout();
-    });
+      return window.location.href = "/";
+    }, 600);
   },
   render: function() {
     return Body( {className:"loading"}, 
@@ -732,7 +729,7 @@ Component = React.createClass({displayName: 'Component',
     firebase: function(match) {
       var baseUrl, id, ref, _ref1;
       id = match != null ? (_ref1 = match.params) != null ? _ref1.id : void 0 : void 0;
-      baseUrl = FIREBASE_URL + '/test1/photos/';
+      baseUrl = FIREBASE_URL + '/photos/';
       ref = new Firebase(baseUrl);
       return {
         photo: {
@@ -852,7 +849,7 @@ _ = require("underscore");
 
 React = require("react");
 
-_ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, firebaseIdFromPath = _ref.firebaseIdFromPath, snapshotToArray = _ref.snapshotToArray;
+_ref = require("../../utils/firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, firebaseIdFromPath = _ref.firebaseIdFromPath, snapshotToArray = _ref.snapshotToArray, FIREBASE_URL = _ref.FIREBASE_URL;
 
 Nav = require("../partials/nav");
 
@@ -878,8 +875,6 @@ marked.setOptions({
 
 unsafeCharacters = /[^\w\s.!?,:;'"]/;
 
-FIREBASE_URL = require("../../config").firebaseUrl;
-
 Component = React.createClass({displayName: 'Component',
   mixins: [FirebaseMixin],
   statics: {
@@ -892,7 +887,7 @@ Component = React.createClass({displayName: 'Component',
     firebase: function(match) {
       var baseUrl, id, ref, _ref1;
       id = match != null ? (_ref1 = match.params) != null ? _ref1.id : void 0 : void 0;
-      baseUrl = FIREBASE_URL + '/test1/writing/';
+      baseUrl = FIREBASE_URL + '/writing/';
       ref = new Firebase(baseUrl);
       return {
         post: {
@@ -945,7 +940,8 @@ Component = React.createClass({displayName: 'Component',
             React.DOM.h1( {className:"text-center"}, React.DOM.a( {href:"/writing/"+this.props.post.slug}, this.props.post.title)),
             React.DOM.div( {className:"writing-body", dangerouslySetInnerHTML:{__html: marked(this.props.post.body||"")}}),
             simplePagination( 
-                {next:this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false, 
+                {back:"/writing",
+                next:this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false, 
                 prev:this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} )  
         );
   }
@@ -954,7 +950,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../config":24,"../../utils":259,"../../utils/firebase":258,"../partials/dynamicLoader":16,"../partials/nav":20,"../partials/simplePagination":21,"../partials/textareaAutosize":22,"marked":28,"react":252,"underscore":256}],15:[function(require,module,exports){
+},{"../../utils":259,"../../utils/firebase":258,"../partials/dynamicLoader":16,"../partials/nav":20,"../partials/simplePagination":21,"../partials/textareaAutosize":22,"marked":28,"react":252,"underscore":256}],15:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Addons, Component, React, getRootComponent, _;
 
@@ -1249,7 +1245,7 @@ Component = React.createClass({displayName: 'Component',
             ),
             
             Link( {href:"/logout", className:"btn btn-standard showIfUser right"}, "Sign Out"),
-            Link( {href:"/login", className:"btn btn-standard hideIfUser right"}, "Sign In"),
+            Link( {href:"/login", className:"btn btn-standard hideIfUser right hidden"}, "Sign In"),
             this.props.children
         ));
   }
@@ -1408,7 +1404,7 @@ module.exports = routes;
 
 
 },{"./pages/edit":5,"./pages/home":6,"./pages/ideas":7,"./pages/login":8,"./pages/logout":9,"./pages/photography":11,"./pages/photographyView":12,"./pages/writing":13,"./pages/writingView":14}],24:[function(require,module,exports){
-/** @jsx React.DOM */this.firebaseUrl = "https://matt-is.firebaseIO.com";
+/** @jsx React.DOM */this.FIREBASE_URL = "https://matt-is.firebaseIO.com";
 
 
 },{}],25:[function(require,module,exports){
@@ -27149,9 +27145,18 @@ module.exports = {
 };
 
 },{}],258:[function(require,module,exports){
-/** @jsx React.DOM */var Firebase, async, getRootComponent, superagent, testQuery, _;
+/** @jsx React.DOM */var Firebase, async, firebase, firebaseSecret, getRootComponent, serverConfigLocation, superagent, testQuery, _;
 
-Firebase = this.Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
+this.Firebase = Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
+
+this.FIREBASE_URL = require("../config/config").FIREBASE_URL;
+
+if (typeof window === "undefined" || window === null) {
+  serverConfigLocation = "../config/server-config";
+  firebaseSecret = require(serverConfigLocation).firebaseSecret;
+  firebase = new Firebase(this.FIREBASE_URL);
+  firebase.auth(firebaseSecret);
+}
 
 getRootComponent = require("./index").getRootComponent;
 
@@ -27303,10 +27308,8 @@ this.snapshotToArray = function(snapshot) {
   return elements;
 };
 
-this.FIREBASE_URL = require("../config").firebaseUrl;
 
-
-},{"../config":24,"./index":259,"async":25,"firebase":26,"superagent":253,"underscore":256}],259:[function(require,module,exports){
+},{"../config/config":24,"./index":259,"async":25,"firebase":26,"superagent":253,"underscore":256}],259:[function(require,module,exports){
 /** @jsx React.DOM */this.safeStringify = function(obj) {
   return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');
 };
@@ -27351,7 +27354,7 @@ _ref = require("./firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.Fir
 _ = require("underscore");
 
 this.PhotoList = {
-  ref: new Firebase(FIREBASE_URL + '/test1/photos'),
+  ref: new Firebase(FIREBASE_URL + '/photos'),
   query: function(ref, done) {
     return done(ref.limit(50));
   },
@@ -27367,7 +27370,7 @@ this.WritingList = function(limit) {
     limit = 50;
   }
   return {
-    ref: new Firebase(FIREBASE_URL + '/test1/writing'),
+    ref: new Firebase(FIREBASE_URL + '/writing'),
     query: function(ref, done) {
       return done(ref.limit(limit));
     },

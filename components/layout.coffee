@@ -8,13 +8,13 @@ RouterMixin = require("../utils/router").Mixin
 Head = require("./partials/head")
 NotFound = require("./pages/notFound")
 
-FIREBASE_URL = require("../config").firebaseUrl
+{FIREBASE_URL} = require("../utils/firebase")
 
 Layout = React.createClass
     mixins: [RouterMixin]
     routes: require("./routes")
-    firebaseRefCache: [ FIREBASE_URL+'/test/ideas1',
-                        FIREBASE_URL+'/test/writing'
+    firebaseRefCache: [ FIREBASE_URL+'/ideas',
+                        FIREBASE_URL+'/writing'
                         ]
     _firebaseRefCache: []
     componentDidMount: ->

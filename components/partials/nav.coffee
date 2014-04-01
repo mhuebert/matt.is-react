@@ -19,7 +19,7 @@ Component = React.createClass
             </Dropdown>
             
             <Link href="/logout" className="btn btn-standard showIfUser right">Sign Out</Link>
-            <Link href="/login" className="btn btn-standard hideIfUser right">Sign In</Link>
+            <Link href="/login" className="btn btn-standard hideIfUser right hidden">Sign In</Link>
             {this.props.children}
         </div>)`
 
