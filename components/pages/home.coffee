@@ -15,7 +15,7 @@ Home = React.createClass
     statics:
         firebase: ->
             photos: PhotoList
-            writing: WritingList
+            writing: WritingList(2)
         getMetadata: ->
             title: "Welcome | Matt.is"
             description: "Artefactually speaking."
@@ -32,6 +32,7 @@ Home = React.createClass
             <h1><a href="/writing">Writing</a></h1>
             <ul className="writing-list link-list" >
                 {this.props.writing.map(function(post){return  <li key={post.id} ><a href={"/writing/"+post.id}>{post.title}</a></li>})}
+                <li><a href="/writing" className="more-link" >more &rarr;</a></li>
             </ul>
             <h1><a href="/seeing">Photography</a></h1>
             <div className="photos">

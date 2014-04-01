@@ -54,7 +54,8 @@ Component = React.createClass
                 <a className="imageContainer"  style={{backgroundImage:"url("+this.props.photo.url+")"}}  href={this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}></a>
                 <simplePagination 
                     next={this.props.photoNext.id ? ("/seeing/"+this.props.photoNext.id) : false} 
-                    prev={this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false} /> 
+                    prev={this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false} 
+                    back="/seeing" />
             </div>
             
             <div className="hidden">

@@ -433,7 +433,7 @@ Home = React.createClass({displayName: 'Home',
     firebase: function() {
       return {
         photos: PhotoList,
-        writing: WritingList
+        writing: WritingList(2)
       };
     },
     getMetadata: function() {
@@ -454,7 +454,8 @@ Home = React.createClass({displayName: 'Home',
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/writing"}, "Writing")),
             React.DOM.ul( {className:"writing-list link-list"} , 
-                this.props.writing.map(function(post){return  React.DOM.li( {key:post.id} , React.DOM.a( {href:"/writing/"+post.id}, post.title))})
+                this.props.writing.map(function(post){return  React.DOM.li( {key:post.id} , React.DOM.a( {href:"/writing/"+post.id}, post.title))}),
+                React.DOM.li(null, React.DOM.a( {href:"/writing", className:"more-link"} , "more →"))
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/seeing"}, "Photography")),
             React.DOM.div( {className:"photos"}, 
@@ -776,7 +777,8 @@ Component = React.createClass({displayName: 'Component',
                 React.DOM.a( {className:"imageContainer",  style:{backgroundImage:"url("+this.props.photo.url+")"},  href:this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}),
                 simplePagination( 
                     {next:this.props.photoNext.id ? ("/seeing/"+this.props.photoNext.id) : false, 
-                    prev:this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false} ) 
+                    prev:this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false, 
+                    back:"/seeing"} )
             ),
             
             React.DOM.div( {className:"hidden"}, 
@@ -818,7 +820,7 @@ Component = React.createClass({displayName: 'Component',
     },
     firebase: function() {
       return {
-        writing: WritingList
+        writing: WritingList()
       };
     }
   },
@@ -1242,7 +1244,6 @@ Component = React.createClass({displayName: 'Component',
                     React.DOM.li(null, Link( {href:"/"}, "Home")),
                     React.DOM.li(null, Link( {href:"/writing"}, "Writing")),
                     React.DOM.li(null, Link( {href:"/seeing"}, "Photography")),
-                    React.DOM.li(null, Link( {href:"/reading"}, "Books")),
                     React.DOM.li(null, Link( {href:"/ideas", className:"showIfUser"}, "Ideas"))
                 )
             ),
@@ -1286,7 +1287,10 @@ Component = React.createClass({displayName: 'Component',
       this.next();
     }
     if (e.which === 37) {
-      return this.prev();
+      this.prev();
+    }
+    if (e.which === 27) {
+      return this.back();
     }
   },
   next: function() {
@@ -1299,8 +1303,14 @@ Component = React.createClass({displayName: 'Component',
       return this.refs.prev.getDOMNode().click();
     }
   },
+  back: function() {
+    if (this.props.back) {
+      return this.refs.back.getDOMNode().click();
+    }
+  },
   render: function() {
     return React.DOM.div( {className:"paginate-simple"}, 
+            React.DOM.a( {ref:"back", className:"hidden", href:this.props.back} ),
             React.DOM.a( {ref:"prev", onClick:this.prev, className:"prev "+(this.props.prev ? "" : "hidden"), href:this.props.prev}),
             React.DOM.a( {ref:"next", className:"next "+(this.props.next ? "" : "hidden"), href:this.props.next})
         );
@@ -27334,9 +27344,11 @@ if (typeof window !== "undefined" && window !== null) {
 
 
 },{}],260:[function(require,module,exports){
-/** @jsx React.DOM */var FIREBASE_URL, Firebase, FirebaseMixin, snapshotToArray, _ref;
+/** @jsx React.DOM */var FIREBASE_URL, Firebase, FirebaseMixin, snapshotToArray, _, _ref;
 
 _ref = require("./firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.FirebaseMixin, snapshotToArray = _ref.snapshotToArray, FIREBASE_URL = _ref.FIREBASE_URL;
+
+_ = require("underscore");
 
 this.PhotoList = {
   ref: new Firebase(FIREBASE_URL + '/test1/photos'),
@@ -27350,24 +27362,30 @@ this.PhotoList = {
   "default": []
 };
 
-this.WritingList = {
-  ref: new Firebase(FIREBASE_URL + '/test1/writing'),
-  query: function(ref, done) {
-    return done(ref.limit(50));
-  },
-  parse: function(snapshot) {
-    return _.chain(snapshot.val()).pairs().map(function(pair) {
-      var post;
-      post = pair[1];
-      post.id = pair[0];
-      return post;
-    }).value().reverse();
-  },
-  "default": []
+this.WritingList = function(limit) {
+  if (limit == null) {
+    limit = 50;
+  }
+  return {
+    ref: new Firebase(FIREBASE_URL + '/test1/writing'),
+    query: function(ref, done) {
+      return done(ref.limit(limit));
+    },
+    parse: function(snapshot) {
+      return _.chain(snapshot.val()).pairs().map(function(pair) {
+        var post;
+        post = pair[1];
+        post.id = pair[0];
+        return post;
+      }).value().reverse();
+    },
+    "default": [],
+    server: true
+  };
 };
 
 
-},{"./firebase":258}],261:[function(require,module,exports){
+},{"./firebase":258,"underscore":256}],261:[function(require,module,exports){
 /** @jsx React.DOM */var RouterMixin, closest, urlPattern, _;
 
 _ = require("underscore");

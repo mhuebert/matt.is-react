@@ -14,7 +14,6 @@ Component = React.createClass
                     <li><Link href="/">Home</Link></li>
                     <li><Link href="/writing">Writing</Link></li>
                     <li><Link href="/seeing">Photography</Link></li>
-                    <li><Link href="/reading">Books</Link></li>
                     <li><Link href="/ideas" className="showIfUser">Ideas</Link></li>
                 </ul>
             </Dropdown>

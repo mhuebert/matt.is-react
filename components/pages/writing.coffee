@@ -18,7 +18,7 @@ Component = React.createClass
             title: "Writing | Matt.is"
             description: "Wherein I uncover."
         firebase: ->
-            writing: WritingList
+            writing: WritingList()
 
     render: ->
 
