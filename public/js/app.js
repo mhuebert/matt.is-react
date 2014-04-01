@@ -631,7 +631,7 @@ module.exports = Component;
 
 },{"../body":2,"react":252}],11:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Body, Component, FirebaseMixin, Nav, PhotoList, React;
+var Body, Component, DynamicLoader, FirebaseMixin, Nav, PhotoList, React;
 
 React = require("react");
 
@@ -642,6 +642,8 @@ Nav = require("../partials/nav");
 FirebaseMixin = require("../../utils/firebase").FirebaseMixin;
 
 PhotoList = require("../../utils/queries").PhotoList;
+
+DynamicLoader = require("../partials/dynamicLoader");
 
 Component = React.createClass({displayName: 'Component',
   mixins: [FirebaseMixin],
@@ -680,22 +682,23 @@ Component = React.createClass({displayName: 'Component',
       };
     })(this));
   },
-  handleClick: function(e) {
+  deletePhoto: function(e) {
     if (confirm("Are you sure?")) {
       return this.props.firebase.photos.ref.child(e.target.getAttribute("data-id")).remove();
     }
   },
   render: function() {
-    var handleClick;
-    handleClick = this.handleClick;
+    var deletePhoto;
+    deletePhoto = this.deletePhoto;
     return React.DOM.div( {className:"content "+ ((this.props.photos.length > 0) ? "" : "loading"), style:{maxWidth:960}}, 
             Nav(null ),
+            DynamicLoader(null ),DynamicLoader(null ),
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
                 React.DOM.div( {className:"showIfUser"}, 
                     React.DOM.a( {style:{display:'block',marginBottom:20}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
                 ),
-              this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
+              this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {onClick:deletePhoto, className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
             )
         );
   }
@@ -704,7 +707,7 @@ Component = React.createClass({displayName: 'Component',
 module.exports = Component;
 
 
-},{"../../utils/firebase":258,"../../utils/queries":260,"../body":2,"../partials/nav":20,"react":252}],12:[function(require,module,exports){
+},{"../../utils/firebase":258,"../../utils/queries":260,"../body":2,"../partials/dynamicLoader":16,"../partials/nav":20,"react":252}],12:[function(require,module,exports){
 /** @jsx React.DOM */;
 var Component, DynamicLoader, FIREBASE_URL, Firebase, FirebaseMixin, Nav, React, firebaseIdFromPath, fullScreen, simplePagination, snapshotToArray, _, _ref;
 
