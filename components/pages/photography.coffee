@@ -33,7 +33,9 @@ Component = React.createClass
             <Nav />
             <h1>Photography</h1>
             <div className="photos text-center">
-            <a style={{display:'block', marginBottom:20}} className="btn btn-standard showIfUser" onClick={this.uploadPhoto}>Upload Photos</a>
+                <div className="showIfUser">
+                    <a style={{display:'block',marginBottom:20}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
+                </div>
               {this.props.photos.map(function(photo){return <a key={photo.id} href={"/seeing/"+photo.id}><div className="photo-delete">&times;</div><img src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
             </div>
         </div>`

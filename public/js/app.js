@@ -690,7 +690,9 @@ Component = React.createClass({displayName: 'Component',
             Nav(null ),
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
-            React.DOM.a( {style:{display:'block', marginBottom:20}, className:"btn btn-standard showIfUser", onClick:this.uploadPhoto}, "Upload Photos"),
+                React.DOM.div( {className:"showIfUser"}, 
+                    React.DOM.a( {style:{display:'block',marginBottom:20}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
+                ),
               this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
             )
         );
