@@ -447,7 +447,7 @@ Home = React.createClass({displayName: 'Home',
             React.DOM.h1(null, "Matthew Huebert"),
             React.DOM.p( {className:"intro"}, 
               React.DOM.span( {className:"wordBlock"}, "That's my name."), 
-              React.DOM.span( {className:"wordBlock"}, "I live in ", React.DOM.a(null, "Reykjavik.")), 
+              React.DOM.span( {className:"wordBlock"}, "I live in ", React.DOM.a( {href:"http://en.wikipedia.org/wiki/Reykjav%C3%ADk"}, "Reykjavik.")), 
               React.DOM.span( {className:"wordBlock"}, "I'm building ", React.DOM.a( {href:"http://www.sparkboard.com"}, "Sparkboard."))
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/writing"}, "Writing")),
