@@ -11,7 +11,7 @@ Component = React.createClass
     mixins: [FirebaseMixin]
     statics:
         firebase: ->
-            photos: PhotoList
+            photos: PhotoList()
         getMetadata: ->
             title: "Photography | Matt.is"
             description: "To see, or not to see."
@@ -29,7 +29,7 @@ Component = React.createClass
             this.props.firebase.photos.ref.child(e.target.getAttribute("data-id")).remove()
     render: ->
         handleClick = this.handleClick
-        `<div className="text-center content" style={{maxWidth:960}}>
+        `<div className={"content "+ ((this.props.photos.length > 0) ? "" : "loading")} style={{maxWidth:960}}>
             <Nav />
             <h1>Photography</h1>
             <div className="photos text-center">

@@ -1,9 +1,9 @@
 {Firebase, FirebaseMixin, snapshotToArray, FIREBASE_URL} = require("./firebase")
 _ = require("underscore")
 
-@PhotoList = 
+@PhotoList =  (limit=500) ->
   ref: new Firebase(FIREBASE_URL+'/photos')
-  query: (ref, done) -> done(ref.limit(50))
+  query: (ref, done) -> done(ref.limit(limit))
   server: true
   parse: (snapshot) -> snapshotToArray(snapshot).reverse()
   default: []

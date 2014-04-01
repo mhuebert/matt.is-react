@@ -14,7 +14,7 @@ Home = React.createClass
     mixins: [FirebaseMixin]
     statics:
         firebase: ->
-            photos: PhotoList
+            photos: PhotoList(9)
             writing: WritingList(2)
         getMetadata: ->
             title: "Welcome | Matt.is"
@@ -37,6 +37,8 @@ Home = React.createClass
             <h1><a href="/seeing">Photography</a></h1>
             <div className="photos">
                 {this.props.photos.map(function(photo){return <a href={"/seeing/"+photo.id}><img key={photo.id} src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
+                <br/>
+                <a href="/seeing" className="more-link" >more &rarr;</a>
             </div>
         </div>`
 

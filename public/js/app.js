@@ -430,7 +430,7 @@ Home = React.createClass({displayName: 'Home',
   statics: {
     firebase: function() {
       return {
-        photos: PhotoList,
+        photos: PhotoList(9),
         writing: WritingList(2)
       };
     },
@@ -457,7 +457,9 @@ Home = React.createClass({displayName: 'Home',
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/seeing"}, "Photography")),
             React.DOM.div( {className:"photos"}, 
-                this.props.photos.map(function(photo){return React.DOM.a( {href:"/seeing/"+photo.id}, React.DOM.img( {key:photo.id, src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
+                this.props.photos.map(function(photo){return React.DOM.a( {href:"/seeing/"+photo.id}, React.DOM.img( {key:photo.id, src:photo.url+"/convert?w=220&h=220&fit=crop"} ))}),
+                React.DOM.br(null),
+                React.DOM.a( {href:"/seeing", className:"more-link"} , "more →")
             )
         );
   }
@@ -646,7 +648,7 @@ Component = React.createClass({displayName: 'Component',
   statics: {
     firebase: function() {
       return {
-        photos: PhotoList
+        photos: PhotoList()
       };
     },
     getMetadata: function() {
@@ -686,7 +688,7 @@ Component = React.createClass({displayName: 'Component',
   render: function() {
     var handleClick;
     handleClick = this.handleClick;
-    return React.DOM.div( {className:"text-center content", style:{maxWidth:960}}, 
+    return React.DOM.div( {className:"content "+ ((this.props.photos.length > 0) ? "" : "loading"), style:{maxWidth:960}}, 
             Nav(null ),
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
@@ -27357,16 +27359,21 @@ _ref = require("./firebase"), Firebase = _ref.Firebase, FirebaseMixin = _ref.Fir
 
 _ = require("underscore");
 
-this.PhotoList = {
-  ref: new Firebase(FIREBASE_URL + '/photos'),
-  query: function(ref, done) {
-    return done(ref.limit(50));
-  },
-  server: true,
-  parse: function(snapshot) {
-    return snapshotToArray(snapshot).reverse();
-  },
-  "default": []
+this.PhotoList = function(limit) {
+  if (limit == null) {
+    limit = 500;
+  }
+  return {
+    ref: new Firebase(FIREBASE_URL + '/photos'),
+    query: function(ref, done) {
+      return done(ref.limit(limit));
+    },
+    server: true,
+    parse: function(snapshot) {
+      return snapshotToArray(snapshot).reverse();
+    },
+    "default": []
+  };
 };
 
 this.WritingList = function(limit) {

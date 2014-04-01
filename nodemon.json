@@ -1,7 +1,4 @@
 {
   "ignore": ["node_modules/*", "*/vendor/*", "public/*"],
-  "execMap": {
-      "md": "coffee"
-  },
   "ext": "js json coffee md"
 }
