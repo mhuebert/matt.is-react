@@ -684,7 +684,9 @@ Component = React.createClass({displayName: 'Component',
   },
   deletePhoto: function(e) {
     if (confirm("Are you sure?")) {
-      return this.props.firebase.photos.ref.child(e.target.getAttribute("data-id")).remove();
+      this.props.firebase.photos.ref.child(e.target.getAttribute("data-id")).remove();
+      e.preventDefault();
+      return e.stopPropagation();
     }
   },
   render: function() {
@@ -698,7 +700,7 @@ Component = React.createClass({displayName: 'Component',
                 React.DOM.div( {className:"showIfUser"}, 
                     React.DOM.a( {style:{display:'block',marginBottom:20}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
                 ),
-              this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {onClick:deletePhoto, className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
+              this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {'data-id':photo.id, onClick:deletePhoto, className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
             )
         );
   }
@@ -775,19 +777,20 @@ Component = React.createClass({displayName: 'Component',
     }
   },
   render: function() {
+    var conversion;
+    conversion = "/convert?w=1000&h=1000";
     return React.DOM.div( {className:"content "+(_.isEmpty(this.props.photo) ? "loading" : ""), style:{maxWidth:960}}, 
             React.DOM.div(  {className:"photo-single"}, 
                 React.DOM.a( {style:{color:'white',position:'absolute',top:10,left:10,fontSize:16,color:'#999999'}, href:"/seeing"}, "← back"),
-                React.DOM.a( {className:"imageContainer",  style:{backgroundImage:"url("+this.props.photo.url+")"},  href:this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}),
+                React.DOM.a( {className:"imageContainer",  style:{backgroundImage:"url("+this.props.photo.url+conversion+")"},  href:this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}),
                 simplePagination( 
                     {next:this.props.photoNext.id ? ("/seeing/"+this.props.photoNext.id) : false, 
                     prev:this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false, 
                     back:"/seeing"} )
             ),
             
-            React.DOM.div( {className:"hidden"}, 
-                React.DOM.img( {src:this.props.photoNext.url} ),
-                React.DOM.img( {src:this.props.photoPrev.url} )
+            React.DOM.div( {style:{opacity:0,position:'absolute',height:0,width:0}}, 
+                React.DOM.img( {src:this.props.photoNext.url+conversion} )
             ) 
         );
   }
