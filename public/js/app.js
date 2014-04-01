@@ -698,7 +698,7 @@ Component = React.createClass({displayName: 'Component',
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
                 React.DOM.div( {className:"showIfUser"}, 
-                    React.DOM.a( {style:{display:'block',marginBottom:20}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
+                    React.DOM.a( {style:{display:'block',marginBottom:20, maxWidth:780, margin:"0 auto"}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
                 ),
               this.props.photos.map(function(photo){return React.DOM.a( {key:photo.id, href:"/seeing/"+photo.id}, React.DOM.div( {'data-id':photo.id, onClick:deletePhoto, className:"photo-delete"}, "×"),React.DOM.img( {src:photo.url+"/convert?w=220&h=220&fit=crop"} ))})
             )
@@ -1249,11 +1249,11 @@ Component = React.createClass({displayName: 'Component',
                 React.DOM.ul(null , 
                     React.DOM.li(null, Link( {href:"/"}, "Home")),
                     React.DOM.li(null, Link( {href:"/writing"}, "Writing")),
-                    React.DOM.li(null, Link( {href:"/seeing"}, "Photography")),
-                    React.DOM.li(null, Link( {href:"/ideas", className:"showIfUser"}, "Ideas"))
+                    React.DOM.li(null, Link( {href:"/seeing"}, "Photography"))
                 )
             ),
             
+            Link( {href:"/ideas", className:"showIfUser btn btn-standard"}, "Ideas"),
             Link( {href:"/logout", className:"btn btn-standard showIfUser right"}, "Sign Out"),
             Link( {href:"/login", className:"btn btn-standard hideIfUser right hidden"}, "Sign In"),
             this.props.children
@@ -17660,7 +17660,7 @@ module.exports = AutoFocusMixin;
 },{}],124:[function(require,module,exports){
 module.exports=require(32)
 },{}],125:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
+module.exports=require(33)
 },{"./CSSProperty":124,"./dangerousStyleValue":216,"./escapeTextForBrowser":218,"./hyphenate":229,"./memoizeStringOnly":238}],126:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.

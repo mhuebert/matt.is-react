@@ -39,7 +39,7 @@ Component = React.createClass
             <h1>Photography</h1>
             <div className="photos text-center">
                 <div className="showIfUser">
-                    <a style={{display:'block',marginBottom:20}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
+                    <a style={{display:'block',marginBottom:20, maxWidth:780, margin:"0 auto"}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
                 </div>
               {this.props.photos.map(function(photo){return <a key={photo.id} href={"/seeing/"+photo.id}><div data-id={photo.id} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
             </div>
