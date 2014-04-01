@@ -27146,17 +27146,16 @@ module.exports = {
 
 },{}],258:[function(require,module,exports){
 (function (process){
-/** @jsx React.DOM */var FIREBASE_SECRET, Firebase, async, firebase, getRootComponent, serverConfigLocation, superagent, testQuery, _;
+/** @jsx React.DOM */var FIREBASE_SECRET, Firebase, async, firebase, getRootComponent, superagent, testQuery, _;
 
 this.Firebase = Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
 
 this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL;
 
 if (typeof window === "undefined" || window === null) {
-  serverConfigLocation = "../config/server-config";
-  FIREBASE_SECRET = process.env.FIREBASE_SECRET || require(serverConfigLocation).FIREBASE_SECRET;
+  FIREBASE_SECRET = process.env.FIREBASE_SECRET;
   firebase = new Firebase(this.FIREBASE_URL);
-  firebase.auth(firebaseSecret);
+  firebase.auth(FIREBASE_SECRET);
 }
 
 getRootComponent = require("./index").getRootComponent;

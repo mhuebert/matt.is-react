@@ -4,3 +4,4 @@ node_modules
 notes
 config.coffee
 server-config.coffee
+.env

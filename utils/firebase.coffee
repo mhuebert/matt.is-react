@@ -3,11 +3,9 @@
 @FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
 
 if !window?
-    # If we require server-config directly, browserify will send it to the client
-    serverConfigLocation = "../config/server-config"
-    FIREBASE_SECRET = process.env.FIREBASE_SECRET || require(serverConfigLocation).FIREBASE_SECRET
+    FIREBASE_SECRET = process.env.FIREBASE_SECRET
     firebase = new Firebase(@FIREBASE_URL)
-    firebase.auth(firebaseSecret)
+    firebase.auth(FIREBASE_SECRET)
     
 getRootComponent = require("./index").getRootComponent
 
