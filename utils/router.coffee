@@ -1,14 +1,26 @@
 _ = require("underscore")
 urlPattern = require('url-pattern')
 
+closest = (el, tag) ->
+    tag = tag.toUpperCase()
+    if el.nodeName == tag
+        return el
+    while el = el.parentNode
+        if el.nodeName == tag
+            return el
+    null
+
+
 RouterMixin = @Mixin =
     getDefaultProps: ->
         matchedRoute: this.matchRoute(this.props.path || window.location.pathname)
 
     handleClick: (e) ->
-        if (e.target.tagName == 'A') and e.target.pathname[0] == "/"
-            e.preventDefault()
-            this.navigate(e.target.pathname)
+        if link = closest(e.target, 'A') 
+            if link.getAttribute("href")?[0] == "/"
+                e.preventDefault()
+                e.stopPropagation()
+                this.navigate(link.pathname)
 
     handlePopstate: ->
         path = window.location.pathname

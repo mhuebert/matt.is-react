@@ -13,6 +13,8 @@ slugify = require("../../utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
 Dropdown = require("../partials/dropdown")
 unsafeCharacters = /[^\w\s.!?,:\*;'"]/
+moment = require("moment")
+dateFormat = "MMMM D, YYYY"
 
 Component = React.createClass
 
@@ -26,6 +28,8 @@ Component = React.createClass
 
     getInitialState: -> 
         slugAvailable: true
+        validDate: true
+        date: Date.now()
 
     keyShortcuts: (e) ->
         if (e.metaKey or e.ctrlKey)
@@ -45,10 +49,12 @@ Component = React.createClass
         if id = newProps.matchedRoute.params.slug
             url = FIREBASE_URL+'/test1/writing/'+id
         ref = new Firebase(url)
+        self = this
         ref.once "value", (snapshot) =>
             if idea = snapshot.val()
                 idea.id = id
-                this.setState idea
+                self.refs.date.getDOMNode().value = moment(snapshot.getPriority()).format(dateFormat)
+                self.setState idea
 
     statics:
         getMetadata: (props) ->
@@ -64,6 +70,10 @@ Component = React.createClass
             idea:
                 ref: baseRef.child(id)
                 server: true
+                parse: (snapshot) ->
+                    idea = snapshot.val()
+                    idea.date = snapshot.getPriority() if idea
+                    idea
     publish: ->
         if this.state.slugAvailable == false or this.props.matchedRoute.params.slug
             return
@@ -95,12 +105,20 @@ Component = React.createClass
         @setState body: e.target.value
 
     handleSlugChange: (e) ->
-        slug = slugify(e.target.value) || this.state.id
+        slug = slugify(e.target.value) || this.props.idea.id
+
         @setState slug: slug
         ref = new Firebase(FIREBASE_URL+'/test1/writing/')
         ref.child(slug).once "value", (snapshot) =>
             slugAvailable = !snapshot.val()?
             @setState slugAvailable: slugAvailable
+    changeDate: (e) ->
+        dateString = e.target.value
+        momentObject = moment(dateString, dateFormat, true)
+        @setState validDate: momentObject.isValid()
+        if momentObject.isValid()
+            unixDate = momentObject.valueOf()
+            this.props.firebase.idea.ref.setPriority unixDate
 
     objectModified: ->
         !_.isEqual this.props.idea, _(this.state).pick("title", "body", "slug", "id", "wordCount")
@@ -118,6 +136,7 @@ Component = React.createClass
 
             this.props.firebase.idea.ref.remove (err) =>
                 this._owner.navigate url
+
 
     render: ->
         isPublished = this.props.matchedRoute.params.slug
@@ -160,14 +179,16 @@ Component = React.createClass
                 <div className={"slugInput "+((this.state.slug || this.state.id) ? "" : "hidden")+(isPublished ? " hidden" : "")}>
                     <span className="label">matt.is/writing/</span>
                     <input  ref="slugInput" 
-                            className={this.state.slugAvailable ? "success" : "error"}
+                            className={"grey "+(this.state.slugAvailable ? "success" : "error")}
                             onChange={this.handleSlugChange} 
                             value={this.state.slug||this.state.id} />
                     <div style={{position:"absolute"}}>
                         <span className="slugPreview" ref="slugPreview">{this.state.slug || this.state.id}</span>
                     </div>
                 </div>
-                <input value="Date picker?"/>
+                <br/>
+                <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
+                    
             </div>
 
             

@@ -19,9 +19,9 @@ Component = React.createClass
       if e.which == 37
         @prev()
     next: ->
-      this.refs.next.getDOMNode().click()
+      this.refs.next.getDOMNode().click() if this.props.next
     prev: ->
-      this.refs.prev.getDOMNode().click()
+      this.refs.prev.getDOMNode().click() if this.props.prev
 
     render: ->
         `<div className="paginate-simple">

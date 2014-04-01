@@ -3,6 +3,7 @@ Home = require("./pages/home")
 Writing = require("./pages/writing")
 WritingView = require("./pages/writingView")
 Photography = require("./pages/photography")
+PhotographyView = require("./pages/photographyView")
 Ideas = require("./pages/ideas")
 Edit = require("./pages/edit")
 Login = require("./pages/login")
@@ -18,6 +19,7 @@ routes =  [
     { path: "/login",            handler: Login },
     { path: "/logout",           handler: Logout },
     { path: "/seeing",           handler: Photography },
+    { path: "/seeing/:id",       handler: PhotographyView }
 ]
 
 module.exports = routes

@@ -4,24 +4,39 @@ React = require("react")
 Body = require("../body")
 Writing = require("./writing")
 Photography = require("./photography")
+Nav = require("../partials/nav")
+
+FirebaseMixin = require("../../utils/firebase").FirebaseMixin
+{PhotoList, WritingList} = require("../../utils/queries")
+
 
 Home = React.createClass
-
+    mixins: [FirebaseMixin]
     statics:
+        firebase: ->
+            photos: PhotoList
+            writing: WritingList
         getMetadata: ->
             title: "Welcome | Matt.is"
             description: "Artefactually speaking."
 
     render: ->
-        `<Body>
+        `<div>
+            <Nav />
             <h1>Matthew Huebert</h1>
             <p className="intro">
               <span className="wordBlock">That's my name.</span> 
               <span className="wordBlock">I live in <a>Reykjavik.</a></span> 
-              <span className="wordBlock">I work on <a>Sparkboard.</a></span>
+              <span className="wordBlock">I'm building <a>Sparkboard.</a></span>
             </p>
-            <Writing firebase={this.props.firebase} posts={this.props.posts} matchedRoute={this.props.matchedRoute} />
-            <Photography firebase={this.props.firebase} photos={this.props.photos} matchedRoute={this.props.matchedRoute} style={{paddingTop:0}} />
-        </Body>`
+            <h1><a href="/writing">Writing</a></h1>
+            <ul className="writing-list link-list" >
+                {this.props.writing.map(function(post){return  <li key={post.id} ><a href={"/writing/"+post.id}>{post.title}</a></li>})}
+            </ul>
+            <h1><a href="/seeing">Photography</a></h1>
+            <div className="photos">
+                {this.props.photos.map(function(photo){return <a href={"/seeing/"+photo.id}><img key={photo.id} src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
+            </div>
+        </div>`
 
 module.exports = Home

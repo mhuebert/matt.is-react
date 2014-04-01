@@ -42,7 +42,7 @@ module.exports = (req, res, next) ->
 
     # Fetch our data from Firebase & put it into props:
     fetchFirebase firebaseManifest, (firebaseData) ->
-
+        console.log firebaseData
         _.extend props, firebaseData
 
         # Create our root component, and render it into HTML:

@@ -12,6 +12,7 @@ Component = React.createClass
             <script type='text/javascript' src='/js/firebase.min.js'></script>
             <script type='text/javascript' src='/js/firebase-simple-login.js'></script>
             <script src="/js/app.js"></script>
+            
         </head>`
 
 module.exports = Component

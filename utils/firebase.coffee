@@ -21,7 +21,7 @@ getRootComponent = require("./index").getRootComponent
                         value = obj.parse(snapshot)
 
                         data = {}
-                        data[path] = value
+                        data[path] = value || obj.default
                         owner.setProps data
 
                     @__firebaseSubscriptions[path] = 
@@ -34,6 +34,7 @@ getRootComponent = require("./index").getRootComponent
         for path of this.props.firebase
             {ref, callback} = @__firebaseSubscriptions[path]
             ref.off "value", callback
+            delete @__firebaseSubscriptions[path]
 
     componentDidMount: ->
         @firebaseSubscribe(this.props)
@@ -84,7 +85,7 @@ async = require("async")
                 data = {}
                 obj.parse = obj.parse || (snapshot) -> snapshot.val()
                 value = obj.parse(snapshot)
-                data[obj.path] = value
+                data[obj.path] = value || obj.default
                 callback(null, data)
 
     async.map list, getData, (err, data) ->
@@ -108,3 +109,5 @@ testQuery = (url="www.apple.com")->
         elements.push element
         false
     elements
+    
+@FIREBASE_URL = require("../config").firebaseUrl

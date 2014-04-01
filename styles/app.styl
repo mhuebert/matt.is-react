@@ -26,6 +26,7 @@ lightBackground()
         transform(rotate(0deg))
     100%
         transform(rotate(360deg))
+
 .writing-body
     li
         list-style disc
@@ -34,6 +35,78 @@ lightBackground()
 .writing-date
     font-style 14px
     color #777
+.photo-single
+    width 100%
+    height 100%
+    box-sizing border-box
+    background-color black
+    position fixed
+    top 0
+    left 0
+    text-align center
+    padding 20px 0
+    .imageContainer
+        background-position 50% 50%
+        background-size contain
+        background-repeat no-repeat
+        display block
+        width 100%
+        height 100%
+    .paginate-simple
+        position absolute
+        top 50%
+        margin-top -25px
+        a
+            z-index 1
+            box-shadow(none)
+            margin 10px
+            background transparent
+
+            &.next:after, &:hover.next:after
+                left 18px
+                triangle(35px, 40px, 'right', #777)
+            &.prev:after, &:hover.prev:after
+                right 18px
+                triangle(35px, 40px, 'left', #777)
+
+    img
+        max-width 100%
+        max-height 100%
+.photos
+    max-width 960px
+    text-align center
+    margin 0 auto
+    a
+        display inline-block
+        position relative
+        .photo-delete
+            display none
+            width 30px
+            height 30px
+            position absolute
+            opacity 0.5
+            top 35px
+            right 35px
+            content "x"
+            background black
+            color white
+            z-index 1
+            border-radius(15px)
+        &:hover
+            .photo-delete
+                display block
+                &:hover
+                    opacity 1
+                    
+    img
+        margin 30px
+        width 190px
+        height 190px
+        box-shadow(0 0 5px rgba(0,0,0,0.2))
+        &:hover
+            border 10px solid rgba(0,0,0,0.05)
+            box-shadow(none)
+            margin 20px
 p, ul, ol, blockquote
     margin-bottom 24px
 // @keyframes around
@@ -59,16 +132,16 @@ input.error
     display inline-block
     .label
         cursor default
-    input
-        border none
-        background transparent
-        color #777
-        background #e5e5e5
-        padding 0 2px
-        &:hover, &:focus
-            outline none
-            color #333
-            opacity 1
+input.grey
+    border none
+    background transparent
+    color #777
+    background #e5e5e5
+    padding 0 2px
+    &:hover, &:focus
+        outline none
+        color #333
+        opacity 1
 .slugInput, .slugInput > *
     font-size 14px
     font-family georgia
@@ -174,7 +247,8 @@ h1, .h1
     font-weight 200
     box-sizing border-box
     width 100%
-    padding 15px
+    text-align left
+    padding 20px
     .right
         float right
 a.activeLink, a.activeLink:hover
@@ -245,7 +319,7 @@ a.activeLink, a.activeLink:hover
 .paginate-simple
     float left
     width 100%
-    margin-top 15px
+    margin-top 20px
     a
         display inline-block
         width 70px
@@ -291,7 +365,7 @@ a.activeLink, a.activeLink:hover
     background transparent
     border none
     font-size 20px
-    line-height 120%
+    line-height 140%
     // margin-bottom 350px
     // box-sizing border-box
     position relative
@@ -350,7 +424,11 @@ ul.link-list
         color #777
         font-size 13px
         line-height 24px
-ul.messages
+ul.writing-list
+    max-width 700px
+    box-sizing border-box
+    margin 0 auto -10px
+    
     li
         margin-bottom 5px
 .hidden
