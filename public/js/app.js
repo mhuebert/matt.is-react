@@ -27145,15 +27145,16 @@ module.exports = {
 };
 
 },{}],258:[function(require,module,exports){
-/** @jsx React.DOM */var Firebase, async, firebase, firebaseSecret, getRootComponent, serverConfigLocation, superagent, testQuery, _;
+(function (process){
+/** @jsx React.DOM */var FIREBASE_SECRET, Firebase, async, firebase, getRootComponent, serverConfigLocation, superagent, testQuery, _;
 
 this.Firebase = Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
 
-this.FIREBASE_URL = require("../config/config").FIREBASE_URL;
+this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL;
 
 if (typeof window === "undefined" || window === null) {
   serverConfigLocation = "../config/server-config";
-  firebaseSecret = require(serverConfigLocation).firebaseSecret;
+  FIREBASE_SECRET = process.env.FIREBASE_SECRET || require(serverConfigLocation).FIREBASE_SECRET;
   firebase = new Firebase(this.FIREBASE_URL);
   firebase.auth(firebaseSecret);
 }
@@ -27309,7 +27310,8 @@ this.snapshotToArray = function(snapshot) {
 };
 
 
-},{"../config/config":24,"./index":259,"async":25,"firebase":26,"superagent":253,"underscore":256}],259:[function(require,module,exports){
+}).call(this,require("/Users/MattPro/Dropbox/Sites/mattis/mreact/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"../config/config":24,"./index":259,"/Users/MattPro/Dropbox/Sites/mattis/mreact/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":27,"async":25,"firebase":26,"superagent":253,"underscore":256}],259:[function(require,module,exports){
 /** @jsx React.DOM */this.safeStringify = function(obj) {
   return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');
 };

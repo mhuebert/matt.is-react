@@ -1,1 +1,1 @@
-@firebaseSecret = "XYZ"
+@FIREBASE_SECRET = "XYZ"
