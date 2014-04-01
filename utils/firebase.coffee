@@ -1,11 +1,12 @@
 @Firebase = Firebase = window?.Firebase || require("firebase")
 
-@FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
+console.log @FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
 
 if !window?
-    FIREBASE_SECRET = process.env.FIREBASE_SECRET
+    console.log FIREBASE_SECRET = process.env.FIREBASE_SECRET
     firebase = new Firebase(@FIREBASE_URL)
     firebase.auth(FIREBASE_SECRET)
+    console.log "authed to firebase"
     
 getRootComponent = require("./index").getRootComponent
 
