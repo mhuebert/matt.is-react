@@ -1,9 +1,9 @@
 @Firebase = Firebase = window?.Firebase || require("firebase")
 
-console.log @FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
+@FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
 
 if !window?
-    console.log FIREBASE_SECRET = process.env.FIREBASE_SECRET
+    FIREBASE_SECRET = process.env.FIREBASE_SECRET
     firebase = new Firebase(@FIREBASE_URL)
     firebase.auth(FIREBASE_SECRET)
     console.log "authed to firebase"

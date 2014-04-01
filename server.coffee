@@ -16,6 +16,6 @@ app = express()
     .use(express.errorHandler())
     .use(reactMiddleware)
 
-port = 8080
+port = process.env.PORT || 8080
 http.createServer(app).listen(port)
 console.log("Open http://localhost:#{port}")

@@ -27150,10 +27150,10 @@ module.exports = {
 
 this.Firebase = Firebase = (typeof window !== "undefined" && window !== null ? window.Firebase : void 0) || require("firebase");
 
-console.log(this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL);
+this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL;
 
 if (typeof window === "undefined" || window === null) {
-  console.log(FIREBASE_SECRET = process.env.FIREBASE_SECRET);
+  FIREBASE_SECRET = process.env.FIREBASE_SECRET;
   firebase = new Firebase(this.FIREBASE_URL);
   firebase.auth(FIREBASE_SECRET);
   console.log("authed to firebase");
