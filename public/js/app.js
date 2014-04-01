@@ -17660,7 +17660,7 @@ module.exports = AutoFocusMixin;
 },{}],124:[function(require,module,exports){
 module.exports=require(32)
 },{}],125:[function(require,module,exports){
-module.exports=require(33)
+arguments[4][33][0].apply(exports,arguments)
 },{"./CSSProperty":124,"./dangerousStyleValue":216,"./escapeTextForBrowser":218,"./hyphenate":229,"./memoizeStringOnly":238}],126:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -27212,7 +27212,7 @@ this.FirebaseMixin = {
   firebaseUnsubscribe: function(props) {
     var callback, path, ref, _ref, _results;
     _results = [];
-    for (path in this.props.firebase) {
+    for (path in this.__firebaseSubscriptions) {
       _ref = this.__firebaseSubscriptions[path], ref = _ref.ref, callback = _ref.callback;
       ref.off("value", callback);
       _results.push(delete this.__firebaseSubscriptions[path]);

@@ -39,7 +39,8 @@ getRootComponent = require("./index").getRootComponent
                     queryRef.on "value", callback
 
     firebaseUnsubscribe: (props) ->
-        for path of this.props.firebase
+        # for path of this.props.firebase
+        for path of @__firebaseSubscriptions
             {ref, callback} = @__firebaseSubscriptions[path]
             ref.off "value", callback
             delete @__firebaseSubscriptions[path]
