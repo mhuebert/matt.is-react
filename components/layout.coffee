@@ -3,10 +3,9 @@
 React = require("react")
 _ = require("underscore")
 
-RouterMixin = require("../utils/router").Mixin
+RouterMixin = require("sparkboard-tools").Router.Mixin
 
 Head = require("./partials/head")
-NotFound = require("./pages/notFound")
 
 {FIREBASE_URL} = require("../utils/firebase")
 
@@ -33,24 +32,23 @@ Layout = React.createClass
             else
                 @setProps user: null
     getHandler: ->
-        this.props.matchedRoute?.handler || NotFound
+        this.props.matchedRoute.handler
     getMetadata: ->
         this.getHandler().getMetadata?(this.props) || {}
-    getFirebaseData: ->
-        this.getHandler().firebase?(this.props.matchedRoute) || {}
+    getSubscriptionData: ->
+        this.getHandler().subscriptions?(this.props) || {}
     login: ->
         auth.login('twitter')
     render: ->
-
         Handler = this.getHandler()
         metadata = this.getMetadata()
-        firebaseData = this.getFirebaseData()
+        subscriptionData = this.getSubscriptionData()
 
         `<html>
             <Head   title={metadata.title ? metadata.title : this.props.title}
                     description={metadata.description ? metadata.description : this.props.description} />
             <body className={this.props.user ? "loggedIn" : "loggedOut"}  onClick={this.handleClick}>
-                {this.transferPropsTo(<Handler firebase={firebaseData} ref="handler" />)}
+                {this.transferPropsTo(<Handler subscriptions={subscriptionData} ref="handler" />)}
             </body>
         </html>`
 

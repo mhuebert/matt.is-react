@@ -3,7 +3,6 @@
 _ = require("underscore")
 React = require("react")
 
-{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
 
 Nav = require("../partials/nav")
 simplePagination = require("../partials/simplePagination")
@@ -14,9 +13,32 @@ unsafeCharacters = /[^\w\s.!?,:\*;'"]/
 moment = require("moment")
 dateFormat = "MMMM D, YYYY"
 
+{Firebase, firebaseIdFromPath, FIREBASE_URL} = require("../../utils/firebase")
+{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+
 Component = React.createClass
 
-    mixins: [FirebaseMixin]
+    mixins: [SubscriptionMixin]
+    statics:
+        getMetadata: (props) ->
+            title: props.idea?.title
+        subscriptions: (props) ->
+            match = props.matchedRoute
+            if match.params.id
+                id = firebaseIdFromPath(match?.params?.id)
+                url = FIREBASE_URL+'/ideas/'
+            if match.params.slug
+                id = match.params.slug
+                url = FIREBASE_URL+'/writing/'
+            idea: firebaseSubscription
+                ref: new Firebase(url+id)
+                server: true
+                parse: (snapshot) ->
+                    idea = snapshot.val()
+                    idea.date = snapshot.getPriority() if idea
+                    idea                    
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
     componentWillUnmount: ->
         window?.removeEventListener('keydown', this.keyShortcuts)
@@ -54,24 +76,7 @@ Component = React.createClass
                 self.refs.date.getDOMNode().value = moment(snapshot.getPriority()).format(dateFormat)
                 self.setState idea
 
-    statics:
-        getMetadata: (props) ->
-            title: props.idea?.title
-        firebase: (match) ->
-            if match.params.id
-                id = firebaseIdFromPath(match?.params?.id)
-                url = FIREBASE_URL+'/ideas/'
-            if match.params.slug
-                id = match.params.slug
-                url = FIREBASE_URL+'/writing/'
-            baseRef = new Firebase(url)
-            idea:
-                ref: baseRef.child(id)
-                server: true
-                parse: (snapshot) ->
-                    idea = snapshot.val()
-                    idea.date = snapshot.getPriority() if idea
-                    idea
+
     publish: ->
         if this.state.slugAvailable == false or this.props.matchedRoute.params.slug
             return
@@ -82,7 +87,7 @@ Component = React.createClass
         this.setState loading: true
         publishRef.setWithPriority idea, idea.publishDate, (error) =>
             if !error
-                this.props.firebase.idea.ref.remove()
+                this.props.subscriptions.idea.ref.remove()
                 this._owner.navigate "/writing/#{slug}"
             else
                 this.setState loading: false
@@ -92,7 +97,7 @@ Component = React.createClass
         idea = _(this.state).pick "title", "body", "slug", "wordCount"
         idea.id = this.state.slug || this.state.id
         idea.wordCount = (this.state.body || "").split(" ").length
-        this.props.firebase.idea.ref.update idea, =>
+        this.props.subscriptions.idea.ref.update idea, =>
             this.setState 
                 saving: false
 
@@ -106,8 +111,8 @@ Component = React.createClass
         slug = slugify(e.target.value) || this.props.idea.id
 
         @setState slug: slug
-        ref = new Firebase(FIREBASE_URL+'/writing/')
-        ref.child(slug).once "value", (snapshot) =>
+        ref = new Firebase(FIREBASE_URL+'/writing/'+slug)
+        ref.once "value", (snapshot) =>
             slugAvailable = !snapshot.val()?
             @setState slugAvailable: slugAvailable
     changeDate: (e) ->
@@ -116,7 +121,7 @@ Component = React.createClass
         @setState validDate: momentObject.isValid()
         if momentObject.isValid()
             unixDate = momentObject.valueOf()
-            this.props.firebase.idea.ref.setPriority unixDate
+            this.props.subscriptions.idea.ref.setPriority unixDate
 
     objectModified: ->
         !_.isEqual this.props.idea, _(this.state).pick("title", "body", "slug", "id", "wordCount")
@@ -132,7 +137,7 @@ Component = React.createClass
             else
                 url = "/ideas"
 
-            this.props.firebase.idea.ref.remove (err) =>
+            this.props.subscriptions.idea.ref.remove (err) =>
                 this._owner.navigate url
 
 

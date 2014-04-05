@@ -8,7 +8,7 @@ url = require("url")
 _ = require("underscore")
 
 safeStringify = require("../utils").safeStringify
-{fetchFirebase} = require("../utils/firebase")
+{fetchSubscriptions} = require("sparkboard-tools")
 
 # By installing `node-jsx`, we can use JSX inside backticks in coffee-script files. 
 
@@ -21,28 +21,28 @@ nodeJSX.install
 # Router - parse the same routes on the client and server.
 
 routes = require("../components/routes")
-Router = require("../utils/router").create(routes)
+Router = require("sparkboard-tools").Router.create(routes)
 
 # root component:
 
 Layout = require("../components/layout")
-NotFoundHandler = require("../components/pages/notFound")
 
 # Begin middleware...
 
 module.exports = (req, res, next) ->
 
-    props =
-        path: url.parse(req.url).pathname
+    path = url.parse(req.url).pathname
 
     # Use our `Router` to find the appropriate `Handler` component, which contains Firebase data dependencies:
-    match = Router.matchRoute(props.path)
-    Handler = match?.handler || NotFoundHandler
-    firebaseManifest = Handler.firebase?(match) || {}
+    props = 
+        path: path
+        matchedRoute: Router.matchRoute(path)
+
+    subscriptions = props.matchedRoute.handler.subscriptions?(props) || {}
 
     # Fetch our data from Firebase & put it into props:
-    fetchFirebase firebaseManifest, (firebaseData) ->
-        _.extend props, firebaseData
+    fetchSubscriptions subscriptions, (subscriptionData) ->
+        _.extend props, subscriptionData
 
         # Create our root component, and render it into HTML:
 

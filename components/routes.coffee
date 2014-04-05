@@ -8,6 +8,8 @@ Ideas = require("./pages/ideas")
 Edit = require("./pages/edit")
 Login = require("./pages/login")
 Logout = require("./pages/logout")
+NotFound = require("./pages/notFound")
+
 
 routes =  [
     { path: "/",                 handler: Home },
@@ -19,7 +21,8 @@ routes =  [
     { path: "/login",            handler: Login },
     { path: "/logout",           handler: Logout },
     { path: "/seeing",           handler: Photography },
-    { path: "/seeing/:id",       handler: PhotographyView }
+    { path: "/seeing/:id",       handler: PhotographyView },
+    { path: "*",                 handler: NotFound }
 ]
 
 module.exports = routes

@@ -4,15 +4,16 @@ React = require("react")
 Body = require("../body")
 Nav = require("../partials/nav")
 
-FirebaseMixin = require("../../utils/firebase").FirebaseMixin
-PhotoList = require("../../utils/queries").PhotoList
+{SubscriptionMixin} = require("sparkboard-tools")
+{PhotoList} = require("../../subscriptions")
+
 DynamicLoader = require("../partials/dynamicLoader")
 
 
 Component = React.createClass
-    mixins: [FirebaseMixin]
+    mixins: [SubscriptionMixin]
     statics:
-        firebase: ->
+        subscriptions: ->
             photos: PhotoList()
         getMetadata: ->
             title: "Photography | Matt.is"
@@ -24,11 +25,11 @@ Component = React.createClass
             container: 'window'
         filepicker.pickAndStore options, {}, (inkBlobs) =>
             for blob in inkBlobs
-                newPhotoRef = this.props.firebase.photos.ref.push {url: blob.url}
+                newPhotoRef = this.props.subscriptions.photos.ref.push {url: blob.url}
                 newPhotoRef.setPriority Date.now()
     deletePhoto: (e) ->
         if confirm("Are you sure?")
-            this.props.firebase.photos.ref.child(e.target.getAttribute("data-id")).remove()
+            this.props.subscriptions.photos.ref.child(e.target.getAttribute("data-id")).remove()
             e.preventDefault()
             e.stopPropagation()
     render: ->

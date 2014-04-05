@@ -2,31 +2,33 @@
 
 _ = require("underscore")
 React = require("react")
-
-{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
-{fullScreen} = require("../../utils/")
 Nav = require("../partials/nav")
-
 DynamicLoader = require("../partials/dynamicLoader")
 simplePagination = require("../partials/simplePagination")
 
+{Firebase, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
+{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+
 Component = React.createClass
 
-    mixins: [FirebaseMixin]
+    mixins: [SubscriptionMixin]
 
     statics:
         getMetadata: (props) ->
             title: "Photography"
-        firebase: (match) ->
+        subscriptions: (props) ->
+            match = props.matchedRoute
             id = match?.params?.id
             baseUrl = FIREBASE_URL+'/photos/'
             ref = new Firebase(baseUrl)
-            photo:
+            photo: firebaseSubscription
                 ref: ref.child(id)
                 server: true                    
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
-            photoPrev:
+            photoPrev: firebaseSubscription
                 ref: new Firebase(baseUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
@@ -34,8 +36,10 @@ Component = React.createClass
                 parse: (snapshot) ->
                     snapshotToArray(snapshot)[1] || {}
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
             
-            photoNext:
+            photoNext: firebaseSubscription
                 ref: new Firebase(baseUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
@@ -45,6 +49,8 @@ Component = React.createClass
                     photo = if photos.length == 1 then {} else photos[0]
                     photo
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
 
     render: ->
@@ -59,7 +65,7 @@ Component = React.createClass
                     back="/seeing" />
             </div>
             
-            <div style={{opacity:0,position:'absolute',height:0,width:0}}>
+            <div style={{opacity:0,position:'absolute',height:0,width:0,overflow:'hidden'}}>
                 <img src={this.props.photoNext.url+conversion} />
             </div> 
         </div>`

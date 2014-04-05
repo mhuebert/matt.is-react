@@ -3,7 +3,10 @@
 _ = require("underscore")
 React = require("react")
 
-{Firebase, FirebaseMixin, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
+
+{Firebase, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
+{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+
 
 Nav = require("../partials/nav")
 
@@ -25,17 +28,18 @@ unsafeCharacters = /[^\w\s.!?,:;'"]/
 
 Component = React.createClass
 
-    mixins: [FirebaseMixin]
+    mixins: [SubscriptionMixin]
 
 
     statics:
         getMetadata: (props) ->
             title: props.post?.title
-        firebase: (match) ->
+        subscriptions: (props) ->
+            match = props.matchedRoute
             id = match?.params?.id
             baseUrl = FIREBASE_URL+'/writing/'
             ref = new Firebase(baseUrl)
-            post:
+            post: firebaseSubscription
                 ref: ref.child(id)
                 server: true
                 parse: (snapshot) ->
@@ -43,8 +47,10 @@ Component = React.createClass
                     post.slug = snapshot.name()
                     post
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
-            postNext:
+            postNext: firebaseSubscription
                 ref: new Firebase(baseUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
@@ -52,8 +58,10 @@ Component = React.createClass
                 parse: (snapshot) ->
                     snapshotToArray(snapshot)[1] || {}
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
             
-            postPrev:
+            postPrev: firebaseSubscription
                 ref: new Firebase(baseUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
@@ -63,6 +71,8 @@ Component = React.createClass
                     idea = if ideas.length == 1 then {} else ideas[0]
                     idea
                 default: {}
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
 
     render: ->

@@ -4,20 +4,19 @@ _ = require("underscore")
 React = require("react")
 
 Body = require("../body")
-{FirebaseMixin} = require("../../utils/firebase")
-{WritingList} = require("../../utils/queries")
+
+{SubscriptionMixin} = require("sparkboard-tools")
+{WritingList} = require("../../subscriptions")
 
 Component = React.createClass
 
-    mixins: [FirebaseMixin]
-
-    getInitialState: -> {}
+    mixins: [SubscriptionMixin]
 
     statics:
         getMetadata: ->
             title: "Writing | Matt.is"
             description: "Wherein I uncover."
-        firebase: ->
+        subscriptions: ->
             writing: WritingList()
 
     render: ->

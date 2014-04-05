@@ -3,10 +3,7 @@
 React = require("react")
 a = React.DOM.a
 
-getRootComponent = (component) ->
-  while component._owner
-      component = component._owner
-  component
+{getRootComponent} = require("sparkboard-tools").utils
 
 ActiveLink = React.createClass
     getPath: ->

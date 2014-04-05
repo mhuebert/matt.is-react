@@ -4,7 +4,9 @@ _ = require("underscore")
 React = require("react")
 Addons = require("react-addons")
 
-{Firebase, FirebaseMixin, FIREBASE_URL} = require("../../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../../utils/firebase")
+
+{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
 
 Body = require("../body")
 LinkList = require("../partials/linkList")
@@ -12,14 +14,14 @@ slugify = require("../../utils").slugify
 
 Component = React.createClass
 
-    mixins: [FirebaseMixin]
+    mixins: [SubscriptionMixin]
 
     statics:
         # Describe the data to supply to this component from Firebase.
-        firebase: ->
+        subscriptions: ->
             # The data structure here will be mirrored in 'props',
             # so the following data will be found in 'props.ideas'.
-            ideas:
+            ideas: firebaseSubscription
                 ref: new Firebase(FIREBASE_URL+'/ideas')
                 query: (ref, done) -> done(ref.limit(50))
                 parse: (snapshot) -> 
@@ -32,7 +34,6 @@ Component = React.createClass
                             idea
                         )
                         .reverse().value()
-                server: true
                 default: []
 
         getMetadata: (props) ->
@@ -45,7 +46,7 @@ Component = React.createClass
     handleKeyup: (e) ->
         if e.which == 13
             this.state.userid = user.id
-            idea = this.props.firebase.ideas.ref.push this.state
+            idea = this.props.subscriptions.ideas.ref.push this.state
             idea.setPriority Date.now()
             this.setState title: ""
 

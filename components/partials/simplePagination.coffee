@@ -1,10 +1,7 @@
 `/** @jsx React.DOM */`
 
 React = require("react")
-getRootComponent = (component) ->
-  while component._owner
-      component = component._owner
-  component
+{getRootComponent} = require("sparkboard-tools").utils
 
 Component = React.createClass
     componentDidMount: ->
