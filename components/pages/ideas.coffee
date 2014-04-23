@@ -7,6 +7,7 @@ Addons = require("react-addons")
 {Firebase, FIREBASE_URL} = require("../../utils/firebase")
 
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+{Collection} = require("../../models")
 
 Body = require("../body")
 LinkList = require("../partials/linkList")
@@ -24,6 +25,7 @@ Component = React.createClass
             ideas: firebaseSubscription
                 ref: new Firebase(FIREBASE_URL+'/ideas')
                 query: (ref, done) -> done(ref.limit(50))
+                server: true
                 parse: (snapshot) -> 
                     _.chain(snapshot.val())
                         .pairs()
@@ -34,7 +36,6 @@ Component = React.createClass
                             idea
                         )
                         .reverse().value()
-                default: []
 
         getMetadata: (props) ->
             title: "Ideas"
@@ -56,12 +57,13 @@ Component = React.createClass
         this.refs.input.getDOMNode().focus()
         
     render: ->
+        ideas = new Collection(this.props.ideas)
         `<Body className="ideas showIfUser">
             <h1>Ideas</h1>
             <input value={this.state.title} ref="input" className="ideas-input" onKeyUp={this.handleKeyup} onChange={this.handleChangeTitle} placeholder='Begin a new idea...' />
-            <ul className="ideas link-list" list={this.props.ideas} >
-                {this.props.ideas.map(function(link){
-                    return <li key={link.id}><a href={link.href}>{link.title}</a> <em className='wordCount'>{link.wordCount}</em></li>
+            <ul className="ideas link-list" >
+                {ideas.map(function(link){
+                    return <li key={link.get("id")}><a href={link.get("href")}>{link.get("title")}</a> <em className='wordCount'>{link.get("wordCount")}</em></li>
                 })}
             </ul>
         </Body>`

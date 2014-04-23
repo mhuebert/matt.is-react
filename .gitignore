@@ -5,3 +5,4 @@ notes
 config.coffee
 server-config.coffee
 .env
+firebase.json

@@ -9,14 +9,15 @@ _ = require("underscore")
     ref: new Firebase(FIREBASE_URL+'/photos')
     query: (ref, done) -> done(ref.limit(limit))
     server: true
-    parse: (snapshot) -> snapshotToArray(snapshot).reverse()
-    default: []
+    parse: (snapshot) -> 
+        snapshotToArray(snapshot).reverse()
+    default: _([])
 
 @WritingList = (limit=50) ->
   firebaseSubscription
     ref: new Firebase(FIREBASE_URL+'/writing')
     query: (ref, done) -> done(ref.limit(limit))
-    default: []
+    default: _([])
     server: true
     parse: (snapshot) -> 
         _.chain(snapshot.val()).pairs().map((pair) -> 
@@ -24,4 +25,6 @@ _ = require("underscore")
             post.id = pair[0]
             post
         ).value().reverse()
+
+
     

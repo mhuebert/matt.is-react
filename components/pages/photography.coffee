@@ -6,6 +6,7 @@ Nav = require("../partials/nav")
 
 {SubscriptionMixin} = require("sparkboard-tools")
 {PhotoList} = require("../../subscriptions")
+{Collection} = require("../../models")
 
 DynamicLoader = require("../partials/dynamicLoader")
 
@@ -34,7 +35,8 @@ Component = React.createClass
             e.stopPropagation()
     render: ->
         deletePhoto = this.deletePhoto
-        `<div className={"content "+ ((this.props.photos.length > 0) ? "" : "loading")} style={{maxWidth:960}}>
+        photos = new Collection(this.props.photos)
+        `<div className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
             <Nav />
             <DynamicLoader /><DynamicLoader />
             <h1>Photography</h1>
@@ -42,7 +44,7 @@ Component = React.createClass
                 <div className="showIfUser">
                     <a style={{display:'block',marginBottom:20, maxWidth:780, margin:"0 auto"}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
                 </div>
-              {this.props.photos.map(function(photo){return <a key={photo.id} href={"/seeing/"+photo.id}><div data-id={photo.id} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
+              {photos.map(function(photo){return <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}><div data-id={photo.get("id")} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.get("url")+"/convert?w=220&h=220&fit=crop"} /></a>})}
             </div>
         </div>`
 

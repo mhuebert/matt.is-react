@@ -7,6 +7,18 @@ SEO-friendly blog using [Firebase](http://www.firebase.com) and [React](http://f
 
 A `Router` mix-in matches each path to a single `Handler` component.
 
+Routes are defined like this:
+
+```
+routes =  [
+    { path: "/",                 handler: Home },
+    { path: "/writing",          handler: Writing },
+    { path: "/writing/:id",      handler: WritingView },
+    ...
+    { path: "*",                 handler: NotFound }
+]
+```
+
 A `Handler` component declares data dependencies in a manifest located in `statics.subscriptions()`. Data is synced into the root component's `props`.
 
 
@@ -22,10 +34,27 @@ A `Handler` component declares data dependencies in a manifest located in `stati
                     shouldUpdateSubscription: (oldProps, newProps) ->
 ```
 
+For convenience, we can define Firebase manifest: 
+
+```coffeescript
+    manifest = 
+        ref: new Firebase(FIREBASE_URL+'/photos')
+        query: (ref, done) -> done(ref.limit(10))
+        server: true
+        parse: (snapshot) -> snapshotToArray(snapshot).reverse()
+        default: []
+```
+
+...and convert the Firebase manifest into a subscription object:
+
+```
+    subscription = firebaseSubscription(manifest)
+
+```
+
 **Javascript & Styles**
 
 [Gulp](http://gulpjs.com/) & [Browserify](http://browserify.org/)
-
 
 **React-Middleware**
 

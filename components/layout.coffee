@@ -9,6 +9,8 @@ Head = require("./partials/head")
 
 {FIREBASE_URL} = require("../utils/firebase")
 
+Models = require("../models")
+
 Layout = React.createClass
     mixins: [RouterMixin]
     routes: require("./routes")
@@ -39,6 +41,7 @@ Layout = React.createClass
         this.getHandler().subscriptions?(this.props) || {}
     login: ->
         auth.login('twitter')
+
     render: ->
         Handler = this.getHandler()
         metadata = this.getMetadata()

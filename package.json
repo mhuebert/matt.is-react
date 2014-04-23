@@ -52,7 +52,9 @@
     "gulp-uglify": "^0.2.1",
     "gulp-rename": "^1.2.0",
     "nodemon": "^1.0.15",
-    "ignorify": "^0.1.1"
+    "ignorify": "^0.1.1",
+    "require-directory": "^1.2.0",
+    "optimist": "^0.6.1"
   },
   "engines": {
     "node": "v0.10.26"

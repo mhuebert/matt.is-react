@@ -8,6 +8,8 @@ Photography = require("./photography")
 
 {SubscriptionMixin} = require("sparkboard-tools")
 subscriptions = require("../../subscriptions")
+{Collection} = require("../../models")
+
 
 Home = React.createClass
     mixins: [SubscriptionMixin]
@@ -19,6 +21,8 @@ Home = React.createClass
             title: "Welcome | Matt.is"
             description: "Artefactually speaking."
     render: ->
+        writing = new Collection(this.props.writing)
+        photos = new Collection(this.props.photos)
         `<div>
             <Nav />
             <h1>Matthew Huebert</h1>
@@ -29,12 +33,12 @@ Home = React.createClass
             </p>
             <h1><a href="/writing">Writing</a></h1>
             <ul className="writing-list link-list" >
-                {this.props.writing.map(function(post){return  <li key={post.id} ><a href={"/writing/"+post.id}>{post.title}</a></li>})}
+                {writing.map(function(post){return  <li key={post.get("id")} ><a href={"/writing/"+post.get("id")}>{post.get("title")}</a></li>})}
                 <li key="more"><a href="/writing" className="more-link" >more &rarr;</a></li>
             </ul>
             <h1><a href="/seeing">Photography</a></h1>
             <div className="photos">
-                {this.props.photos.map(function(photo){return <a key={photo.id} href={"/seeing/"+photo.id}><img src={photo.url+"/convert?w=220&h=220&fit=crop"} /></a>})}
+                {photos.map(function(photo){return <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}><img src={photo.get("url")+"/convert?w=220&h=220&fit=crop"} /></a>})}
                 <br/>
                 <a key="more" href="/seeing" className="more-link" >more &rarr;</a>
             </div>
