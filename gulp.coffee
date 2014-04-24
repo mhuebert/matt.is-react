@@ -6,6 +6,8 @@ browserify = require('gulp-browserify')
 livereload = require('gulp-livereload')
 uglify = require('gulp-uglify')
 rename = require('gulp-rename')
+spawn = require('child_process').spawn
+{mergeFirebaseRules} = require("sparkboard-tools")
 
 gulp.task 'stylus', ->
     gulp.src './styles/*.styl'
@@ -26,6 +28,12 @@ gulp.task 'scripts', ->
         # .pipe(rename('app.min.js'))
         # .pipe(gulp.dest('./public/js'))
 
+gulp.task 'firebaseRules', ->
+    if mergeFirebaseRules("./security-rules", "./security-rules/_compiled.json")
+        console.log "Merged Firebase Rules"
+    else
+        console.log "Error merging Firebase rules"
+
 gulp.task 'watch', ->
     server = livereload()
 
@@ -36,5 +44,7 @@ gulp.task 'watch', ->
 
     gulp.watch './**/*.coffee**', ['scripts']
 
+    gulp.watch './security-rules/rules/**/*', ['firebaseRules']
+
 gulp.task 'default', ->
-    gulp.start 'stylus', 'scripts', 'watch'
+    gulp.start 'stylus', 'scripts', 'firebaseRules', 'watch'

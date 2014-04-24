@@ -27,7 +27,6 @@ class Collection
         @collectionName = @name
         @models = _(models).map (attributes) =>
             model = @model || Model
-            console.log "Makin model"
             new model(attributes)
 
 collectionMethodNames = ['forEach', 'each', 'map', 'collect', 'reduce', 'foldl',

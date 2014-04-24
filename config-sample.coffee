@@ -1,0 +1,1 @@
+@FIREBASE_URL = "https://YOUR_SUBDOMAIN.firebaseIO.com"

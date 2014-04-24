@@ -8,8 +8,9 @@ Nav = require("../partials/nav")
 simplePagination = require("../partials/simplePagination")
 slugify = require("../../utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
+toggleShowHide = require("../partials/toggleShowHide")
 Dropdown = require("../partials/dropdown")
-unsafeCharacters = /[^\w\s.!?,:\*;'"]/
+unsafeCharacters = /[^[:alnum:]\s.!?,:\*;'"]/g
 moment = require("moment")
 dateFormat = "MMMM D, YYYY"
 
@@ -102,7 +103,7 @@ Component = React.createClass
                 saving: false
 
     handleTitleChange: (e) ->
-        this.setState title: e.target.value.replace /[^\w\s.!*?,:;'"]/g, ""
+        this.setState title: e.target.value.replace unsafeCharacters, ""
 
     handleBodyChange: (e) ->
         @setState body: e.target.value
@@ -147,27 +148,17 @@ Component = React.createClass
         `<div className={"content "+(loading ? "loading" : "")}>
             <Nav>    
                 
-
-                <Dropdown className="ideaOptions right showIfUser" label="Options">
-                    <ul >
-                        <li>
-                            <a  href={"/writing/"+this.props.matchedRoute.params.slug}
-                                className={(isPublished ? "" : "hidden")}>
-                                View</a>
-                        </li>
-                        <li>
-                            <a  onClick={this.publish} 
-                    className={(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")}>
-                    Publish</a>
-                        </li>
-                        <li><a onClick={this.delete}>Delete</a></li>
-                    </ul>
-                </Dropdown>
-                
+                        <a  href={"/writing/"+this.props.matchedRoute.params.slug}
+                            className={(isPublished ? "" : "hidden")+" btn btn-standard right showIfUser"}>
+                            View</a>
+                        <a  onClick={this.publish} 
+                className={(this.state.slugAvailable ? "" : "disabled")+(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
+                Publish</a>
 
                 <a  onClick={this.save} 
                     className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>Save</a>
             </Nav>
+
             <textareaAutosize   className="h1 text-center" 
                                 ref="title" 
                                 rows="1"
@@ -175,10 +166,8 @@ Component = React.createClass
                                 contentEditable="true" 
                                 value={this.state.title}
                                 placeholder="Title..."/>
-
-            <textareaAutosize ref="body" onChange={this.handleBodyChange} className="idea-body" name="body" value={this.state.body} />
             
-            <div className="writing-inline-options">
+            <toggleShowHide className="writing-inline-options">
                 <div className={"slugInput "+((this.state.slug || this.state.id) ? "" : "hidden")+(isPublished ? " hidden" : "")}>
                     <span className="label">matt.is/writing/</span>
                     <input  ref="slugInput" 
@@ -189,10 +178,14 @@ Component = React.createClass
                         <span className="slugPreview" ref="slugPreview">{this.state.slug || this.state.id}</span>
                     </div>
                 </div>
-                <br/>
-                <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
-                    
-            </div>
+                <div>
+                    <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
+                </div>
+                <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
+            </toggleShowHide>
+
+            <textareaAutosize ref="body" onChange={this.handleBodyChange} className="idea-body" name="body" value={this.state.body} />
+            
 
             
         </div>`

@@ -1,11 +1,11 @@
 {
     "rules": {
-        ".write": "auth.id == '15538074'",
+        "$other": {
+            ".read": true
+        },
         "ideas": {
             ".read": "auth.id == '15538074'"
         },
-        "$other": {
-            ".read": true
-        }
+        ".write": "auth.id == '15538074'"
     }
 }

@@ -1,12 +1,11 @@
 
 @Firebase = Firebase = window?.Firebase || require("firebase")
-@FIREBASE_URL = process.env.FIREBASE_URL || require("../config/config").FIREBASE_URL
+@FIREBASE_URL = process.env.FIREBASE_URL || require("../config").FIREBASE_URL
 @snapshotToArray = require("sparkboard-tools").utils.snapshotToArray
 
 if !window?
-    FIREBASE_SECRET = process.env.FIREBASE_SECRET
     firebase = new Firebase(@FIREBASE_URL)
-    firebase.auth(FIREBASE_SECRET)
+    firebase.auth(process.env.FIREBASE_SECRET)
     console.log "authed to firebase"
 
 @firebaseIdFromPath = (path) -> 
