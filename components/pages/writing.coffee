@@ -6,7 +6,7 @@ React = require("react")
 Body = require("../body")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-{WritingList} = require("../../subscriptions")
+{WritingList} = require("../../app/subscriptions")
 
 Component = React.createClass
 

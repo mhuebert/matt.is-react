@@ -4,15 +4,17 @@ _ = require("underscore")
 React = require("react")
 
 
-{Firebase, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../../app/firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
-
+{snapshotToArray} = require("sparkboard-tools").utils
+{Model} = require("../../app/models")
+{ownerId} = require("../../config")
 
 Nav = require("../partials/nav")
 
 DynamicLoader = require("../partials/dynamicLoader")
 simplePagination = require("../partials/simplePagination")
-slugify = require("../../utils").slugify
+slugify = require("../../app/utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
 marked = require("marked")
 marked.setOptions
@@ -37,56 +39,63 @@ Component = React.createClass
         subscriptions: (props) ->
             match = props.matchedRoute
             id = match?.params?.id
-            baseUrl = FIREBASE_URL+'/writing/'
+            baseUrl = FIREBASE_URL+'/posts/'
             ref = new Firebase(baseUrl)
+            indexUrl = FIREBASE_URL+"/users/#{ownerId}/writing/"
             post: firebaseSubscription
                 ref: ref.child(id)
                 server: true
                 parse: (snapshot) ->
                     post = snapshot.val()
-                    post.slug = snapshot.name()
+                    post.slug = snapshot.name() if post?
                     post
                 default: {}
                 shouldUpdateSubscription: (oldProps, newProps) ->
                     oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
             postNext: firebaseSubscription
-                ref: new Firebase(baseUrl)
+                ref: new Firebase(indexUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
-                        done(ref.startAt(snap.getPriority()).limit(2))
-                parse: (snapshot) ->
-                    snapshotToArray(snapshot)[1] || {}
+                        ref.startAt(snap.getPriority()).limit(2).once "value", (snap) ->
+                            ideas = snapshotToArray(snap)
+                            idea = ideas[1] || {}
+                            done(ref.root().child("/posts/#{idea.id}"))
+                parse: (snapshot) -> 
+                    snapshot.val()
                 default: {}
                 shouldUpdateSubscription: (oldProps, newProps) ->
                     oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
             
             postPrev: firebaseSubscription
-                ref: new Firebase(baseUrl)
+                ref: new Firebase(indexUrl)
                 query: (ref, done) -> 
                     ref.child(id).once "value", (snap) ->
-                        done(ref.endAt(snap.getPriority()).limit(2))
+                        ref.endAt(snap.getPriority()).limit(2).once "value", (snap) ->
+                            ideas = snapshotToArray(snap)
+                            idea = if ideas.length == 1 then {} else ideas[0]
+                            done(ref.root().child("/posts/#{idea.id}"))
                 parse: (snapshot) -> 
-                    ideas = snapshotToArray(snapshot)
-                    idea = if ideas.length == 1 then {} else ideas[0]
-                    idea
+                    snapshot.val()
+                    
                 default: {}
                 shouldUpdateSubscription: (oldProps, newProps) ->
                     oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
 
     render: ->
-        `<div className={"content "+(_.isEmpty(this.props.post) ? "loading" : "")}>
-            <DynamicLoader />
+        post = new Model(this.props.post)
+        `<div className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
+            <DynamicLoader /><DynamicLoader />
             <Nav>
-                <a href={"/writing/edit/"+this.props.post.slug} className="right btn btn-trans showIfUser ">Edit</a>
+                <a href={"/posts/edit/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>
             </Nav>
-            <h1 className="text-center"><a href={"/writing/"+this.props.post.slug}>{this.props.post.title}</a></h1>
-            <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(this.props.post.body||"")}}></div>
+            <h1 className="text-center"><a href={post.get("permalink")}>{post.get("title")}</a></h1>
+            <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
             <simplePagination 
                 back="/writing"
-                next={this.props.postNext.id ? ("/writing/"+this.props.postNext.id) : false} 
-                prev={this.props.postPrev.id ? ("/writing/"+this.props.postPrev.id) : false} />  
+                next={this.props.postNext.id ? (this.props.postNext.permalink) : false} 
+                prev={this.props.postPrev.id ? (this.props.postPrev.permalink) : false} />  
         </div>`
 
 module.exports = Component

@@ -4,14 +4,18 @@ _ = require("underscore")
 React = require("react")
 Addons = require("react-addons")
 
-{Firebase, FIREBASE_URL} = require("../../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../../app/firebase")
 
-{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
-{Collection} = require("../../models")
+{SubscriptionMixin, firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
+{Collection} = require("../../app/models")
+{snapshotToArray} = require("sparkboard-tools").utils
 
 Body = require("../body")
 LinkList = require("../partials/linkList")
-slugify = require("../../utils").slugify
+slugify = require("../../app/utils").slugify
+
+
+{ownerId} = require("../../config")
 
 Component = React.createClass
 
@@ -19,23 +23,21 @@ Component = React.createClass
 
     statics:
         # Describe the data to supply to this component from Firebase.
-        subscriptions: ->
+        subscriptions: (props) ->
             # The data structure here will be mirrored in 'props',
             # so the following data will be found in 'props.ideas'.
-            ideas: firebaseSubscription
-                ref: new Firebase(FIREBASE_URL+'/ideas')
-                query: (ref, done) -> done(ref.limit(50))
-                server: true
-                parse: (snapshot) -> 
-                    _.chain(snapshot.val())
-                        .pairs()
-                        .map((pair) -> 
-                            idea = pair[1]
-                            idea.id = pair[0]
-                            idea.href = "/ideas/"+slugify(idea.title)+"+"+idea.id
-                            idea
-                        )
-                        .reverse().value()
+            ideas: firebaseRelationalSubscription
+                indexRef: new Firebase(FIREBASE_URL+"/users/#{ownerId}/ideas")
+                dataRef: new Firebase(FIREBASE_URL+"/posts")
+                default: _([])
+                parseObject: (snapshot) ->
+                    post = snapshot.val()
+                    post.id = snapshot.name()
+                    post.priority = snapshot.getPriority()
+                    post.href = "/posts/edit/"+post.id
+                    post
+                parseList: (list) ->
+                    list.reverse()
 
         getMetadata: (props) ->
             title: "Ideas"
@@ -43,12 +45,26 @@ Component = React.createClass
     handleChangeTitle: (e) ->
         this.setState
             title: e.target.value
-            slug: slugify(e.target.value)
+            permalink: slugify(e.target.value)
     handleKeyup: (e) ->
         if e.which == 13
-            this.state.userid = user.id
-            idea = this.props.subscriptions.ideas.ref.push this.state
-            idea.setPriority Date.now()
+            indexRef = this.props.subscriptions.ideas.indexRef
+            rootRef = indexRef.root()
+            
+            idea = 
+                title: this.state.title
+                owner: user.id
+            ideaRef = this.props.subscriptions.ideas.dataRef.push() 
+            ideaRef.setWithPriority idea, Date.now()
+
+            # Create permalink
+            rootRef.child("/permalinks/#{this.state.permalink}").set {owner: user.id, redirect: "/writing/#{ideaRef.name()}"}, (error) =>
+                ideaRef.update permalink: this.state.permalink
+
+            # Create reference in /user/ideas
+            indexRef.child(ideaRef.name()).set(true)
+
+            # Clear
             this.setState title: ""
 
     getInitialState: -> {}

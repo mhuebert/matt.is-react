@@ -1,12 +1,9 @@
-# Server
-
 express = require("express")
 http = require("http")
 path = require("path")
 
 # `reactMiddleware` is our only real place of work:
-
-reactMiddleware = require("./utils/react-middleware")
+reactMiddleware = require("./app/react-middleware")
 
 app = express()
     .use(express.static(path.join(__dirname, './public')))

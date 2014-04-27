@@ -17,7 +17,7 @@ gulp.task 'stylus', ->
 gulp.task 'scripts', ->
     gulp.src('./app/app.coffee', {read: false})
         .pipe(browserify({
-            ignore: ['firebase']
+            ignore: ['firebase', 'firebase-util']
             transform: ['coffeeify', [{'extension': 'coffee'}, 'reactify']]
             extensions: ['.coffee', 'js', '.md']
             noParse: ['jquery', 'underscore']
@@ -31,6 +31,10 @@ gulp.task 'scripts', ->
 gulp.task 'firebaseRules', ->
     if mergeFirebaseRules("./security-rules", "./security-rules/_compiled.json")
         console.log "Merged Firebase Rules"
+        firebase = spawn "firebase", ['deploy']
+        firebase.stdout.on 'data', (data) -> console.log data.toString().trim()
+        # receive error messages and process
+        firebase.stderr.on 'data', (data) -> console.log data.toString().trim()
     else
         console.log "Error merging Firebase rules"
 

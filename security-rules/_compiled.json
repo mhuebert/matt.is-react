@@ -1,11 +1,43 @@
 {
     "rules": {
-        "$other": {
+        "users": {
+            "$user": {
+                "ideas": {
+                    "$post": {
+                        ".validate": "root.child('posts').hasChild($post)"
+                    }
+                },
+                "writing": {
+                    "$post": {
+                        ".validate": "root.child('posts').hasChild($post)"
+                    }
+                },
+                ".write": "$user == auth.id",
+                ".read": "$user == auth.id"
+            }
+        },
+        "photos": {
+            "$photo": {
+                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
+            },
             ".read": true
         },
-        "ideas": {
-            ".read": "auth.id == '15538074'"
+        "posts": {
+            "$post": {
+                "permalink": {
+                    ".validate": "root.child('permalinks').child(newData.val()).exists()"
+                },
+                ".read": "data.child('public').val() == true || data.child('owner').val() == auth.id",
+                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)",
+                ".validate": "newData.child('owner').val() == auth.id"
+            }
         },
-        ".write": "auth.id == '15538074'"
+        "permalinks": {
+            "$link": {
+                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)",
+                ".validate": "newData.child('redirect').isString()"
+            },
+            ".read": true
+        }
     }
 }

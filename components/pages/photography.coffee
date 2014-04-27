@@ -5,8 +5,8 @@ Body = require("../body")
 Nav = require("../partials/nav")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-{PhotoList} = require("../../subscriptions")
-{Collection} = require("../../models")
+{PhotoList} = require("../../app/subscriptions")
+{Collection} = require("../../app/models")
 
 DynamicLoader = require("../partials/dynamicLoader")
 
@@ -26,7 +26,9 @@ Component = React.createClass
             container: 'window'
         filepicker.pickAndStore options, {}, (inkBlobs) =>
             for blob in inkBlobs
-                newPhotoRef = this.props.subscriptions.photos.ref.push {url: blob.url}
+                newPhotoRef = this.props.subscriptions.photos.ref.push
+                    url: blob.url
+                    owner: user.id
                 newPhotoRef.setPriority Date.now()
     deletePhoto: (e) ->
         if confirm("Are you sure?")

@@ -1,13 +1,13 @@
 ###
-    Data wrappers    
+    Light-weight models to wrap data.    
 ###
 
-{Firebase, FIREBASE_URL} = require("../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../app/firebase")
 
 _ = require("underscore")
 
 class Model
-    constructor: (@attributes, @options) ->
+    constructor: (@attributes={}, @options) ->
         @ref = new Firebase(FIREBASE_URL+'/writing/'+@attributes.id)
     get: (key) ->
         @attributes[key]

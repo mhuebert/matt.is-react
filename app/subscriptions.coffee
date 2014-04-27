@@ -1,8 +1,10 @@
-{Firebase, FIREBASE_URL} = require("../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../app/firebase")
 _ = require("underscore")
 
 {snapshotToArray} = require("sparkboard-tools").utils
-{firebaseSubscription} = require("sparkboard-tools")
+{firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
+
+{ownerId} = require("../config")
 
 @PhotoList = (limit=500) ->
   firebaseSubscription
@@ -14,17 +16,17 @@ _ = require("underscore")
     default: _([])
 
 @WritingList = (limit=50) ->
-  firebaseSubscription
+  firebaseRelationalSubscription
+    indexRef: new Firebase(FIREBASE_URL+'/users/'+ownerId+'/writing').limit(limit)
+    dataRef: new Firebase(FIREBASE_URL+'/posts')
     ref: new Firebase(FIREBASE_URL+'/writing')
     query: (ref, done) -> done(ref.limit(limit))
     default: _([])
     server: true
-    parse: (snapshot) -> 
-        _.chain(snapshot.val()).pairs().map((pair) -> 
-            post = pair[1]
-            post.id = pair[0]
-            post
-        ).value().reverse()
-
+    parse: (snapshot) ->
+        post = snapshot.val()
+        post.id = snapshot.name()
+        # post.href = "/writing/"+post.id
+        post
 
     

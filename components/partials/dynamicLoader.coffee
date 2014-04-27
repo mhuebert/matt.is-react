@@ -79,8 +79,8 @@ Component = React.createClass
         # loader.style.height = between(150,700)
         # shape = ['oval', 'square', 'rectangle', 'pacman'][between(0,3)]
         shape = ['rectangle'][between(0,3)]
-        # color = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0,4)]
-        color = '#ff0048'
+        color = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0,4)]
+        # color = '#ff0048'
         _.extend loader.style, shapes['rectangle'](color)
         loader.style.marginLeft = -(Math.round(loader.style.width/2))
         loader.style.marginTop = -(Math.round(loader.style.height/2))

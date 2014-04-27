@@ -6,9 +6,9 @@ Nav = require("../partials/nav")
 DynamicLoader = require("../partials/dynamicLoader")
 simplePagination = require("../partials/simplePagination")
 
-{Firebase, firebaseIdFromPath, snapshotToArray, FIREBASE_URL} = require("../../utils/firebase")
+{Firebase, FIREBASE_URL} = require("../../app/firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
-
+{snapshotToArray} = require("sparkboard-tools").utils
 Component = React.createClass
 
     mixins: [SubscriptionMixin]

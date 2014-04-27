@@ -7,16 +7,16 @@ RouterMixin = require("sparkboard-tools").Router.Mixin
 
 Head = require("./partials/head")
 
-{FIREBASE_URL} = require("../utils/firebase")
+{FIREBASE_URL} = require("../app/firebase")
 
-Models = require("../models")
+Models = require("../app/models")
+components = require("./index")
 
 Layout = React.createClass
     mixins: [RouterMixin]
-    routes: require("./routes")
-    firebaseRefCache: [ FIREBASE_URL+'/ideas',
-                        FIREBASE_URL+'/writing'
-                        ]
+    routes: require("../app/routes")
+    fallbackRoute: require("../app/route-fallback")
+    firebaseRefCache: [] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
     componentDidMount: ->
         setTimeout =>
@@ -34,7 +34,7 @@ Layout = React.createClass
             else
                 @setProps user: null
     getHandler: ->
-        this.props.matchedRoute.handler
+        components[this.props.matchedRoute.handler]
     getMetadata: ->
         this.getHandler().getMetadata?(this.props) || {}
     getSubscriptionData: ->

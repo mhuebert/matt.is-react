@@ -6,7 +6,7 @@ Body = require("../body")
 
 Component = React.createClass
     componentDidMount: ->
-      auth.logout()
+      auth?.logout()
       setTimeout ->
         window.location.href = "/"
       , 600

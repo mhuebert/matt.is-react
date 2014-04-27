@@ -1,7 +1,7 @@
 *.DS_STORE
 *.DS_Store
 node_modules
-notes
+_notes
 config.coffee
 server-config.coffee
 .env
