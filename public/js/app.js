@@ -164,11 +164,10 @@ Router = require("sparkboard-tools").Router.create(routes);
 
 module.exports = function(path, callback) {
   var ref, refPath;
-  console.log(refPath = FIREBASE_URL + ("/permalinks" + path));
+  refPath = FIREBASE_URL + ("/permalinks" + path);
   ref = new Firebase(refPath);
   return ref.once("value", function(snap) {
     var matchedRoute, redirect, _ref1;
-    console.log(snap.val());
     redirect = (_ref1 = snap.val()) != null ? _ref1.redirect : void 0;
     if (redirect && (matchedRoute = Router.matchStaticRoute(redirect))) {
       callback(matchedRoute);
@@ -672,13 +671,14 @@ Component = React.createClass({displayName: 'Component',
     return this.state.permalinkAvailable && this.state.permalinkChecked === this.state.permalink;
   },
   render: function() {
-    var isPublished, loading, _ref2;
+    var isPublished, loading, viewLink, _ref2;
     isPublished = ((_ref2 = this.props.post) != null ? _ref2.publishDate : void 0) != null;
     loading = _.isEmpty(this.props.post);
+    viewLink = isPublished ? "/" + this.props.post.permalink : "/writing/" + this.props.post.id;
     return React.DOM.div( {className:"content "+(loading ? "loading" : "")}, 
             Nav(null,     
-                React.DOM.a(  {href:"/"+this.state.permalink||"/posts/"+this.state.id,
-                    className:(isPublished ? "" : "hidden")+" btn btn-standard right showIfUser"}, 
+                React.DOM.a(  {href:viewLink,
+                    className:"btn btn-standard right showIfUser"}, 
                     "View"),
                 React.DOM.a(  {onClick:this.publish, 
                     className:(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}, 
@@ -696,8 +696,9 @@ Component = React.createClass({displayName: 'Component',
                                 value:this.state.title}),
             
             toggleShowHide(null, 
-                React.DOM.div( {className:"text-center hide-if-toggle-visible", style:{margin:"-33px 0 23px"}}, 
-                    React.DOM.a( {'data-toggle-hide':false, className:"writing-edit-link show-element " }, "Options")
+                React.DOM.div( {className:"text-center", style:{margin:"-30px 0 10px"}}, 
+                    React.DOM.a( {'data-toggle-hide':false, className: " hide-if-toggle-visible writing-edit-link show-element " }, "options"),
+                    React.DOM.a( {'data-toggle-hide':true, className: " hide-if-toggle-hidden writing-edit-link show-element " }, "hide options")
                 ),
                 React.DOM.div( {className:"writing-inline-options hide-if-toggle-hidden"}, 
                     React.DOM.div(null, 
@@ -1293,8 +1294,11 @@ Component = React.createClass({displayName: 'Component',
               return ref.startAt(snap.getPriority()).limit(2).once("value", function(snap) {
                 var idea, ideas;
                 ideas = snapshotToArray(snap);
-                idea = ideas[1] || {};
-                return done(ref.root().child("/posts/" + idea.id));
+                if (idea = ideas[1]) {
+                  return done(ref.root().child("/posts/" + idea.id));
+                } else {
+                  return done(null);
+                }
               });
             });
           },
@@ -1311,10 +1315,13 @@ Component = React.createClass({displayName: 'Component',
           query: function(ref, done) {
             return ref.child(id).once("value", function(snap) {
               return ref.endAt(snap.getPriority()).limit(2).once("value", function(snap) {
-                var idea, ideas;
+                var ideas;
                 ideas = snapshotToArray(snap);
-                idea = ideas.length === 1 ? {} : ideas[0];
-                return done(ref.root().child("/posts/" + idea.id));
+                if (ideas.length === 2) {
+                  return done(ref.root().child("/posts/" + ideas[0].id));
+                } else {
+                  return done(null);
+                }
               });
             });
           },
@@ -24323,6 +24330,11 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       };
       return manifest.query(manifest.ref, (function(_this) {
         return function(ref) {
+          if (ref === null) {
+            manifest.inactive = true;
+            updateDataCallback(manifest["default"]);
+            return;
+          }
           manifest.queryRef = ref;
           manifest.__callback = function(snapshot) {
             var parse, value;
@@ -24337,7 +24349,9 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       })(this));
     };
     manifest.unsubscribe = function() {
-      return manifest.queryRef.off("value", manifest.__callback);
+      if (manifest.inactive !== true) {
+        return manifest.queryRef.off();
+      }
     };
     return manifest;
   };
@@ -24708,6 +24722,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
         };
       }
       element.id = snap.name();
+      element.priority = snap.getPriority();
       elements.push(element);
       return false;
     });

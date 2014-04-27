@@ -59,8 +59,11 @@ Component = React.createClass
                     ref.child(id).once "value", (snap) ->
                         ref.startAt(snap.getPriority()).limit(2).once "value", (snap) ->
                             ideas = snapshotToArray(snap)
-                            idea = ideas[1] || {}
-                            done(ref.root().child("/posts/#{idea.id}"))
+                            if idea = ideas[1]
+                                done(ref.root().child("/posts/#{idea.id}"))
+                            else
+                                done(null)
+                            
                 parse: (snapshot) -> 
                     snapshot.val()
                 default: {}
@@ -73,8 +76,10 @@ Component = React.createClass
                     ref.child(id).once "value", (snap) ->
                         ref.endAt(snap.getPriority()).limit(2).once "value", (snap) ->
                             ideas = snapshotToArray(snap)
-                            idea = if ideas.length == 1 then {} else ideas[0]
-                            done(ref.root().child("/posts/#{idea.id}"))
+                            if ideas.length == 2
+                                done(ref.root().child("/posts/#{ideas[0].id}"))
+                            else
+                                done(null)
                 parse: (snapshot) -> 
                     snapshot.val()
                     

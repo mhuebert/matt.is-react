@@ -176,11 +176,12 @@ Component = React.createClass
     render: ->
         isPublished = this.props.post?.publishDate?
         loading = _.isEmpty this.props.post
+        viewLink = if isPublished then "/"+this.props.post.permalink else "/writing/#{this.props.post.id}"
         
         `<div className={"content "+(loading ? "loading" : "")}>
             <Nav>    
-                <a  href={"/"+this.state.permalink||"/posts/"+this.state.id}
-                    className={(isPublished ? "" : "hidden")+" btn btn-standard right showIfUser"}>
+                <a  href={viewLink}
+                    className={"btn btn-standard right showIfUser"}>
                     View</a>
                 <a  onClick={this.publish} 
                     className={(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
@@ -198,8 +199,9 @@ Component = React.createClass
                                 value={this.state.title}/>
             
             <toggleShowHide>
-                <div className='text-center hide-if-toggle-visible' style={{margin:"-33px 0 23px"}}>
-                    <a data-toggle-hide={false} className="writing-edit-link show-element ">Options</a>
+                <div className='text-center' style={{margin:"-30px 0 10px"}}>
+                    <a data-toggle-hide={false} className=" hide-if-toggle-visible writing-edit-link show-element ">options</a>
+                    <a data-toggle-hide={true} className=" hide-if-toggle-hidden writing-edit-link show-element ">hide options</a>
                 </div>
                 <div className="writing-inline-options hide-if-toggle-hidden">
                     <div>
