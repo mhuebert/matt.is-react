@@ -32,7 +32,7 @@ Home = React.createClass
             </p>
             <h1><a href="/writing">Writing</a></h1>
             <ul className="writing-list link-list" >
-                {writing.map(function(post){return  <li key={post.get("id")} ><a href={post.get("permalink")}>{post.get("title")}</a></li>})}
+                {writing.map(function(post){return  <li key={post.get("id")} ><a href={"/"+post.get("permalink")}>{post.get("title")}</a></li>})}
                 <li key="more"><a href="/writing" className="more-link" >more &rarr;</a></li>
             </ul>
             <h1><a href="/seeing">Photography</a></h1>

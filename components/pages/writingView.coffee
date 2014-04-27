@@ -90,7 +90,7 @@ Component = React.createClass
             <Nav>
                 <a href={"/posts/edit/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>
             </Nav>
-            <h1 className="text-center"><a href={post.get("permalink")}>{post.get("title")}</a></h1>
+            <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
             <simplePagination 
                 back="/writing"

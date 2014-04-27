@@ -773,7 +773,7 @@ Home = React.createClass({displayName: 'Home',
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/writing"}, "Writing")),
             React.DOM.ul( {className:"writing-list link-list"} , 
-                writing.map(function(post){return  React.DOM.li( {key:post.get("id")} , React.DOM.a( {href:post.get("permalink")}, post.get("title")))}),
+                writing.map(function(post){return  React.DOM.li( {key:post.get("id")} , React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title")))}),
                 React.DOM.li( {key:"more"}, React.DOM.a( {href:"/writing", className:"more-link"} , "more →"))
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/seeing"}, "Photography")),
@@ -1337,7 +1337,7 @@ Component = React.createClass({displayName: 'Component',
             Nav(null, 
                 React.DOM.a( {href:"/posts/edit/"+post.get("slug"), className:"right btn btn-trans showIfUser " }, "Edit")
             ),
-            React.DOM.h1( {className:"text-center"}, React.DOM.a( {href:post.get("permalink")}, post.get("title"))),
+            React.DOM.h1( {className:"text-center"}, React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title"))),
             React.DOM.div( {className:"writing-body", dangerouslySetInnerHTML:{__html: marked(post.get("body")||"")}}),
             simplePagination( 
                 {back:"/writing",
