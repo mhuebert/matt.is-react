@@ -94,8 +94,8 @@ Component = React.createClass
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
             <simplePagination 
                 back="/writing"
-                next={this.props.postNext.id ? (this.props.postNext.permalink) : false} 
-                prev={this.props.postPrev.id ? (this.props.postPrev.permalink) : false} />  
+                next={this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false} 
+                prev={this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} />  
         </div>`
 
 module.exports = Component

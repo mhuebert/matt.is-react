@@ -1341,8 +1341,8 @@ Component = React.createClass({displayName: 'Component',
             React.DOM.div( {className:"writing-body", dangerouslySetInnerHTML:{__html: marked(post.get("body")||"")}}),
             simplePagination( 
                 {back:"/writing",
-                next:this.props.postNext.id ? (this.props.postNext.permalink) : false, 
-                prev:this.props.postPrev.id ? (this.props.postPrev.permalink) : false} )  
+                next:this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false, 
+                prev:this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} )  
         );
   }
 });
