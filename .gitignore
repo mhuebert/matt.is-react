@@ -2,7 +2,5 @@
 *.DS_Store
 node_modules
 _notes
-config.coffee
-server-config.coffee
 .env
 firebase.json
