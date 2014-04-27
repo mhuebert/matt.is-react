@@ -22,7 +22,7 @@ marked.setOptions
   tables: true
   breaks: true
   pedantic: false
-  sanitize: true
+  sanitize: false
   smartLists: true
   smartypants: false
 
@@ -36,6 +36,7 @@ Component = React.createClass
     statics:
         getMetadata: (props) ->
             title: props.post?.title
+            description: props.post?.description
         subscriptions: (props) ->
             match = props.matchedRoute
             id = match?.params?.id
@@ -90,14 +91,16 @@ Component = React.createClass
 
     render: ->
         post = new Model(this.props.post)
+
         `<div className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
-            <DynamicLoader /><DynamicLoader />
+            <DynamicLoader />
             <Nav>
                 <a href={"/posts/edit/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>
             </Nav>
             <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
-            <simplePagination 
+            <simplePagination
+                className={post.get("publishDate") ? "" : "hidden"} 
                 back="/writing"
                 next={this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false} 
                 prev={this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} />  

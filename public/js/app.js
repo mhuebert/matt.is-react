@@ -261,11 +261,14 @@ this.WritingList = function(limit) {
     },
     "default": _([]),
     server: true,
-    parse: function(snapshot) {
+    parseObject: function(snapshot) {
       var post;
       post = snapshot.val();
       post.id = snapshot.name();
       return post;
+    },
+    parseList: function(list) {
+      return list.reverse();
     }
   });
 };
@@ -529,7 +532,7 @@ Component = React.createClass({displayName: 'Component',
       return function(snapshot) {
         var post;
         if (post = snapshot.val()) {
-          post.id = id;
+          post.id = snapshot.name();
           self.refs.date.getDOMNode().value = moment(snapshot.getPriority()).format(dateFormat);
           return self.setState(post);
         }
@@ -553,7 +556,7 @@ Component = React.createClass({displayName: 'Component',
           _this.setState({
             loading: false
           });
-          return _this._owner.navigate(_this.props.post.permalink);
+          return _this._owner.navigate("/" + _this.props.post.permalink);
         }
       };
     })(this));
@@ -579,7 +582,7 @@ Component = React.createClass({displayName: 'Component',
     this.setState({
       saving: true
     });
-    post = _(this.state).pick("title", "body", "slug", "wordCount");
+    post = _(this.state).pick("title", "body", "slug", "wordCount", "description");
     post.wordCount = (this.state.body || "").split(" ").length;
     post.owner = user.id;
     priority = this.props.post.publishDate || Date.now();
@@ -616,6 +619,11 @@ Component = React.createClass({displayName: 'Component',
       body: e.target.value
     });
   },
+  handleDescriptionChange: function(e) {
+    return this.setState({
+      description: e.target.value
+    });
+  },
   changePermalink: function(e) {
     var permalink, ref;
     permalink = slugify(e.target.value);
@@ -635,15 +643,25 @@ Component = React.createClass({displayName: 'Component',
     })(this));
   },
   changeDate: function(e) {
-    var dateString, momentObject, unixDate;
+    var dataRef, dateString, indexRef, location, momentObject, published, unixDate;
     dateString = e.target.value;
     momentObject = moment(dateString, dateFormat, true);
     this.setState({
       validDate: momentObject.isValid()
     });
+    dataRef = this.props.subscriptions.post.ref;
     if (momentObject.isValid()) {
       unixDate = momentObject.valueOf();
-      return this.props.subscriptions.post.ref.setPriority(unixDate);
+      this.props.subscriptions.post.ref.setPriority(unixDate);
+      published = this.props.post.publishDate != null;
+      if (published) {
+        dataRef.update({
+          publishDate: unixDate
+        });
+      }
+      location = published ? "writing" : "ideas";
+      indexRef = dataRef.root().child("/users/" + user.id + "/" + location).child(this.props.post.id);
+      return indexRef.setPriority(unixDate);
     }
   },
   objectModified: function() {
@@ -674,7 +692,11 @@ Component = React.createClass({displayName: 'Component',
     var isPublished, loading, viewLink, _ref2;
     isPublished = ((_ref2 = this.props.post) != null ? _ref2.publishDate : void 0) != null;
     loading = _.isEmpty(this.props.post);
-    viewLink = isPublished ? "/" + this.props.post.permalink : "/writing/" + this.props.post.id;
+    if (isPublished) {
+      viewLink = "/" + this.props.post.permalink;
+    } else {
+      viewLink = "/writing/" + this.props.post.id;
+    }
     return React.DOM.div( {className:"content "+(loading ? "loading" : "")}, 
             Nav(null,     
                 React.DOM.a(  {href:viewLink,
@@ -704,7 +726,9 @@ Component = React.createClass({displayName: 'Component',
                     React.DOM.div(null, 
                         "/",React.DOM.input( {className:"grey "+(this.permalinkReady ? "success" : "error"),  placeholder:"my-permalink", ref:"permalink", onChange:this.changePermalink, value:this.state.permalink})
                     ),
-                    
+                    React.DOM.div(null, 
+                        React.DOM.input( {placeholder:"Description", onChange:this.handleDescriptionChange, value:this.state.description})
+                    ),
                     React.DOM.div(null, 
                         React.DOM.input( {ref:"date", onChange:this.changeDate, className:"grey "+(this.state.validDate ? "success" : "error"), defaultValue:moment(this.state.date).format(dateFormat)})
                     ),
@@ -750,7 +774,7 @@ Home = React.createClass({displayName: 'Home',
     subscriptions: function() {
       return {
         photos: subscriptions.PhotoList(9),
-        writing: subscriptions.WritingList(2)
+        writing: subscriptions.WritingList(20)
       };
     },
     getMetadata: function() {
@@ -1199,7 +1223,7 @@ Component = React.createClass({displayName: 'Component',
                 
                     this.props.writing.map(function(post){
                         return React.DOM.li( {key:post.id} , 
-                                React.DOM.a( {href:"/writing/"+post.id}, post.title)
+                                React.DOM.a( {href:"/"+post.permalink}, post.title)
                                 )
                         })
                 
@@ -1247,7 +1271,7 @@ marked.setOptions({
   tables: true,
   breaks: true,
   pedantic: false,
-  sanitize: true,
+  sanitize: false,
   smartLists: true,
   smartypants: false
 });
@@ -1258,9 +1282,10 @@ Component = React.createClass({displayName: 'Component',
   mixins: [SubscriptionMixin],
   statics: {
     getMetadata: function(props) {
-      var _ref2;
+      var _ref2, _ref3;
       return {
-        title: (_ref2 = props.post) != null ? _ref2.title : void 0
+        title: (_ref2 = props.post) != null ? _ref2.title : void 0,
+        description: (_ref3 = props.post) != null ? _ref3.description : void 0
       };
     },
     subscriptions: function(props) {
@@ -1340,14 +1365,15 @@ Component = React.createClass({displayName: 'Component',
     var post;
     post = new Model(this.props.post);
     return React.DOM.div( {className:"content "+(_.isEmpty(post.attributes) ? "loading" : "")}, 
-            DynamicLoader(null ),DynamicLoader(null ),
+            DynamicLoader(null ),
             Nav(null, 
                 React.DOM.a( {href:"/posts/edit/"+post.get("slug"), className:"right btn btn-trans showIfUser " }, "Edit")
             ),
             React.DOM.h1( {className:"text-center"}, React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title"))),
             React.DOM.div( {className:"writing-body", dangerouslySetInnerHTML:{__html: marked(post.get("body")||"")}}),
-            simplePagination( 
-                {back:"/writing",
+            simplePagination(
+                {className:post.get("publishDate") ? "" : "hidden", 
+                back:"/writing",
                 next:this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false, 
                 prev:this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} )  
         );
@@ -1702,11 +1728,11 @@ Component = React.createClass({displayName: 'Component',
     }
   },
   render: function() {
-    return React.DOM.div( {className:"paginate-simple"}, 
+    return this.transferPropsTo(React.DOM.div( {className:"paginate-simple"}, 
             React.DOM.a( {ref:"back", className:"hidden", href:this.props.back} ),
             React.DOM.a( {ref:"prev", onClick:this.prev, className:"prev "+(this.props.prev ? "" : "hidden"), href:this.props.prev}),
             React.DOM.a( {ref:"next", className:"next "+(this.props.next ? "" : "hidden"), href:this.props.next})
-        );
+        ));
   }
 });
 
@@ -24349,8 +24375,9 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       })(this));
     };
     manifest.unsubscribe = function() {
+      var _ref;
       if (manifest.inactive !== true) {
-        return manifest.queryRef.off();
+        return (_ref = manifest.queryRef) != null ? _ref.off() : void 0;
       }
     };
     return manifest;

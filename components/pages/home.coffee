@@ -15,7 +15,7 @@ Home = React.createClass
     statics:
         subscriptions: ->
             photos: subscriptions.PhotoList(9)
-            writing: subscriptions.WritingList(2)
+            writing: subscriptions.WritingList(20)
         getMetadata: ->
             title: "Welcome | Matt.is"
             description: "Artefactually speaking."

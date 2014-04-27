@@ -71,7 +71,7 @@ Component = React.createClass
         self = this
         ref.once "value", (snapshot) =>
             if post = snapshot.val()
-                post.id = id
+                post.id = snapshot.name()
                 self.refs.date.getDOMNode().value = moment(snapshot.getPriority()).format(dateFormat)
                 self.setState post
 
@@ -86,7 +86,7 @@ Component = React.createClass
             if !error
                 @save()
                 @setState loading: false
-                this._owner.navigate this.props.post.permalink
+                this._owner.navigate "/"+this.props.post.permalink
     
     updatePostLocations: ->
         switch this.props.post.publishDate?
@@ -103,7 +103,7 @@ Component = React.createClass
 
     save: (callback) ->
         this.setState saving: true
-        post = _(this.state).pick "title", "body", "slug", "wordCount"
+        post = _(this.state).pick "title", "body", "slug", "wordCount", "description"
         post.wordCount = (this.state.body || "").split(" ").length
         post.owner = user.id
         priority = this.props.post.publishDate || Date.now()
@@ -136,6 +136,8 @@ Component = React.createClass
 
     handleBodyChange: (e) ->
         @setState body: e.target.value
+    handleDescriptionChange: (e) ->
+        @setState description: e.target.value
 
     changePermalink: (e) ->
         permalink = slugify e.target.value
@@ -151,9 +153,16 @@ Component = React.createClass
         dateString = e.target.value
         momentObject = moment(dateString, dateFormat, true)
         @setState validDate: momentObject.isValid()
+        dataRef = this.props.subscriptions.post.ref
         if momentObject.isValid()
             unixDate = momentObject.valueOf()
             this.props.subscriptions.post.ref.setPriority unixDate
+            published = this.props.post.publishDate?
+            if published
+                dataRef.update publishDate: unixDate
+            location = if published then "writing" else "ideas"
+            indexRef = dataRef.root().child("/users/#{user.id}/#{location}").child(this.props.post.id)
+            indexRef.setPriority unixDate
 
     objectModified: ->
         !_.isEqual this.props.post, _(this.state).pick("title", "body", "id", "wordCount")
@@ -176,7 +185,7 @@ Component = React.createClass
     render: ->
         isPublished = this.props.post?.publishDate?
         loading = _.isEmpty this.props.post
-        viewLink = if isPublished then "/"+this.props.post.permalink else "/writing/#{this.props.post.id}"
+        if isPublished then viewLink = "/"+this.props.post.permalink else viewLink = "/writing/#{this.props.post.id}"
         
         `<div className={"content "+(loading ? "loading" : "")}>
             <Nav>    
@@ -207,7 +216,9 @@ Component = React.createClass
                     <div>
                         /<input className={"grey "+(this.permalinkReady ? "success" : "error")}  placeholder="my-permalink" ref="permalink" onChange={this.changePermalink} value={this.state.permalink}/>
                     </div>
-                    
+                    <div>
+                        <input placeholder="Description" onChange={this.handleDescriptionChange} value={this.state.description}/>
+                    </div>
                     <div>
                         <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
                     </div>

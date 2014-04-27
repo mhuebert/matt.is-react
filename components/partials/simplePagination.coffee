@@ -25,11 +25,11 @@ Component = React.createClass
       this.refs.back.getDOMNode().click() if this.props.back
 
     render: ->
-        `<div className="paginate-simple">
+        `this.transferPropsTo(<div className="paginate-simple">
             <a ref="back" className="hidden" href={this.props.back} />
             <a ref="prev" onClick={this.prev} className={"prev "+(this.props.prev ? "" : "hidden")} href={this.props.prev}/>
             <a ref="next" className={"next "+(this.props.next ? "" : "hidden")} href={this.props.next}/>
-        </div>`
+        </div>)`
 
 module.exports = Component
 

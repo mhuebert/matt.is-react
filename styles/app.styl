@@ -28,6 +28,9 @@ lightBackground()
         transform(rotate(360deg))
 a.more-link, a.more-link:visited
     color #999
+del
+    opacity 0.5
+    text-decoration strikethrough
 .writing-edit-link
     font-size: 14px
     color: #888
@@ -50,6 +53,11 @@ a.more-link, a.more-link:visited
     &:hover
         background #eee
         text-decoration none
+blockquote
+    padding 15px 15px 1px
+    background rgba(0,0,0,0.05)
+    >:last-child
+        margin-bottom 14px
 .writing-body
     li
         list-style disc

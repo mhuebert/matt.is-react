@@ -37,6 +37,7 @@ Layout = React.createClass
         components[this.props.matchedRoute.handler]
     getMetadata: ->
         this.getHandler().getMetadata?(this.props) || {}
+
     getSubscriptionData: ->
         this.getHandler().subscriptions?(this.props) || {}
     login: ->

@@ -27,7 +27,7 @@ Component = React.createClass
                 {
                     this.props.writing.map(function(post){
                         return <li key={post.id} >
-                                <a href={"/writing/"+post.id}>{post.title}</a>
+                                <a href={"/"+post.permalink}>{post.title}</a>
                                 </li>
                         })
                 }

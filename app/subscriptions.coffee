@@ -23,10 +23,10 @@ _ = require("underscore")
     query: (ref, done) -> done(ref.limit(limit))
     default: _([])
     server: true
-    parse: (snapshot) ->
+    parseObject: (snapshot) ->
         post = snapshot.val()
         post.id = snapshot.name()
-        # post.href = "/writing/"+post.id
         post
+    parseList: (list) -> list.reverse()
 
     
