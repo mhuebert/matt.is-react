@@ -22,7 +22,6 @@ this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config").FIREBASE_UR
 
 if (typeof window === "undefined" || window === null) {
   firebase = new Firebase(this.FIREBASE_URL);
-  firebase.auth(process.env.FIREBASE_SECRET);
   console.log("authed to firebase");
 }
 
@@ -544,7 +543,8 @@ Component = React.createClass({displayName: 'Component',
     ref = new Firebase(FIREBASE_URL + ("/posts/" + this.state.id));
     publishDate = Date.now();
     post = {
-      publishDate: publishDate
+      publishDate: publishDate,
+      "public": true
     };
     this.setState({
       loading: true
@@ -732,8 +732,7 @@ Component = React.createClass({displayName: 'Component',
                     React.DOM.div(null, 
                         React.DOM.input( {ref:"date", onChange:this.changeDate, className:"grey "+(this.state.validDate ? "success" : "error"), defaultValue:moment(this.state.date).format(dateFormat)})
                     ),
-                    React.DOM.a( {className:"btn btn-red btn-small", onClick:this.delete}, "Delete"),
-                    React.DOM.a( {className:"close-x", 'data-toggle-hide':true}, "×")
+                    React.DOM.a( {className:"btn btn-red btn-small", onClick:this.delete}, "Delete")
                 )
             ),
 
@@ -24287,16 +24286,29 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
         return this.parseList(list.value());
       },
       subscribe: function(callback, options) {
-        var updateObject;
+        var cancelUpdateObject, exportAllModels, updateObject;
         if (options == null) {
           options = {};
         }
-        updateObject = (function(_this) {
-          return function(snapshot) {
-            _this.models[snapshot.name()] = _this.parseObject(snapshot);
+        exportAllModels = (function(_this) {
+          return function() {
             if (_(_this.models).keys().length === _this.modelIndex.length) {
               return callback(_this.exportModels());
             }
+          };
+        })(this);
+        updateObject = (function(_this) {
+          return function(snapshot) {
+            _this.models[snapshot.name()] = _this.parseObject(snapshot);
+            return exportAllModels();
+          };
+        })(this);
+        cancelUpdateObject = (function(_this) {
+          return function(id) {
+            return function() {
+              _this.modelIndex = _.without(_this.modelIndex, id);
+              return exportAllModels();
+            };
           };
         })(this);
         manifest.indexRef.on("child_added", (function(_this) {
@@ -24304,7 +24316,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
             var childRef;
             _this.modelIndex.push(snapshot.name());
             childRef = manifest.dataRef.child(snapshot.name());
-            childRef.on("value", updateObject);
+            childRef.on("value", updateObject, cancelUpdateObject(snapshot.name()));
             return _this.handlers[snapshot.name()] = {
               fn: updateObject,
               ref: childRef

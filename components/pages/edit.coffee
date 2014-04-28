@@ -81,6 +81,7 @@ Component = React.createClass
         publishDate = Date.now()
         post = 
             publishDate: publishDate
+            public: true
         @setState loading: true
         ref.update post, (error) =>
             if !error
@@ -223,7 +224,6 @@ Component = React.createClass
                         <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
                     </div>
                     <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
-                    <a className="close-x" data-toggle-hide={true}>&times;</a>
                 </div>
             </toggleShowHide>
 

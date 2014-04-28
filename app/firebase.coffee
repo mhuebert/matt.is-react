@@ -4,5 +4,5 @@
 
 if !window?
     firebase = new Firebase(@FIREBASE_URL)
-    firebase.auth(process.env.FIREBASE_SECRET)
+    # firebase.auth(process.env.FIREBASE_SECRET)
     console.log "authed to firebase"

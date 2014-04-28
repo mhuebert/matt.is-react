@@ -1,5 +1,23 @@
 {
     "rules": {
+        "tags": {
+            "users": {
+                "$user": {
+                    "$tag": {
+                        "$post": {
+                            ".validate": "root.child('posts').hasChild($post)"
+                        }
+                    },
+                    ".write": "$user == auth.id"
+                }
+            },
+            "$tag": {
+                "$post": {
+                    ".validate": "root.child('posts').hasChild($post)",
+                    ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
+                }
+            }
+        },
         "users": {
             "$user": {
                 "ideas": {
@@ -10,7 +28,8 @@
                 "writing": {
                     "$post": {
                         ".validate": "root.child('posts').hasChild($post)"
-                    }
+                    },
+                    ".read": true
                 },
                 ".write": "$user == auth.id",
                 ".read": "$user == auth.id"
