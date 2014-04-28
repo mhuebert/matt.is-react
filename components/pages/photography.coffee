@@ -40,7 +40,7 @@ Component = React.createClass
         photos = new Collection(this.props.photos)
         `<div className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
             <Nav />
-            <DynamicLoader /><DynamicLoader />
+            <DynamicLoader />
             <h1>Photography</h1>
             <div className="photos text-center">
                 <div className="showIfUser">

@@ -1,11 +1,9 @@
 ownerId = "15538074"
 
-
 ownerOrNew = "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
 userOwnsObject = "newData.child('owner').val() == auth.id"
 
 module.exports = 
-  
 
   tags:
     users:
@@ -19,8 +17,6 @@ module.exports =
         validate: "root.child('posts').hasChild($post)"
         write: ownerOrNew
 
-
-
   # users are private
   users:
     $user:
@@ -33,7 +29,6 @@ module.exports =
         read: true
         $post:
           validate: "root.child('posts').hasChild($post)"
-  
 
   # photos are public
   photos:

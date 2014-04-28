@@ -1069,7 +1069,7 @@ Component = React.createClass({displayName: 'Component',
     photos = new Collection(this.props.photos);
     return React.DOM.div( {className:"content "+ ((photos.size() > 0) ? "" : "loading"), style:{maxWidth:960}}, 
             Nav(null ),
-            DynamicLoader(null ),DynamicLoader(null ),
+            DynamicLoader(null ),
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
                 React.DOM.div( {className:"showIfUser"}, 
