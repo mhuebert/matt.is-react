@@ -18,6 +18,16 @@ Layout = React.createClass
     fallbackRoute: require("../app/route-fallback")
     firebaseRefCache: [] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
+    componentWillMount: ->
+        if window?
+            window.auth = new FirebaseSimpleLogin new Firebase(FIREBASE_URL), (err, user) =>
+                if err
+                    console.log "Error logging in"
+                else if user 
+                    window.user = user
+                    @setProps user: user
+                else
+                    @setProps user: null
     componentDidMount: ->
         setTimeout =>
             for url in @firebaseRefCache
@@ -25,14 +35,7 @@ Layout = React.createClass
                 @_firebaseRefCache.push(ref)
                 ref.on "child_added", ->
         , 100
-        window.auth = new FirebaseSimpleLogin new Firebase(FIREBASE_URL), (err, user) =>
-            if err
-                console.log "Error logging in"
-            else if user 
-                window.user = user
-                @setProps user: user
-            else
-                @setProps user: null
+        
     getHandler: ->
         components[this.props.matchedRoute.handler]
     getMetadata: ->

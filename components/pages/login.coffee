@@ -5,10 +5,8 @@ DynamicLoader = require("../partials/dynamicLoader")
 Body = require("../body")
 Component = React.createClass
     componentDidMount: ->
-      setTimeout ->
-        auth.login "twitter",
-          rememberMe: true
-      , 500
+      auth.login "twitter",
+        rememberMe: true
     render: ->
         `<Body className="loading"></Body>`
 

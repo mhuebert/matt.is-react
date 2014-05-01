@@ -24,7 +24,7 @@ module.exports =
       read: "$user == auth.id"
       ideas:
         $post:
-          validate: "root.child('posts').hasChild($post)"
+          validate: "root.child('posts').child($post).child('owner') == auth.id"
       writing:
         read: true
         $post:

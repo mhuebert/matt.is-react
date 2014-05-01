@@ -357,8 +357,28 @@ Layout = React.createClass({displayName: 'Layout',
   fallbackRoute: require("../app/route-fallback"),
   firebaseRefCache: [],
   _firebaseRefCache: [],
+  componentWillMount: function() {
+    if (typeof window !== "undefined" && window !== null) {
+      return window.auth = new FirebaseSimpleLogin(new Firebase(FIREBASE_URL), (function(_this) {
+        return function(err, user) {
+          if (err) {
+            return console.log("Error logging in");
+          } else if (user) {
+            window.user = user;
+            return _this.setProps({
+              user: user
+            });
+          } else {
+            return _this.setProps({
+              user: null
+            });
+          }
+        };
+      })(this));
+    }
+  },
   componentDidMount: function() {
-    setTimeout((function(_this) {
+    return setTimeout((function(_this) {
       return function() {
         var ref, url, _i, _len, _ref, _results;
         _ref = _this.firebaseRefCache;
@@ -372,22 +392,6 @@ Layout = React.createClass({displayName: 'Layout',
         return _results;
       };
     })(this), 100);
-    return window.auth = new FirebaseSimpleLogin(new Firebase(FIREBASE_URL), (function(_this) {
-      return function(err, user) {
-        if (err) {
-          return console.log("Error logging in");
-        } else if (user) {
-          window.user = user;
-          return _this.setProps({
-            user: user
-          });
-        } else {
-          return _this.setProps({
-            user: null
-          });
-        }
-      };
-    })(this));
   },
   getHandler: function() {
     return components[this.props.matchedRoute.handler];
@@ -797,7 +801,10 @@ Home = React.createClass({displayName: 'Home',
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/writing"}, "Writing")),
             React.DOM.ul( {className:"writing-list link-list"} , 
-                writing.map(function(post){return  React.DOM.li( {key:post.get("id")} , React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title")))}),
+                writing.map(function(post){  
+                    return React.DOM.li( {key:post.get("id")} , 
+                        React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title")) 
+                    )}),
                 React.DOM.li( {key:"more"}, React.DOM.a( {href:"/writing", className:"more-link"} , "more →"))
             ),
             React.DOM.h1(null, React.DOM.a( {href:"/seeing"}, "Photography")),
@@ -938,11 +945,9 @@ Body = require("../body");
 
 Component = React.createClass({displayName: 'Component',
   componentDidMount: function() {
-    return setTimeout(function() {
-      return auth.login("twitter", {
-        rememberMe: true
-      });
-    }, 500);
+    return auth.login("twitter", {
+      rememberMe: true
+    });
   },
   render: function() {
     return Body( {className:"loading"});
@@ -1272,7 +1277,7 @@ marked.setOptions({
   pedantic: false,
   sanitize: false,
   smartLists: true,
-  smartypants: false
+  smartypants: true
 });
 
 unsafeCharacters = /[^\w\s.!?,:;'"]/;
@@ -24368,13 +24373,14 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       };
       return manifest.query(manifest.ref, (function(_this) {
         return function(ref) {
+          var cancelUpdateObject, updateObject;
           if (ref === null) {
             manifest.inactive = true;
             updateDataCallback(manifest["default"]);
             return;
           }
           manifest.queryRef = ref;
-          manifest.__callback = function(snapshot) {
+          updateObject = function(snapshot) {
             var parse, value;
             parse = manifest.parse || function(snapshot) {
               return snapshot.val();
@@ -24382,7 +24388,10 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
             value = parse(snapshot);
             return updateDataCallback(value);
           };
-          return ref.on("value", manifest.__callback);
+          cancelUpdateObject = function() {
+            return updateDataCallback(manifest["default"]);
+          };
+          return ref.on("value", updateObject, cancelUpdateObject);
         };
       })(this));
     };
@@ -24513,11 +24522,11 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
   getRootComponent = require("./utils").getRootComponent;
 
-  setSubscriptionPropsCallback = function(owner, path, wrap) {
+  setSubscriptionPropsCallback = function(owner, path, defaultData) {
     return function(data) {
       var props;
       props = {};
-      props[path] = data;
+      props[path] = data || defaultData;
       return owner.setProps(props);
     };
   };
@@ -24533,7 +24542,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
         subscription = _ref[path];
         _results.push((function(_this) {
           return function(path, subscription) {
-            subscription.subscribe(setSubscriptionPropsCallback(owner, path, subscription.wrap));
+            subscription.subscribe(setSubscriptionPropsCallback(owner, path, subscription["default"]));
             return _this.__subscriptions[path] = subscription;
           };
         })(this)(path, subscription));
@@ -24654,7 +24663,8 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       }
     },
     componentDidMount: function() {
-      return window.addEventListener('popstate', this.handlePopstate);
+      window.addEventListener('popstate', this.handlePopstate);
+      return window.Router = this;
     },
     matchStaticRoute: function(path) {
       var matchedRoute, params, pattern, route, _i, _len, _ref;

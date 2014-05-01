@@ -22,7 +22,7 @@
             "$user": {
                 "ideas": {
                     "$post": {
-                        ".validate": "root.child('posts').hasChild($post)"
+                        ".validate": "root.child('posts').child($post).child('owner') == auth.id"
                     }
                 },
                 "writing": {
