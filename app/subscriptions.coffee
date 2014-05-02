@@ -15,11 +15,13 @@ _ = require("underscore")
         snapshotToArray(snapshot).reverse()
     default: _([])
 
-@WritingList = (limit=50) ->
+@WritingList = (limit=50, ownerId) ->
   firebaseRelationalSubscription
     indexRef: new Firebase(FIREBASE_URL+'/users/'+ownerId+'/writing').limit(limit)
     dataRef: new Firebase(FIREBASE_URL+'/posts')
     ref: new Firebase(FIREBASE_URL+'/writing')
+    shouldUpdateSubscription: (oldProps, newProps) ->
+      oldProps.settings.ownerId != newProps.settings.ownerId
     query: (ref, done) -> done(ref.limit(limit))
     default: _([])
     server: true

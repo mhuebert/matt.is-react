@@ -247,7 +247,7 @@ this.PhotoList = function(limit) {
   });
 };
 
-this.WritingList = function(limit) {
+this.WritingList = function(limit, ownerId) {
   if (limit == null) {
     limit = 50;
   }
@@ -255,6 +255,9 @@ this.WritingList = function(limit) {
     indexRef: new Firebase(FIREBASE_URL + '/users/' + ownerId + '/writing').limit(limit),
     dataRef: new Firebase(FIREBASE_URL + '/posts'),
     ref: new Firebase(FIREBASE_URL + '/writing'),
+    shouldUpdateSubscription: function(oldProps, newProps) {
+      return oldProps.settings.ownerId !== newProps.settings.ownerId;
+    },
     query: function(ref, done) {
       return done(ref.limit(limit));
     },
@@ -378,7 +381,8 @@ Layout = React.createClass({displayName: 'Layout',
     }
   },
   componentDidMount: function() {
-    return setTimeout((function(_this) {
+    var settingsRef;
+    setTimeout((function(_this) {
       return function() {
         var ref, url, _i, _len, _ref, _results;
         _ref = _this.firebaseRefCache;
@@ -392,6 +396,14 @@ Layout = React.createClass({displayName: 'Layout',
         return _results;
       };
     })(this), 100);
+    settingsRef = new Firebase(FIREBASE_URL + "/settings");
+    return settingsRef.on("value", (function(_this) {
+      return function(snap) {
+        return _this.setProps({
+          settings: snap.val() || {}
+        });
+      };
+    })(this));
   },
   getHandler: function() {
     return components[this.props.matchedRoute.handler];
@@ -774,16 +786,16 @@ Collection = require("../../app/models").Collection;
 Home = React.createClass({displayName: 'Home',
   mixins: [SubscriptionMixin],
   statics: {
-    subscriptions: function() {
+    subscriptions: function(props) {
       return {
         photos: subscriptions.PhotoList(9),
-        writing: subscriptions.WritingList(20)
+        writing: subscriptions.WritingList(20, props.settings.ownerId)
       };
     },
-    getMetadata: function() {
+    getMetadata: function(props) {
       return {
-        title: "Welcome | Matt.is",
-        description: "Artefactually speaking."
+        title: props.settings.siteTitle,
+        description: props.settings.siteDescription
       };
     }
   },
@@ -793,7 +805,7 @@ Home = React.createClass({displayName: 'Home',
     photos = new Collection(this.props.photos);
     return React.DOM.div(null, 
             Nav(null ),
-            React.DOM.h1(null, "Matthew Huebert"),
+            React.DOM.h1(null, this.props.settings.homeTitle),
             React.DOM.p( {className:"intro"}, 
               React.DOM.span( {className:"wordBlock"}, "That's my name."), 
               React.DOM.span( {className:"wordBlock"}, "I live in ", React.DOM.a( {href:"http://en.wikipedia.org/wiki/Reykjav%C3%ADk"}, "Reykjavik.")), 
@@ -944,13 +956,18 @@ DynamicLoader = require("../partials/dynamicLoader");
 Body = require("../body");
 
 Component = React.createClass({displayName: 'Component',
-  componentDidMount: function() {
+  login: function() {
     return auth.login("twitter", {
       rememberMe: true
     });
   },
   render: function() {
-    return Body( {className:"loading"});
+    var loggedIn;
+    loggedIn = (typeof user !== "undefined" && user !== null ? user.id : void 0) != null;
+    return Body(null, 
+        React.DOM.a( {className:loggedIn ? "hidden" : "", href:"#", onClick:this.login}, "Login"),
+        React.DOM.a( {className:loggedIn ? "" : "hidden", href:"/"}, "Home")
+      );
   }
 });
 
@@ -1193,7 +1210,7 @@ module.exports = Component;
 
 },{"../../app/firebase":2,"../partials/dynamicLoader":22,"../partials/nav":26,"../partials/simplePagination":27,"react":258,"sparkboard-tools":259,"underscore":275}],19:[function(require,module,exports){
 /** @jsx React.DOM */;
-var Body, Component, React, SubscriptionMixin, WritingList, _;
+var Body, Component, React, SubscriptionMixin, subscriptions, _;
 
 _ = require("underscore");
 
@@ -1203,7 +1220,7 @@ Body = require("../body");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-WritingList = require("../../app/subscriptions").WritingList;
+subscriptions = require("../../app/subscriptions");
 
 Component = React.createClass({displayName: 'Component',
   mixins: [SubscriptionMixin],
@@ -1214,9 +1231,9 @@ Component = React.createClass({displayName: 'Component',
         description: "Wherein I uncover."
       };
     },
-    subscriptions: function() {
+    subscriptions: function(props) {
       return {
-        writing: WritingList()
+        writing: subscriptions.WritingList(50, props.settings.ownerId)
       };
     }
   },
@@ -17329,7 +17346,7 @@ module.exports = AutoFocusMixin;
 },{}],130:[function(require,module,exports){
 module.exports=require(38)
 },{}],131:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
+module.exports=require(39)
 },{"./CSSProperty":130,"./dangerousStyleValue":222,"./escapeTextForBrowser":224,"./hyphenate":235,"./memoizeStringOnly":244}],132:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -24271,6 +24288,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
       handlers: {},
       models: {},
       modelIndex: [],
+      modelIndexRemoved: [],
       parseObject: manifest.parseObject || function(snapshot) {
         var obj;
         obj = snapshot.val();
@@ -24291,7 +24309,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
         return this.parseList(list.value());
       },
       subscribe: function(callback, options) {
-        var cancelUpdateObject, exportAllModels, updateObject;
+        var addChild, cancelUpdateObject, exportAllModels, removeChild, updateObject;
         if (options == null) {
           options = {};
         }
@@ -24312,30 +24330,51 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
           return function(id) {
             return function() {
               _this.modelIndex = _.without(_this.modelIndex, id);
+              _this.modelIndexRemoved.push(id);
               return exportAllModels();
             };
           };
         })(this);
-        manifest.indexRef.on("child_added", (function(_this) {
-          return function(snapshot) {
+        addChild = (function(_this) {
+          return function(id) {
             var childRef;
-            _this.modelIndex.push(snapshot.name());
-            childRef = manifest.dataRef.child(snapshot.name());
-            childRef.on("value", updateObject, cancelUpdateObject(snapshot.name()));
-            return _this.handlers[snapshot.name()] = {
+            childRef = manifest.dataRef.child(id);
+            childRef.on("value", updateObject, cancelUpdateObject(id));
+            return _this.handlers[id] = {
               fn: updateObject,
               ref: childRef
             };
           };
-        })(this));
-        return manifest.indexRef.on("child_removed", (function(_this) {
+        })(this);
+        removeChild = (function(_this) {
+          return function(id) {
+            var _base, _ref;
+            if ((_ref = _this.handlers[id]) != null) {
+              if (typeof (_base = _ref.ref).off === "function") {
+                _base.off();
+              }
+            }
+            delete _this.handlers[id];
+            return delete _this.models[id];
+          };
+        })(this);
+        return manifest.indexRef.on("value", (function(_this) {
           return function(snapshot) {
-            var key;
-            key = snapshot.name();
-            _this.modelIndex = _(_this.modelIndex).without(key);
-            delete _this.handlers[key];
-            delete _this.models[key];
-            return callback(_this.exportModels());
+            var currentKeys, existingKeys, key, newKeys, removedKeys, _i, _j, _len, _len1;
+            currentKeys = _(snapshot.val()).keys();
+            existingKeys = _(_this.models).keys().concat(_this.modelIndexRemoved);
+            removedKeys = _(existingKeys).without(currentKeys);
+            newKeys = _(currentKeys).without(existingKeys);
+            _this.modelIndex = _(currentKeys).without(_this.modelIndexRemoved);
+            for (_i = 0, _len = removedKeys.length; _i < _len; _i++) {
+              key = removedKeys[_i];
+              removeChild(key);
+            }
+            for (_j = 0, _len1 = newKeys.length; _j < _len1; _j++) {
+              key = newKeys[_j];
+              addChild(key);
+            }
+            return exportAllModels();
           };
         })(this));
       },

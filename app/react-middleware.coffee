@@ -8,6 +8,7 @@ _ = require("underscore")
 
 safeStringify = require("../app/utils").safeStringify
 {fetchSubscriptions} = require("sparkboard-tools")
+{Firebase, FIREBASE_URL} = require("./firebase")
 
 # By installing `node-jsx`, we can use JSX inside backticks in coffee-script files. 
 
@@ -26,6 +27,11 @@ routes = require("./routes")
 Router = require("sparkboard-tools").Router.create(routes)
 Router.addFallback require("./route-fallback")
 
+settings = {}
+settingsRef = new Firebase(FIREBASE_URL+"/settings")
+settingsRef.on "value", (snap) ->
+    settings = snap.val()||{}
+
 # Begin middleware...
 module.exports = (req, res, next) ->
 
@@ -36,6 +42,7 @@ module.exports = (req, res, next) ->
         props = 
             path: path
             matchedRoute: matchedRoute
+            settings: settings
 
         handler = components[matchedRoute.handler]
 

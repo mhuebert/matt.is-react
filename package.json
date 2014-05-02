@@ -53,7 +53,8 @@
     "gulp-rename": "^1.2.0",
     "nodemon": "^1.0.15",
     "ignorify": "^0.1.1",
-    "optimist": "^0.6.1"
+    "optimist": "^0.6.1",
+    "firebase-cli": "^0.3.0"
   },
   "engines": {
     "node": "v0.10.26"

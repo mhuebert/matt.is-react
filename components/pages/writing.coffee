@@ -6,7 +6,7 @@ React = require("react")
 Body = require("../body")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-{WritingList} = require("../../app/subscriptions")
+subscriptions = require("../../app/subscriptions")
 
 Component = React.createClass
 
@@ -16,8 +16,8 @@ Component = React.createClass
         getMetadata: ->
             title: "Writing | Matt.is"
             description: "Wherein I uncover."
-        subscriptions: ->
-            writing: WritingList()
+        subscriptions: (props) ->
+            writing: subscriptions.WritingList(50, props.settings.ownerId)
 
     render: ->
 

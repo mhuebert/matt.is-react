@@ -3,7 +3,11 @@ ownerId = "15538074"
 ownerOrNew = "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
 userOwnsObject = "newData.child('owner').val() == auth.id"
 
-module.exports = 
+module.exports =
+
+  settings:
+    write: "(data.child('ownerId').val() == null || data.child('ownerId').val() == auth.id)"
+    read: true
 
   tags:
     users:
@@ -24,7 +28,7 @@ module.exports =
       read: "$user == auth.id"
       ideas:
         $post:
-          validate: "root.child('posts').child($post).child('owner') == auth.id"
+          validate: "root.child('posts').child($post).child('owner').val() == auth.id"
       writing:
         read: true
         $post:

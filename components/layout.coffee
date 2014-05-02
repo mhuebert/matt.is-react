@@ -35,6 +35,9 @@ Layout = React.createClass
                 @_firebaseRefCache.push(ref)
                 ref.on "child_added", ->
         , 100
+        settingsRef = new Firebase(FIREBASE_URL+"/settings")
+        settingsRef.on "value", (snap) =>
+            @setProps settings: snap.val()||{}
         
     getHandler: ->
         components[this.props.matchedRoute.handler]

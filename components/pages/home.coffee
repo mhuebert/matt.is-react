@@ -13,18 +13,18 @@ subscriptions = require("../../app/subscriptions")
 Home = React.createClass
     mixins: [SubscriptionMixin]
     statics:
-        subscriptions: ->
+        subscriptions: (props) ->
             photos: subscriptions.PhotoList(9)
-            writing: subscriptions.WritingList(20)
-        getMetadata: ->
-            title: "Welcome | Matt.is"
-            description: "Artefactually speaking."
+            writing: subscriptions.WritingList(20, props.settings.ownerId)
+        getMetadata: (props) ->
+            title: props.settings.siteTitle
+            description: props.settings.siteDescription
     render: ->
         writing = new Collection(this.props.writing)
         photos = new Collection(this.props.photos)
         `<div>
             <Nav />
-            <h1>Matthew Huebert</h1>
+            <h1>{this.props.settings.homeTitle}</h1>
             <p className="intro">
               <span className="wordBlock">That's my name.</span> 
               <span className="wordBlock">I live in <a href="http://en.wikipedia.org/wiki/Reykjav%C3%ADk">Reykjavik.</a></span> 

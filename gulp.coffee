@@ -1,4 +1,5 @@
 gulp = require("gulp")
+gutil = require("gulp-util")
 notify = require('gulp-notify')
 stylus = require('gulp-stylus')
 coffee = require('gulp-coffee')
@@ -30,13 +31,13 @@ gulp.task 'scripts', ->
 
 gulp.task 'firebaseRules', ->
     if mergeFirebaseRules("./security-rules", "./security-rules/_compiled.json")
-        console.log "Merged Firebase Rules"
+        console.log "...Deploying Firebase rules"
         firebase = spawn "firebase", ['deploy']
-        firebase.stdout.on 'data', (data) -> console.log data.toString().trim()
+        firebase.stdout.on 'data', (data) -> gutil.log data.toString().trim()
         # receive error messages and process
-        firebase.stderr.on 'data', (data) -> console.log data.toString().trim()
+        firebase.stderr.on 'data', (data) -> gutil.log data.toString().trim()
     else
-        console.log "Error merging Firebase rules"
+        gutil.log "Error merging Firebase rules"
 
 gulp.task 'watch', ->
     server = livereload()

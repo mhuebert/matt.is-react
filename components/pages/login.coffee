@@ -4,10 +4,15 @@ React = require("react")
 DynamicLoader = require("../partials/dynamicLoader")
 Body = require("../body")
 Component = React.createClass
-    componentDidMount: ->
+    login: ->
       auth.login "twitter",
         rememberMe: true
+
     render: ->
-        `<Body className="loading"></Body>`
+      loggedIn = user?.id?
+      `<Body>
+        <a className={loggedIn ? "hidden" : ""} href="#" onClick={this.login}>Login</a>
+        <a className={loggedIn ? "" : "hidden"} href="/">Home</a>
+      </Body>`
 
 module.exports = Component
