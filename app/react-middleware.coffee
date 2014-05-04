@@ -6,7 +6,7 @@ nodeJSX = require("node-jsx")
 url = require("url")
 _ = require("underscore")
 
-safeStringify = require("../app/utils").safeStringify
+{safeStringify} = require("sparkboard-tools").utils
 {fetchSubscriptions} = require("sparkboard-tools")
 {Firebase, FIREBASE_URL} = require("./firebase")
 

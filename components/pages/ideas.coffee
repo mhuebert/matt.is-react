@@ -8,11 +8,10 @@ Addons = require("react-addons")
 
 {SubscriptionMixin, firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
 {Collection} = require("../../app/models")
-{snapshotToArray} = require("sparkboard-tools").utils
+{snapshotToArray, slugify} = require("sparkboard-tools").utils
 
 Body = require("../body")
 LinkList = require("../partials/linkList")
-slugify = require("../../app/utils").slugify
 
 
 {ownerId} = require("../../config")

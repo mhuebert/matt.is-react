@@ -9,7 +9,6 @@ Head = require("./partials/head")
 
 {FIREBASE_URL} = require("../app/firebase")
 
-Models = require("../app/models")
 components = require("./index")
 
 Layout = React.createClass

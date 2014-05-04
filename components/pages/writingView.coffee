@@ -6,7 +6,7 @@ React = require("react")
 
 {Firebase, FIREBASE_URL} = require("../../app/firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
-{snapshotToArray} = require("sparkboard-tools").utils
+{snapshotToArray, slugify} = require("sparkboard-tools").utils
 {Model} = require("../../app/models")
 {ownerId} = require("../../config")
 
@@ -14,7 +14,6 @@ Nav = require("../partials/nav")
 
 DynamicLoader = require("../partials/dynamicLoader")
 simplePagination = require("../partials/simplePagination")
-slugify = require("../../app/utils").slugify
 textareaAutosize = require("../partials/textareaAutosize")
 marked = require("marked")
 marked.setOptions

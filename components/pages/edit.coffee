@@ -6,7 +6,7 @@ React = require("react")
 
 Nav = require("../partials/nav")
 simplePagination = require("../partials/simplePagination")
-slugify = require("../../app/utils").slugify
+{slugify} = require("sparkboard-tools").utils
 textareaAutosize = require("../partials/textareaAutosize")
 toggleShowHide = require("../partials/toggleShowHide")
 Dropdown = require("../partials/dropdown")
