@@ -3,7 +3,7 @@
 IndexServer = require("firebase-index-server")
 {firebase} = require("../firebase") 
 Firebase = require("firebase")
-root = new Firebase("#{firebase}.firebaseIO.com")
+root = new Firebase(process.env.FIREBASE_URL)
 root.auth(process.env.FIREBASE_SECRET)
 
 
