@@ -10,6 +10,8 @@ module.exports =
     read: true
 
   tags:
+    write: true
+
     users:
       $user:
         write: "$user == auth.id"
@@ -18,7 +20,7 @@ module.exports =
             validate: "root.child('posts').hasChild($post)"
     $tag:
       $post:
-        validate: "root.child('posts').hasChild($post)"
+        validate: "root.child('posts/'+$post).hasChild($tag)"
         write: ownerOrNew
 
   # users are private

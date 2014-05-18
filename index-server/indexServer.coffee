@@ -1,12 +1,16 @@
 # Example usage:
 
 IndexServer = require("firebase-index-server")
-{FIREBASE_URL} = require("../firebase") 
+{firebase} = require("../firebase") 
+Firebase = require("firebase")
+root = new Firebase("#{firebase}.firebaseIO.com")
+root.auth(process.env.FIREBASE_SECRET)
+
 
 _ = require("underscore")
 
 server = IndexServer
-  FIREBASE_URL: FIREBASE_URL
+  ref: root
   index:
     type: "tagIndex"
     sourcePath: "/posts/"

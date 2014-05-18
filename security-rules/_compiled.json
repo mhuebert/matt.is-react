@@ -17,10 +17,11 @@
             },
             "$tag": {
                 "$post": {
-                    ".validate": "root.child('posts').hasChild($post)",
+                    ".validate": "root.child('posts/'+$post).hasChild($tag)",
                     ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
                 }
-            }
+            },
+            ".write": true
         },
         "users": {
             "$user": {
