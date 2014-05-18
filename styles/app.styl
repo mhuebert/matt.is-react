@@ -28,6 +28,7 @@ lightBackground()
         transform(rotate(360deg))
 a.more-link, a.more-link:visited
     color #999
+    margin-top 10px
 del
     opacity 0.5
     text-decoration strikethrough
@@ -136,14 +137,16 @@ blockquote
                     opacity 1
                     
     img
-        margin 30px
+        // margin 30px
+        margin 5px
         width 220px
         height 220px
         box-shadow(0 0 5px rgba(0,0,0,0.2))
         &:hover
-            border 10px solid rgba(0,0,0,0.05)
-            box-shadow(none)
-            margin 20px
+            // border 5px solid rgba(0,0,0,0.05)
+            box-shadow(0 0 5px rgba(0,0,0,0.6))
+            // box-shadow(none)
+            // margin 0px
 p, ul, ol, blockquote
     margin-bottom 24px
 // @keyframes around
@@ -198,19 +201,6 @@ body, input, textarea, select, button
     font-family georgia
     line-height 140%    
 
-.intro 
-    text-align center
-    margin-bottom -15px
-.wordBlock
-    line-height 50px
-    height 50px
-    margin 0 15px 15px 0
-    border-radius(4px)
-    lightBackground()
-    display inline-block
-    padding 0 15px
-    cursor default
-    position relative
 .controls
     font-family helvetica
     font-weight 200
@@ -265,7 +255,7 @@ a
         color c35051
 h1, .h1, h2
     font-size 49.5px
-    margin 60px 0 30px
+    margin 0 0 30px
     text-align center
     line-height 120%
     background transparent
@@ -484,9 +474,18 @@ ul.writing-list
 .hidden
     display none !important
 @media(max-width:450px)
-    .wordBlock
-        display block
-        margin-right 0
+    .nav-main
+        margin-bottom 20px
+        text-align center
+    body
+        font-size 100%
+    .content
+        padding-top 50px
+    .link-list
+        font-size 116%
+        line-height 160%
     h1, .h1
         font-size 36px
-        margin 50px 0 20px
+        margin 0 0 20px
+    .content img
+        max-width 100%

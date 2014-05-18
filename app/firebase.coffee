@@ -1,5 +1,6 @@
 
 @Firebase = Firebase = window?.Firebase || require("firebase")
+# @Firebase.goOffline()
 @FIREBASE_URL = process.env.FIREBASE_URL || require("../config").FIREBASE_URL
 
 if !window?

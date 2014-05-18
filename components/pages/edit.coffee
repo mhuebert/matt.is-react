@@ -218,10 +218,15 @@ Component = React.createClass
                         /<input className={"grey "+(this.permalinkReady ? "success" : "error")}  placeholder="my-permalink" ref="permalink" onChange={this.changePermalink} value={this.state.permalink}/>
                     </div>
                     <div>
-                        <input placeholder="Description" onChange={this.handleDescriptionChange} value={this.state.description}/>
+                        <input  placeholder="Description" 
+                                onChange={this.handleDescriptionChange} 
+                                value={this.state.description}/>
                     </div>
                     <div>
-                        <input ref="date" onChange={this.changeDate} className={"grey "+(this.state.validDate ? "success" : "error")} defaultValue={moment(this.state.date).format(dateFormat)}/>
+                        <input  ref="date" 
+                                onChange={this.changeDate} 
+                                className={"grey "+(this.state.validDate ? "success" : "error")} 
+                                defaultValue={moment(this.state.date).format(dateFormat)}/>
                     </div>
                     <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
                 </div>

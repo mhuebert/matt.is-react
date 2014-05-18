@@ -4,8 +4,7 @@
   "description": "Personal website of Matt Huebert",
   "main": "server.coffee",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "coffee server.coffee"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -37,7 +36,8 @@
     "marked": "^0.3.2",
     "moment": "^2.5.1",
     "screenfull": "^1.1.1",
-    "sparkboard-tools": "sparkboard/sparkboard-tools"
+    "sparkboard-tools": "sparkboard/sparkboard-tools",
+    "firebase-index-server": "sparkboard/firebase-index-server"
   },
   "devDependencies": {
     "coffeeify": "~0.6.0",

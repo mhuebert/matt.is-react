@@ -1,6 +1,7 @@
 `/** @jsx React.DOM */`
 
 React = require("react")
+# React.initializeTouchEvents(true)
 _ = require("underscore")
 
 RouterMixin = require("sparkboard-tools").Router.Mixin
@@ -18,7 +19,7 @@ Layout = React.createClass
     firebaseRefCache: [] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
     componentWillMount: ->
-        if window?
+        if window? and !window.auth
             window.auth = new FirebaseSimpleLogin new Firebase(FIREBASE_URL), (err, user) =>
                 if err
                     console.log "Error logging in"

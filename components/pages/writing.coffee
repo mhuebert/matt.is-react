@@ -23,7 +23,7 @@ Component = React.createClass
 
         `this.transferPropsTo(<Body className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
             <h1>Writing</h1>
-            <ul className="messages link-list">
+            <ul className="link-list">
                 {
                     this.props.writing.map(function(post){
                         return <li key={post.id} >
