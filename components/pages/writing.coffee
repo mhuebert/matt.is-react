@@ -17,10 +17,10 @@ Component = React.createClass
             title: "Writing | Matt.is"
             description: "Wherein I uncover."
         subscriptions: (props) ->
+            console.log props
             writing: subscriptions.WritingList(50, props.settings.ownerId)
 
     render: ->
-
         `this.transferPropsTo(<Body className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
             <h1>Writing</h1>
             <ul className="link-list">
@@ -32,7 +32,6 @@ Component = React.createClass
                         })
                 }
             </ul>
-
         </Body>)`
 
 module.exports = Component

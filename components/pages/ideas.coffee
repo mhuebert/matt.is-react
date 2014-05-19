@@ -2,7 +2,7 @@
 
 _ = require("underscore")
 React = require("react")
-Addons = require("react-addons")
+Addons = require("react/addons")
 
 {Firebase, FIREBASE_URL} = require("../../app/firebase")
 
@@ -11,7 +11,7 @@ Addons = require("react-addons")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
 
 Body = require("../body")
-LinkList = require("../partials/linkList")
+LinkList = require("../widgets/linkList")
 
 
 {ownerId} = require("../../config")

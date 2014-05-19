@@ -6,7 +6,7 @@ _ = require("underscore")
 
 RouterMixin = require("sparkboard-tools").Router.Mixin
 
-Head = require("./partials/head")
+Head = require("./widgets/head")
 
 {FIREBASE_URL} = require("../app/firebase")
 

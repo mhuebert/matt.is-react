@@ -10,11 +10,13 @@ React = require("react")
 {Model} = require("../../app/models")
 {ownerId} = require("../../config")
 
-Nav = require("../partials/nav")
+Nav = require("../widgets/nav")
+TagList = require("../widgets/tagList")
 
-DynamicLoader = require("../partials/dynamicLoader")
-simplePagination = require("../partials/simplePagination")
-textareaAutosize = require("../partials/textareaAutosize")
+
+DynamicLoader = require("../widgets/dynamicLoader")
+simplePagination = require("../widgets/simplePagination")
+textareaAutosize = require("../widgets/textareaAutosize")
 marked = require("marked")
 marked.setOptions
   gfm: true
@@ -87,17 +89,25 @@ Component = React.createClass
                 shouldUpdateSubscription: (oldProps, newProps) ->
                     oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
-
     render: ->
         post = new Model(this.props.post)
+        tags = _(post.get("tags")).keys()
 
         `<div className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
             <DynamicLoader />
             <Nav>
                 <a href={"/posts/edit/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>
             </Nav>
+            <ul className="tag-list">
+                {tags.map(function(tag, i){return (
+                    <li key={i+tag}>
+                        <a href="/writing/tag/{slugify(tag)}">{tag}</a>
+                    </li>
+                )})}
+            </ul>
             <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
+            
             <simplePagination
                 className={post.get("publishDate") ? "" : "hidden"} 
                 back="/writing"

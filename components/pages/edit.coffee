@@ -4,12 +4,12 @@ _ = require("underscore")
 React = require("react")
 
 
-Nav = require("../partials/nav")
-simplePagination = require("../partials/simplePagination")
+Nav = require("../widgets/nav")
+simplePagination = require("../widgets/simplePagination")
 {slugify} = require("sparkboard-tools").utils
-textareaAutosize = require("../partials/textareaAutosize")
-toggleShowHide = require("../partials/toggleShowHide")
-Dropdown = require("../partials/dropdown")
+textareaAutosize = require("../widgets/textareaAutosize")
+toggleShowHide = require("../widgets/toggleShowHide")
+Dropdown = require("../widgets/dropdown")
 unsafeCharacters = /[^[:alnum:]\s.!?,:\*;'"]/g
 moment = require("moment")
 dateFormat = "MMMM D, YYYY"

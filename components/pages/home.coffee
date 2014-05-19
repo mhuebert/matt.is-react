@@ -2,7 +2,7 @@
 
 React = require("react")
 Body = require("../body")
-Nav = require("../partials/nav")
+Nav = require("../widgets/nav")
 Writing = require("./writing")
 Photography = require("./photography")
 

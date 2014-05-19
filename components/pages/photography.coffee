@@ -2,13 +2,13 @@
 
 React = require("react")
 Body = require("../body")
-Nav = require("../partials/nav")
+Nav = require("../widgets/nav")
 
 {SubscriptionMixin} = require("sparkboard-tools")
 {PhotoList} = require("../../app/subscriptions")
 {Collection} = require("../../app/models")
 
-DynamicLoader = require("../partials/dynamicLoader")
+DynamicLoader = require("../widgets/dynamicLoader")
 
 
 Component = React.createClass

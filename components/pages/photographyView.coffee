@@ -2,9 +2,9 @@
 
 _ = require("underscore")
 React = require("react")
-Nav = require("../partials/nav")
-DynamicLoader = require("../partials/dynamicLoader")
-simplePagination = require("../partials/simplePagination")
+Nav = require("../widgets/nav")
+DynamicLoader = require("../widgets/dynamicLoader")
+simplePagination = require("../widgets/simplePagination")
 
 {Firebase, FIREBASE_URL} = require("../../app/firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")

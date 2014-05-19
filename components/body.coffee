@@ -1,8 +1,8 @@
 `/** @jsx React.DOM */`
 
 React = require("react")
-Nav = require("./partials/nav")
-DynamicLoader = require("./partials/dynamicLoader")
+Nav = require("./widgets/nav")
+DynamicLoader = require("./widgets/dynamicLoader")
 
 Component = React.createClass
     render: ->

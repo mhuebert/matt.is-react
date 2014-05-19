@@ -2,7 +2,7 @@
 
 React = require("react")
 _ = require("underscore")
-Addons = require("react-addons")
+Addons = require("react/addons")
 {getRootComponent} = require("sparkboard-tools").utils
 
 

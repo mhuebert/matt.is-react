@@ -2,6 +2,7 @@
 routes =  [
     { path: "/",                 handler: "Home" },
     { path: "/writing",          handler: "Writing" },
+    { path: "/writing/tag/:tag", handler: "Writing" },
     { path: "/writing/:id",      handler: "WritingView" },
     { path: "/ideas",            handler: "Ideas" },
     { path: "/posts/edit/:id",   handler: "Edit" },
