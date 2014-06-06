@@ -5,6 +5,7 @@ React = require("react")
 
 Body = require("../body")
 
+
 {SubscriptionMixin} = require("sparkboard-tools")
 subscriptions = require("../../app/subscriptions")
 
@@ -17,12 +18,25 @@ Component = React.createClass
             title: "Writing | Matt.is"
             description: "Wherein I uncover."
         subscriptions: (props) ->
-            console.log props
-            writing: subscriptions.WritingList(50, props.settings.ownerId)
+            indexPath = switch (tag = props.matchedRoute.params.tag)
+                when undefined
+                    '/users/'+props.settings.ownerId+'/writing' 
+                else
+                    '/tags/'+tag
+            writing: subscriptions.WritingList(50, indexPath)
 
     render: ->
-        `this.transferPropsTo(<Body className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
-            <h1>Writing</h1>
+        
+        switch tag = this.props.matchedRoute.params.tag 
+            when undefined
+                title = "Writing"
+                breadcrumb = ['writing']
+            else
+                title = "#"+tag
+                breadcrumb = ['tags', tag]
+
+        `this.transferPropsTo(<Body breadcrumb={breadcrumb} className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
+            <h1>{title}</h1>
             <ul className="link-list">
                 {
                     this.props.writing.map(function(post){

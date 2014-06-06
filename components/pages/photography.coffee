@@ -2,13 +2,11 @@
 
 React = require("react")
 Body = require("../body")
-Nav = require("../widgets/nav")
 
 {SubscriptionMixin} = require("sparkboard-tools")
 {PhotoList} = require("../../app/subscriptions")
 {Collection} = require("../../app/models")
 
-DynamicLoader = require("../widgets/dynamicLoader")
 
 
 Component = React.createClass
@@ -38,9 +36,7 @@ Component = React.createClass
     render: ->
         deletePhoto = this.deletePhoto
         photos = new Collection(this.props.photos)
-        `<div className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
-            <Nav />
-            <DynamicLoader />
+        `<Body breadcrumb={{href:"/photography", title:"photography"}} className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
             <h1>Photography</h1>
             <div className="photos text-center">
                 <div className="showIfUser">
@@ -48,6 +44,6 @@ Component = React.createClass
                 </div>
               {photos.map(function(photo){return <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}><div data-id={photo.get("id")} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.get("url")+"/convert?w=220&h=220&fit=crop"} /></a>})}
             </div>
-        </div>`
+        </Body>`
 
 module.exports = Component

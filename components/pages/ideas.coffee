@@ -33,7 +33,7 @@ Component = React.createClass
                     post = snapshot.val()
                     post.id = snapshot.name()
                     post.priority = snapshot.getPriority()
-                    post.href = "/posts/edit/"+post.id
+                    post.href = "/ideas/"+post.id
                     post
                 parseList: (list) ->
                     list.reverse()
@@ -73,7 +73,7 @@ Component = React.createClass
         
     render: ->
         ideas = new Collection(this.props.ideas)
-        `<Body className="ideas showIfUser">
+        `<Body  breadcrumb={["ideas"]} className="ideas showIfUser">
             <h1>Ideas</h1>
             <input value={this.state.title} ref="input" className="ideas-input" onKeyUp={this.handleKeyup} onChange={this.handleChangeTitle} placeholder='Begin a new idea...' />
             <ul className="ideas link-list" >

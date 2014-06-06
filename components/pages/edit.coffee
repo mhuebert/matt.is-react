@@ -4,7 +4,7 @@ _ = require("underscore")
 React = require("react")
 
 
-Nav = require("../widgets/nav")
+Body = require("../body")
 simplePagination = require("../widgets/simplePagination")
 {slugify} = require("sparkboard-tools").utils
 textareaAutosize = require("../widgets/textareaAutosize")
@@ -109,7 +109,7 @@ Component = React.createClass
         post.owner = user.id
         priority = this.props.post.publishDate || Date.now()
 
-        location = if this.props.post.publishDate then "/writing" else "/posts/edit"
+        location = if this.props.post.publishDate then "/writing" else "/ideas"
         root = this.props.subscriptions.post.ref.root()
 
         if @permalinkReady() and this.props.post.permalink != this.state.permalink
@@ -137,6 +137,8 @@ Component = React.createClass
 
     handleBodyChange: (e) ->
         @setState body: e.target.value
+    handlePreviewChange: (e) ->
+        @setState preview: e.target.value
     handleDescriptionChange: (e) ->
         @setState description: e.target.value
 
@@ -187,19 +189,25 @@ Component = React.createClass
         isPublished = this.props.post?.publishDate?
         loading = _.isEmpty this.props.post
         if isPublished then viewLink = "/"+this.props.post.permalink else viewLink = "/writing/#{this.props.post.id}"
-        
-        `<div className={"content "+(loading ? "loading" : "")}>
-            <Nav>    
-                <a  href={viewLink}
-                    className={"btn btn-standard right showIfUser"}>
-                    View</a>
-                <a  onClick={this.publish} 
-                    className={(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
-                    Publish</a>
-                <a  onClick={this.save} 
-                    className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>Save</a>
-            </Nav>
 
+        if isPublished 
+            breadcrumb = ["writing", this.props.post.permalink]
+        else
+            breadcrumb = ["ideas", this.props.post.id]
+
+        `<Body  breadcrumb={breadcrumb}  
+                navInclude={<span><a  onClick={this.save} 
+                                className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>
+                                Save</a>
+                            <a  onClick={this.publish} 
+                                className={(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
+                                Publish</a>
+                            <a  href={viewLink}
+                                className={"btn btn-standard right showIfUser"}>
+                                View</a></span>}
+                className={"content "+(loading ? "loading" : "")}>
+
+            
             <textareaAutosize   placeholder="Title..."
                                 className="h1 text-center" 
                                 ref="title" 
@@ -232,10 +240,18 @@ Component = React.createClass
                 </div>
             </toggleShowHide>
 
+            <textareaAutosize   ref="preview" 
+                                onChange={this.handlePreviewChange} 
+                                className="idea-preview" 
+                                name="preview" 
+                                value={this.state.preview}
+                                placeholder="Other"/>
+            
+
             <textareaAutosize ref="body" onChange={this.handleBodyChange} className="idea-body" name="body" value={this.state.body} />
             
 
             
-        </div>`
+        </Body>`
 
 module.exports = Component

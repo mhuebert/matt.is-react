@@ -11,9 +11,15 @@ _ = require("underscore")
 
 server = IndexServer
   ref: root
-  index:
-    type: "tagIndex"
+  indexes:[
+    type: "manyToMany"
     sourcePath: "/posts/"
     sourceAttribute: "tags"
     indexPath: "/tags/"
     keyTransform: (key) -> slugify(key)
+  ,
+    type: "oneToOne"
+    sourcePath: "/posts/"
+    sourceAttribute: "permalink"
+    indexPath: "/permalinks/"
+  ]

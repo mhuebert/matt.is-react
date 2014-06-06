@@ -14,8 +14,7 @@ Home = React.createClass
     mixins: [SubscriptionMixin]
     statics:
         subscriptions: (props) ->
-            photos: subscriptions.PhotoList(9)
-            writing: subscriptions.WritingList(20, props.settings.ownerId)
+            writing: subscriptions.WritingList(20, '/users/'+props.settings.ownerId+'/writing' )
         getMetadata: (props) ->
             title: props.settings.siteTitle
             description: props.settings.siteDescription

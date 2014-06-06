@@ -10,8 +10,7 @@ module.exports =
     read: true
 
   tags:
-    write: true
-
+    read: true
     users:
       $user:
         write: "$user == auth.id"

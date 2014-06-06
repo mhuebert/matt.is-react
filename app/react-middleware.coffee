@@ -22,7 +22,7 @@ nodeJSX.install
 components = require("../components")
 {Layout} = components
 
-# Router - parse the same routes on the client and server.
+# Router - use the same routes on the client and server.
 routes = require("./routes")
 Router = require("sparkboard-tools").Router.create(routes)
 Router.addFallback require("./route-fallback")
@@ -37,7 +37,8 @@ module.exports = (req, res, next) ->
 
     path = url.parse(req.url).pathname
 
-    # Use our `Router` to find the appropriate `Handler` component, which contains Firebase data dependencies:
+    # Use `Router` to find the appropriate `Handler` component, 
+    # which contains Firebase data dependencies:
     Router.matchRoute path, (matchedRoute) ->
         props = 
             path: path
@@ -48,7 +49,7 @@ module.exports = (req, res, next) ->
 
         subscriptions = handler.subscriptions?(props) || {}
 
-        # Fetch our data from Firebase & put it into props:
+        # Fetch data from Firebase & put it into props:
         fetchSubscriptions subscriptions, (subscriptionData) ->
             _.extend props, subscriptionData
 

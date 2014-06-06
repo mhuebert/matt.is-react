@@ -10,11 +10,9 @@ React = require("react")
 {Model} = require("../../app/models")
 {ownerId} = require("../../config")
 
-Nav = require("../widgets/nav")
 TagList = require("../widgets/tagList")
+Body = require("../body")
 
-
-DynamicLoader = require("../widgets/dynamicLoader")
 simplePagination = require("../widgets/simplePagination")
 textareaAutosize = require("../widgets/textareaAutosize")
 marked = require("marked")
@@ -92,27 +90,20 @@ Component = React.createClass
     render: ->
         post = new Model(this.props.post)
         tags = _(post.get("tags")).keys()
-
-        `<div className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
-            <DynamicLoader />
-            <Nav>
-                <a href={"/posts/edit/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>
-            </Nav>
-            <ul className="tag-list">
-                {tags.map(function(tag, i){return (
-                    <li key={i+tag}>
-                        <a href="/writing/tag/{slugify(tag)}">{tag}</a>
-                    </li>
-                )})}
-            </ul>
+        `<Body  breadcrumb={["writing", post.get("permalink")]}  
+                navInclude ={<a href={"/ideas/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>}
+                className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
+            
             <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
-            
+            <TagList tags={tags} 
+                     url={function(tag){return "/tags/"+slugify(tag)}}
+                     label={function(tag){return "#"+tag}}/>
             <simplePagination
                 className={post.get("publishDate") ? "" : "hidden"} 
                 back="/writing"
                 next={this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false} 
                 prev={this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} />  
-        </div>`
+        </Body>`
 
 module.exports = Component

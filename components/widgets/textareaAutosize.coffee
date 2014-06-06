@@ -13,7 +13,9 @@ Component = React.createClass
     @autoSize()
   render: ->
       `this.transferPropsTo(
-        <textarea placeholder="Write here" className="textarea-autosize" onKeyUp={this.handleChange}>
+        <textarea placeholder="Write here" 
+                  className="textarea-autosize" 
+                  onKeyUp={this.handleChange}>
         </textarea>
       )`
 

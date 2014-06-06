@@ -21,7 +21,7 @@
                     ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
                 }
             },
-            ".write": true
+            ".read": true
         },
         "users": {
             "$user": {
