@@ -815,7 +815,8 @@ Home = React.createClass({displayName: 'Home',
   statics: {
     subscriptions: function(props) {
       return {
-        writing: subscriptions.WritingList(20, '/users/' + props.settings.ownerId + '/writing')
+        writing: subscriptions.WritingList(20, '/users/' + props.settings.ownerId + '/writing'),
+        photos: subscriptions.PhotoList()
       };
     },
     getMetadata: function(props) {
@@ -830,15 +831,23 @@ Home = React.createClass({displayName: 'Home',
     writing = new Collection(this.props.writing);
     photos = new Collection(this.props.photos);
     return React.DOM.div( {className:"content"}, 
-            Nav(null ),
-            React.DOM.h1(null, this.props.settings.homeTitle),
-            React.DOM.ul( {className:"link-list"} , 
-                writing.map(function(post){  
-                    return React.DOM.li( {key:post.get("id")} , 
-                        React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title")) 
-                    )}),
-                React.DOM.li( {key:"more"}, React.DOM.a( {href:"/writing", className:"more-link btn btn-standard"} , "more →"))
+                Nav(null ),
+                React.DOM.h1(null, this.props.settings.homeTitle),
+                React.DOM.ul( {className:"link-list"} , 
+                    writing.map(function(post){  
+                        return React.DOM.li( {key:post.get("id")} , 
+                            React.DOM.a( {href:"/"+post.get("permalink")}, post.get("title")) 
+                        )}),
+                    React.DOM.li( {key:"more"}, React.DOM.a( {href:"/writing", className:"more-link btn btn-standard"} , "more →"))
+                ),
+            React.DOM.div( {className:"home-photos"}, 
+                photos.map(function(photo){
+                    return  React.DOM.a( {key:photo.get("id"), href:"/seeing/"+photo.get("id")}, 
+                                React.DOM.img( {src:photo.get("url")+"/convert?w=120&h=120&fit=crop"} )
+                            )
+                    })
             )
+
         );
   }
 });
@@ -1097,11 +1106,11 @@ Component = React.createClass({displayName: 'Component',
     var deletePhoto, photos;
     deletePhoto = this.deletePhoto;
     photos = new Collection(this.props.photos);
-    return Body( {breadcrumb:{href:"/photography", title:"photography"}, className:"content "+ ((photos.size() > 0) ? "" : "loading"), style:{maxWidth:960}}, 
+    return Body( {breadcrumb:["photography"], className:"content "+ ((photos.size() > 0) ? "" : "loading"), style:{maxWidth:960}}, 
             React.DOM.h1(null, "Photography"),
             React.DOM.div( {className:"photos text-center"}, 
                 React.DOM.div( {className:"showIfUser"}, 
-                    React.DOM.a( {style:{display:'block',marginBottom:20, maxWidth:780, margin:"0 auto"}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
+                    React.DOM.a( {style:{display:'block',maxWidth:780, margin:"20px auto 30px"}, className:"btn btn-standard", onClick:this.uploadPhoto}, "Upload Photos")
                 ),
               photos.map(function(photo){return React.DOM.a( {key:photo.get("id"), href:"/seeing/"+photo.get("id")}, React.DOM.div( {'data-id':photo.get("id"), onClick:deletePhoto, className:"photo-delete"}, "×"),React.DOM.img( {src:photo.get("url")+"/convert?w=220&h=220&fit=crop"} ))})
             )

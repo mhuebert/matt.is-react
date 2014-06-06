@@ -36,11 +36,11 @@ Component = React.createClass
     render: ->
         deletePhoto = this.deletePhoto
         photos = new Collection(this.props.photos)
-        `<Body breadcrumb={{href:"/photography", title:"photography"}} className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
+        `<Body breadcrumb={["photography"]} className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
             <h1>Photography</h1>
             <div className="photos text-center">
                 <div className="showIfUser">
-                    <a style={{display:'block',marginBottom:20, maxWidth:780, margin:"0 auto"}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
+                    <a style={{display:'block',maxWidth:780, margin:"20px auto 30px"}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
                 </div>
               {photos.map(function(photo){return <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}><div data-id={photo.get("id")} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.get("url")+"/convert?w=220&h=220&fit=crop"} /></a>})}
             </div>
