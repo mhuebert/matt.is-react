@@ -10,7 +10,8 @@ routes =  [
     { path: "/login",            handler: "Login" },
     { path: "/logout",           handler: "Logout" },
     { path: "/seeing",           handler: "Photography" },
-    { path: "/seeing/:id",       handler: "PhotographyView" }
+    { path: "/seeing/:id",       handler: "PhotographyView" },
+    { path: "/map",              handler: "Map" }
     # { path: "*",                 handler: "NotFound" }
 ]
 

@@ -4,11 +4,11 @@ _ = require("underscore")
 React = require("react")
 
 
-{Firebase, FIREBASE_URL} = require("../../app/firebase")
+{Firebase, FIREBASE_URL} = require("../../firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
-{Model} = require("../../app/models")
-{ownerId} = require("../../config")
+{Model} = require("../../models")
+{ownerId} = require("../../../config")
 
 TagList = require("../widgets/tagList")
 Body = require("../body")

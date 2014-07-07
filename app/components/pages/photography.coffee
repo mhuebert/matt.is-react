@@ -4,8 +4,8 @@ React = require("react")
 Body = require("../body")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-{PhotoList} = require("../../app/subscriptions")
-{Collection} = require("../../app/models")
+{PhotoList} = require("../../subscriptions")
+{Collection} = require("../../models")
 
 
 

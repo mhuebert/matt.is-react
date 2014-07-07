@@ -4,17 +4,17 @@ _ = require("underscore")
 React = require("react")
 Addons = require("react/addons")
 
-{Firebase, FIREBASE_URL} = require("../../app/firebase")
+{Firebase, FIREBASE_URL} = require("../../firebase")
 
 {SubscriptionMixin, firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
-{Collection} = require("../../app/models")
+{Collection} = require("../../models")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
 
 Body = require("../body")
 LinkList = require("../widgets/linkList")
 
 
-{ownerId} = require("../../config")
+{ownerId} = require("../../../config")
 
 Component = React.createClass
 

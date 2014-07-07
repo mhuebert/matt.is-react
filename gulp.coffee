@@ -8,29 +8,30 @@ livereload = require('gulp-livereload')
 uglify = require('gulp-uglify')
 rename = require('gulp-rename')
 spawn = require('child_process').spawn
-{mergeFirebaseRules} = require("sparkboard-tools")
+mergeFirebaseRules = require("merge-firebase-rules")
+
 
 gulp.task 'stylus', ->
-    gulp.src './styles/*.styl'
+    gulp.src './app/styles/*.styl'
     .pipe stylus({use: ['nib'], set: ['compress']})
-    .pipe(gulp.dest('./public/'))
+    .pipe(gulp.dest('./app/public/'))
 
 gulp.task 'scripts', ->
-    gulp.src('./app/app.coffee', {read: false})
+    gulp.src('./app/componentsapp.coffee', {read: false})
         .pipe(browserify({
             ignore: ['firebase', 'firebase-util']
-            transform: ['coffeeify', [{'extension': 'coffee'}, 'reactify']]
-            extensions: ['.coffee', 'js', '.md']
+            transform: ['coffee-reactify']
+            extensions: ['.coffee', '.js', '.md', '.cjsx']
             noParse: ['jquery', 'underscore']
             }))
         .pipe(rename('app.js'))
-        .pipe(gulp.dest('./public/js'))
+        .pipe(gulp.dest('./app/public/js'))
         # .pipe(uglify())
         # .pipe(rename('app.min.js'))
         # .pipe(gulp.dest('./public/js'))
 
 gulp.task 'firebaseRules', ->
-    if mergeFirebaseRules("./security-rules", "./security-rules/_compiled.json")
+    if mergeFirebaseRules("./app/security-rules", "./app/security-rules/_compiled.json")
         console.log "...Deploying Firebase rules"
         firebase = spawn "firebase", ['deploy']
         firebase.stdout.on 'data', (data) -> gutil.log data.toString().trim()
@@ -42,14 +43,15 @@ gulp.task 'firebaseRules', ->
 gulp.task 'watch', ->
     server = livereload()
 
-    gulp.watch('./public/**').on 'change', (file) ->
+    gulp.watch('./app/public/**').on 'change', (file) ->
         server.changed(file.path)
 
-    gulp.watch './styles/**/*.styl', ['stylus']
+    gulp.watch './app/styles/**/*.styl', ['stylus']
 
     gulp.watch './**/*.coffee**', ['scripts']
+    gulp.watch './**/*.cjsx**', ['scripts']
 
-    gulp.watch './security-rules/rules/**/*', ['firebaseRules']
+    gulp.watch './app/security-rules/rules/**/*', ['firebaseRules']
 
 gulp.task 'default', ->
     gulp.start 'stylus', 'scripts', 'firebaseRules', 'watch'

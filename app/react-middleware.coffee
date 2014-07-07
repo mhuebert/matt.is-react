@@ -19,7 +19,7 @@ nodeJSX.install
       'bare': true
 
 # root component:
-components = require("../components")
+components = require("./components")
 {Layout} = components
 
 # Router - use the same routes on the client and server.

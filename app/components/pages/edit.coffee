@@ -14,7 +14,7 @@ unsafeCharacters = /[^[:alnum:]\s.!?,:\*;'"]/g
 moment = require("moment")
 dateFormat = "MMMM D, YYYY"
 
-{Firebase, FIREBASE_URL} = require("../../app/firebase")
+{Firebase, FIREBASE_URL} = require("../../firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
 
 firebaseIdFromPath = (path) -> 

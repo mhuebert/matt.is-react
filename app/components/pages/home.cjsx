@@ -7,8 +7,8 @@ Writing = require("./writing")
 Photography = require("./photography")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-subscriptions = require("../../app/subscriptions")
-{Collection} = require("../../app/models")
+subscriptions = require("../../subscriptions")
+{Collection} = require("../../models")
 
 Home = React.createClass
     mixins: [SubscriptionMixin]
@@ -22,24 +22,25 @@ Home = React.createClass
     render: ->
         writing = new Collection(this.props.writing)
         photos = new Collection(this.props.photos)
-        `<div className="content">
+        <div className="content">
+
                 <Nav />
                 <h1>{this.props.settings.homeTitle}</h1>
                 <ul className="link-list" >
-                    {writing.map(function(post){  
-                        return <li key={post.get("id")} >
-                            <a href={"/"+post.get("permalink")}>{post.get("title")}</a> 
-                        </li>})}
-                    <li key="more"><a href="/writing" className="more-link btn btn-standard" >more &rarr;</a></li>
+                    {writing.map((post) ->
+                        <li key={post.get("id")} >
+                            <a href={"/"+post.get("permalink")}>{post.get("title")}</a>
+                        </li>)}
+                    <li key="more"><a href="/writing" className="more-link btn btn-standard" >more</a></li>
                 </ul>
             <div className="home-photos">
-                {photos.map(function(photo){
+                {photos.map((photo)->
                     return  <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}>
                                 <img src={photo.get("url")+"/convert?w=120&h=120&fit=crop"} />
                             </a>
-                    })}
+                    )}
             </div>
 
-        </div>`
+        </div>
 
 module.exports = Home

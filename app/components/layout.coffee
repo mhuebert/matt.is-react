@@ -8,14 +8,14 @@ RouterMixin = require("sparkboard-tools").Router.Mixin
 
 Head = require("./widgets/head")
 
-{FIREBASE_URL} = require("../app/firebase")
+{FIREBASE_URL} = require("../firebase")
 
 components = require("./index")
 
 Layout = React.createClass
     mixins: [RouterMixin]
-    routes: require("../app/routes")
-    fallbackRoute: require("../app/route-fallback")
+    routes: require("../routes")
+    fallbackRoute: require("../route-fallback")
     firebaseRefCache: [] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
     componentWillMount: ->

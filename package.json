@@ -35,6 +35,7 @@
     "moment": "^2.5.1",
     "screenfull": "^1.1.1",
     "sparkboard-tools": "sparkboard/sparkboard-tools",
+    "merge-firebase-rules": "sparkboard/merge-firebase-rules",
     "firebase-index-server": "sparkboard/firebase-index-server"
   },
   "devDependencies": {
@@ -52,7 +53,8 @@
     "nodemon": "^1.0.15",
     "ignorify": "^0.1.1",
     "optimist": "^0.6.1",
-    "firebase-cli": "^0.3.0"
+    "firebase-cli": "^0.3.0",
+    "coffee-reactify": "^0.4.0"
   },
   "engines": {
     "node": "v0.10.26"

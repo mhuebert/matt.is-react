@@ -7,7 +7,7 @@ Body = require("../body")
 
 
 {SubscriptionMixin} = require("sparkboard-tools")
-subscriptions = require("../../app/subscriptions")
+subscriptions = require("../../subscriptions")
 
 Component = React.createClass
 

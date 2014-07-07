@@ -4,8 +4,7 @@ React = require("react")
 
 Component = React.createClass
     render: ->
-        `<div>
-
-        </div>`
+        <div>
+        </div>
 
 module.exports = Component

@@ -2,7 +2,7 @@
     Light-weight models to wrap data.    
 ###
 
-{Firebase, FIREBASE_URL} = require("../app/firebase")
+{Firebase, FIREBASE_URL} = require("./firebase")
 
 _ = require("underscore")
 

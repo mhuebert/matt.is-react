@@ -1,10 +1,8 @@
-{Firebase, FIREBASE_URL} = require("../app/firebase")
+{Firebase, FIREBASE_URL} = require("./firebase")
 _ = require("underscore")
 
 {snapshotToArray} = require("sparkboard-tools").utils
 {firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
-
-{ownerId} = require("../config")
 
 root = new Firebase(FIREBASE_URL)
 

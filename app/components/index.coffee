@@ -7,6 +7,7 @@
 @Photography = require("./pages/photography")
 @PhotographyView = require("./pages/photographyView")
 @Ideas = require("./pages/ideas")
+@Map = require("./pages/map")
 @Tags = require("./pages/tags")
 @Edit = require("./pages/edit")
 @Login = require("./pages/login")

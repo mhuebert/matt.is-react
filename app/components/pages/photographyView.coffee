@@ -6,7 +6,7 @@ Nav = require("../widgets/nav")
 DynamicLoader = require("../widgets/dynamicLoader")
 simplePagination = require("../widgets/simplePagination")
 
-{Firebase, FIREBASE_URL} = require("../../app/firebase")
+{Firebase, FIREBASE_URL} = require("../../firebase")
 {SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
 {snapshotToArray} = require("sparkboard-tools").utils
 Component = React.createClass
