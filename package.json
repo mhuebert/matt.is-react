@@ -36,7 +36,8 @@
     "screenfull": "^1.1.1",
     "sparkboard-tools": "sparkboard/sparkboard-tools",
     "merge-firebase-rules": "sparkboard/merge-firebase-rules",
-    "firebase-index-server": "sparkboard/firebase-index-server"
+    "firebase-index-server": "sparkboard/firebase-index-server",
+    "node-cjsx": "^0.1.2"
   },
   "devDependencies": {
     "coffeeify": "~0.6.0",
