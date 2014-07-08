@@ -1,10 +1,10 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 
 Component = React.createClass
     render: ->
-        `<head>
+        <head>
             <title >{this.props.title}</title>
             <meta name='description' content={this.props.description} />
             <meta charSet="utf-8"/>
@@ -14,6 +14,6 @@ Component = React.createClass
             <script type='text/javascript' src='/js/firebase-simple-login.js'></script>
             <script src="/js/app.js"></script>
             
-        </head>`
+        </head>
 
 module.exports = Component

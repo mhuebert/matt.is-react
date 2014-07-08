@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 
@@ -12,11 +12,11 @@ Component = React.createClass
   componentDidUpdate: ->
     @autoSize()
   render: ->
-      `this.transferPropsTo(
+      this.transferPropsTo(
         <textarea placeholder="Write here" 
                   className="textarea-autosize" 
                   onKeyUp={this.handleChange}>
         </textarea>
-      )`
+      )
 
 module.exports = Component

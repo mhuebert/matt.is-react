@@ -17,11 +17,11 @@ gulp.task 'stylus', ->
     .pipe(gulp.dest('./app/public/'))
 
 gulp.task 'scripts', ->
-    gulp.src('./app/componentsapp.coffee', {read: false})
+    gulp.src('./app/app.coffee', {read: false})
         .pipe(browserify({
             ignore: ['firebase', 'firebase-util']
             transform: ['coffee-reactify']
-            extensions: ['.coffee', '.js', '.md', '.cjsx']
+            extensions: ['.cjsx', '.coffee', '.js', '.md']
             noParse: ['jquery', 'underscore']
             }))
         .pipe(rename('app.js'))

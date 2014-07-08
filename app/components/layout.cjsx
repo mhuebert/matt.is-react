@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 # React.initializeTouchEvents(true)
@@ -53,12 +53,12 @@ Layout = React.createClass
         metadata = this.getMetadata()
         subscriptionData = this.getSubscriptionData()
 
-        `<html>
-            <Head   title={metadata.title ? metadata.title : this.props.title}
-                    description={metadata.description ? metadata.description : this.props.description} />
-            <body className={this.props.user ? "loggedIn" : "loggedOut"}  onClick={this.handleClick}>
+        <html>
+            <Head   title={metadata.title || this.props.title}
+                    description={metadata.description || this.props.description} />
+            <body className={if this.props.user then "loggedIn" else "loggedOut"}  onClick={this.handleClick}>
                 {this.transferPropsTo(<Handler subscriptions={subscriptionData} ref="handler" />)}
             </body>
-        </html>`
+        </html>
 
 module.exports = Layout

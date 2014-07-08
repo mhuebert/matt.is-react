@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 {getRootComponent} = require("sparkboard-tools").utils
@@ -25,11 +25,11 @@ Component = React.createClass
       this.refs.back.getDOMNode().click() if this.props.back
 
     render: ->
-        `this.transferPropsTo(<div className="paginate-simple">
+        this.transferPropsTo(<div className="paginate-simple">
             <a ref="back" className="hidden" href={this.props.back} />
-            <a ref="prev" onClick={this.prev} className={"prev "+(this.props.prev ? "" : "hidden")} href={this.props.prev}/>
-            <a ref="next" className={"next "+(this.props.next ? "" : "hidden")} href={this.props.next}/>
-        </div>)`
+            <a ref="prev" onClick={this.prev} className={"prev "+(if this.props.prev then "" else "hidden")} href={this.props.prev}/>
+            <a ref="next" className={"next "+(if this.props.next then "" else "hidden")} href={this.props.next}/>
+        </div>)
 
 module.exports = Component
 

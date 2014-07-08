@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 DynamicLoader = require("../widgets/dynamicLoader")
@@ -11,8 +11,8 @@ Component = React.createClass
         window.location.href = "/"
       , 600
     render: ->
-        `<Body className="loading">
+        <Body className="loading">
           <DynamicLoader />
-          </Body>`
+        </Body>
 
 module.exports = Component

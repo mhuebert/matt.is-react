@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 Body = require("../body")
@@ -6,8 +6,8 @@ Body = require("../body")
 Component = React.createClass
 
     render: ->
-      `<Body>
+      <Body>
           <h1>So much paths. We not couldn't find one this.</h1>
-      </Body>`
+      </Body>
 
 module.exports = Component

@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 _ = require("underscore")
 React = require("react")
@@ -73,14 +73,14 @@ Component = React.createClass
         
     render: ->
         ideas = new Collection(this.props.ideas)
-        `<Body  breadcrumb={["ideas"]} className="ideas showIfUser">
+        <Body  breadcrumb={["ideas"]} className="ideas showIfUser">
             <h1>Ideas</h1>
             <input value={this.state.title} ref="input" className="ideas-input" onKeyUp={this.handleKeyup} onChange={this.handleChangeTitle} placeholder='Begin a new idea...' />
             <ul className="ideas link-list" >
-                {ideas.map(function(link){
-                    return <li key={link.get("id")}><a href={link.get("href")}>{link.get("title")}</a> <em className='wordCount'>{link.get("wordCount")}</em></li>
-                })}
+                {ideas.map((link) -> 
+                    <li key={link.get("id")}><a href={link.get("href")}>{link.get("title")}</a> <em className='wordCount'>{link.get("wordCount")}</em></li>
+                )}
             </ul>
-        </Body>`
+        </Body>
 
 module.exports = Component

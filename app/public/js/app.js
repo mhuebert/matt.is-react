@@ -1,5 +1,17 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/** @jsx React.DOM */;
+window._ = require("underscore");
+
+window.React = require("react");
+
+window.Components = require("./components");
+
+(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document);;
+
+filepicker.setKey('AnxudJKfXTrKhIJEP599Iz');
+
+
+
+},{"./components":3,"react":187,"underscore":196}],2:[function(require,module,exports){
 var Component, DynamicLoader, Nav, React;
 
 React = require("react");
@@ -22,7 +34,7 @@ module.exports = Component;
 
 
 
-},{"./widgets/dynamicLoader":17,"./widgets/nav":21,"react":187}],2:[function(require,module,exports){
+},{"./widgets/dynamicLoader":17,"./widgets/nav":21,"react":187}],3:[function(require,module,exports){
 this.Layout = require("./layout");
 
 this.Home = require("./pages/home");
@@ -37,8 +49,6 @@ this.PhotographyView = require("./pages/photographyView");
 
 this.Ideas = require("./pages/ideas");
 
-this.Map = require("./pages/map");
-
 this.Tags = require("./pages/tags");
 
 this.Edit = require("./pages/edit");
@@ -51,26 +61,25 @@ this.NotFound = require("./pages/notFound");
 
 
 
-},{"./layout":3,"./pages/edit":4,"./pages/home":5,"./pages/ideas":6,"./pages/login":7,"./pages/logout":8,"./pages/map":9,"./pages/notFound":10,"./pages/photography":11,"./pages/photographyView":12,"./pages/tags":13,"./pages/writing":14,"./pages/writingView":15}],3:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"./layout":4,"./pages/edit":5,"./pages/home":6,"./pages/ideas":7,"./pages/login":8,"./pages/logout":9,"./pages/notFound":10,"./pages/photography":11,"./pages/photographyView":12,"./pages/tags":13,"./pages/writing":14,"./pages/writingView":15}],4:[function(require,module,exports){
 var FIREBASE_URL, Head, Layout, React, RouterMixin, components, _;
 
 React = require("react");
 
 _ = require("underscore");
 
-RouterMixin = require("sparkboard-tools").Router.Mixin;
+RouterMixin = require("react-router").Mixin;
 
 Head = require("./widgets/head");
 
-FIREBASE_URL = require("../componentsfirebase").FIREBASE_URL;
+FIREBASE_URL = require("../firebase").FIREBASE_URL;
 
 components = require("./index");
 
 Layout = React.createClass({
   mixins: [RouterMixin],
-  routes: require("../componentsroutes"),
-  fallbackRoute: require("../componentsroute-fallback"),
+  routes: require("../routes"),
+  fallbackRoute: require("../route-fallback"),
   firebaseRefCache: [],
   _firebaseRefCache: [],
   componentWillMount: function() {
@@ -137,13 +146,16 @@ Layout = React.createClass({
     Handler = this.getHandler();
     metadata = this.getMetadata();
     subscriptionData = this.getSubscriptionData();
-    return <html>
-            <Head   title={metadata.title ? metadata.title : this.props.title}
-                    description={metadata.description ? metadata.description : this.props.description} />
-            <body className={this.props.user ? "loggedIn" : "loggedOut"}  onClick={this.handleClick}>
-                {this.transferPropsTo(<Handler subscriptions={subscriptionData} ref="handler" />)}
-            </body>
-        </html>;
+    return React.DOM.html(null, Head({
+      "title": metadata.title || this.props.title,
+      "description": metadata.description || this.props.description
+    }), React.DOM.body({
+      "className": (this.props.user ? "loggedIn" : "loggedOut"),
+      "onClick": this.handleClick
+    }, this.transferPropsTo(Handler({
+      "subscriptions": subscriptionData,
+      "ref": "handler"
+    }))));
   }
 });
 
@@ -151,8 +163,7 @@ module.exports = Layout;
 
 
 
-},{"../componentsfirebase":27,"../componentsroute-fallback":29,"../componentsroutes":30,"./index":2,"./widgets/head":18,"react":187,"sparkboard-tools":188,"underscore":204}],4:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../firebase":26,"../route-fallback":28,"../routes":29,"./index":3,"./widgets/head":18,"react":187,"react-router":36,"underscore":196}],5:[function(require,module,exports){
 var Body, Component, Dropdown, FIREBASE_URL, Firebase, React, SubscriptionMixin, dateFormat, firebaseIdFromPath, firebaseSubscription, moment, simplePagination, slugify, textareaAutosize, toggleShowHide, unsafeCharacters, _, _ref, _ref1;
 
 _ = require("underscore");
@@ -177,7 +188,7 @@ moment = require("moment");
 
 dateFormat = "MMMM D, YYYY";
 
-_ref = require("../../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("../../firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ref1 = require("sparkboard-tools"), SubscriptionMixin = _ref1.SubscriptionMixin, firebaseSubscription = _ref1.firebaseSubscription;
 
@@ -424,7 +435,7 @@ Component = React.createClass({
     return this.state.permalinkAvailable && this.state.permalinkChecked === this.state.permalink;
   },
   render: function() {
-    var breadcrumb, isPublished, loading, viewLink, _ref2;
+    var breadcrumb, isPublished, loading, viewLink, _ref2, _ref3, _ref4, _ref5;
     isPublished = ((_ref2 = this.props.post) != null ? _ref2.publishDate : void 0) != null;
     loading = _.isEmpty(this.props.post);
     if (isPublished) {
@@ -437,64 +448,80 @@ Component = React.createClass({
     } else {
       breadcrumb = ["ideas", this.props.post.id];
     }
-    return <Body  breadcrumb={breadcrumb}  
-                navInclude={<span><a  onClick={this.save} 
-                                className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>
-                                Save</a>
-                            <a  onClick={this.publish} 
-                                className={(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
-                                Publish</a>
-                            <a  href={viewLink}
-                                className={"btn btn-standard right showIfUser"}>
-                                View</a></span>}
-                className={"content "+(loading ? "loading" : "")}>
-
-            
-            <textareaAutosize   placeholder="Title..."
-                                className="h1 text-center" 
-                                ref="title" 
-                                rows="1"
-                                onChange={this.handleTitleChange} 
-                                contentEditable="true" 
-                                value={this.state.title}/>
-            
-            <toggleShowHide>
-                <div className='text-center' style={{margin:"-30px 0 10px"}}>
-                    <a data-toggle-hide={false} className=" hide-if-toggle-visible writing-edit-link show-element ">options</a>
-                    <a data-toggle-hide={true} className=" hide-if-toggle-hidden writing-edit-link show-element ">hide options</a>
-                </div>
-                <div className="writing-inline-options hide-if-toggle-hidden">
-                    <div>
-                        /<input className={"grey "+(this.permalinkReady ? "success" : "error")}  placeholder="my-permalink" ref="permalink" onChange={this.changePermalink} value={this.state.permalink}/>
-                    </div>
-                    <div>
-                        <input  placeholder="Description" 
-                                onChange={this.handleDescriptionChange} 
-                                value={this.state.description}/>
-                    </div>
-                    <div>
-                        <input  ref="date" 
-                                onChange={this.changeDate} 
-                                className={"grey "+(this.state.validDate ? "success" : "error")} 
-                                defaultValue={moment(this.state.date).format(dateFormat)}/>
-                    </div>
-                    <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
-                </div>
-            </toggleShowHide>
-
-            <textareaAutosize   ref="preview" 
-                                onChange={this.handlePreviewChange} 
-                                className="idea-preview" 
-                                name="preview" 
-                                value={this.state.preview}
-                                placeholder="Other"/>
-            
-
-            <textareaAutosize ref="body" onChange={this.handleBodyChange} className="idea-body" name="body" value={this.state.body} />
-            
-
-            
-        </Body>;
+    return Body({
+      "breadcrumb": breadcrumb,
+      "navInclude": React.DOM.span(null, React.DOM.a({
+        "onClick": this.save,
+        "className": "btn btn-dark right showIfUser " + ((_ref3 = this.state.saving) != null ? _ref3 : {
+          "loading": ""
+        }) + ((_ref4 = this.objectModified()) != null ? _ref4 : {
+          "": " disabled"
+        })
+      }, "Save"), React.DOM.a({
+        "onClick": this.publish,
+        "className": (isPublished != null ? isPublished : {
+          " hidden": ""
+        }) + " btn btn-standard right showIfUser"
+      }, "Publish"), React.DOM.a({
+        "href": viewLink,
+        "className": "btn btn-standard right showIfUser"
+      }, "View")),
+      "className": "content " + (loading ? "loading" : "")
+    }, textareaAutosize({
+      "placeholder": "Title...",
+      "className": "h1 text-center",
+      "ref": "title",
+      "rows": "1",
+      "onChange": this.handleTitleChange,
+      "contentEditable": "true",
+      "value": this.state.title
+    }), toggleShowHide(null, React.DOM.div({
+      "className": 'text-center',
+      "style": {
+        margin: "-30px 0 10px"
+      }
+    }, React.DOM.a({
+      "data-toggle-hide": false,
+      "className": " hide-if-toggle-visible writing-edit-link show-element "
+    }, "options"), React.DOM.a({
+      "data-toggle-hide": true,
+      "className": " hide-if-toggle-hidden writing-edit-link show-element "
+    }, "hide options")), React.DOM.div({
+      "className": "writing-inline-options hide-if-toggle-hidden"
+    }, React.DOM.div(null, "\x2F", React.DOM.input({
+      "className": "grey " + ((_ref5 = this.permalinkReady) != null ? _ref5 : {
+        "success": "error"
+      }),
+      "placeholder": "my-permalink",
+      "ref": "permalink",
+      "onChange": this.changePermalink,
+      "value": this.state.permalink
+    })), React.DOM.div(null, React.DOM.input({
+      "placeholder": "Description",
+      "onChange": this.handleDescriptionChange,
+      "value": this.state.description
+    })), React.DOM.div(null, React.DOM.input({
+      "ref": "date",
+      "onChange": this.changeDate,
+      "className": "grey " + (this.state.validDate ? "success" : "error"),
+      "defaultValue": moment(this.state.date).format(dateFormat)
+    })), React.DOM.a({
+      "className": "btn btn-red btn-small",
+      "onClick": this["delete"]
+    }, "Delete"))), textareaAutosize({
+      "ref": "preview",
+      "onChange": this.handlePreviewChange,
+      "className": "idea-preview",
+      "name": "preview",
+      "value": this.state.preview,
+      "placeholder": "Other"
+    }), textareaAutosize({
+      "ref": "body",
+      "onChange": this.handleBodyChange,
+      "className": "idea-body",
+      "name": "body",
+      "value": this.state.body
+    }));
   }
 });
 
@@ -502,8 +529,7 @@ module.exports = Component;
 
 
 
-},{"../../componentsfirebase":27,"../body":1,"../widgets/dropdown":16,"../widgets/simplePagination":22,"../widgets/textareaAutosize":24,"../widgets/toggleShowHide":25,"moment":37,"react":187,"sparkboard-tools":188,"underscore":204}],5:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../firebase":26,"../body":2,"../widgets/dropdown":16,"../widgets/simplePagination":22,"../widgets/textareaAutosize":24,"../widgets/toggleShowHide":25,"moment":35,"react":187,"sparkboard-tools":188,"underscore":196}],6:[function(require,module,exports){
 var Body, Collection, Home, Nav, Photography, React, SubscriptionMixin, Writing, subscriptions;
 
 React = require("react");
@@ -518,9 +544,9 @@ Photography = require("./photography");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-subscriptions = require("../../componentssubscriptions");
+subscriptions = require("../../subscriptions");
 
-Collection = require("../../componentsmodels").Collection;
+Collection = require("../../models").Collection;
 
 Home = React.createClass({
   mixins: [SubscriptionMixin],
@@ -574,8 +600,7 @@ module.exports = Home;
 
 
 
-},{"../../componentsmodels":28,"../../componentssubscriptions":31,"../body":1,"../widgets/nav":21,"./photography":11,"./writing":14,"react":187,"sparkboard-tools":188}],6:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../models":27,"../../subscriptions":30,"../body":2,"../widgets/nav":21,"./photography":11,"./writing":14,"react":187,"sparkboard-tools":188}],7:[function(require,module,exports){
 var Addons, Body, Collection, Component, FIREBASE_URL, Firebase, LinkList, React, SubscriptionMixin, firebaseRelationalSubscription, firebaseSubscription, ownerId, slugify, snapshotToArray, _, _ref, _ref1, _ref2;
 
 _ = require("underscore");
@@ -584,11 +609,11 @@ React = require("react");
 
 Addons = require("react/addons");
 
-_ref = require("../../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("../../firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ref1 = require("sparkboard-tools"), SubscriptionMixin = _ref1.SubscriptionMixin, firebaseSubscription = _ref1.firebaseSubscription, firebaseRelationalSubscription = _ref1.firebaseRelationalSubscription;
 
-Collection = require("../../componentsmodels").Collection;
+Collection = require("../../models").Collection;
 
 _ref2 = require("sparkboard-tools").utils, snapshotToArray = _ref2.snapshotToArray, slugify = _ref2.slugify;
 
@@ -670,15 +695,27 @@ Component = React.createClass({
   render: function() {
     var ideas;
     ideas = new Collection(this.props.ideas);
-    return <Body  breadcrumb={["ideas"]} className="ideas showIfUser">
-            <h1>Ideas</h1>
-            <input value={this.state.title} ref="input" className="ideas-input" onKeyUp={this.handleKeyup} onChange={this.handleChangeTitle} placeholder='Begin a new idea...' />
-            <ul className="ideas link-list" >
-                {ideas.map(function(link){
-                    return <li key={link.get("id")}><a href={link.get("href")}>{link.get("title")}</a> <em className='wordCount'>{link.get("wordCount")}</em></li>
-                })}
-            </ul>
-        </Body>;
+    return Body({
+      "breadcrumb": ["ideas"],
+      "className": "ideas showIfUser"
+    }, React.DOM.h1(null, "Ideas"), React.DOM.input({
+      "value": this.state.title,
+      "ref": "input",
+      "className": "ideas-input",
+      "onKeyUp": this.handleKeyup,
+      "onChange": this.handleChangeTitle,
+      "placeholder": 'Begin a new idea...'
+    }), React.DOM.ul({
+      "className": "ideas link-list"
+    }, ideas.map(function(link) {
+      return React.DOM.li({
+        "key": link.get("id")
+      }, React.DOM.a({
+        "href": link.get("href")
+      }, link.get("title")), " ", React.DOM.em({
+        "className": 'wordCount'
+      }, link.get("wordCount")));
+    })));
   }
 });
 
@@ -686,8 +723,7 @@ module.exports = Component;
 
 
 
-},{"../../../config":32,"../../componentsfirebase":27,"../../componentsmodels":28,"../body":1,"../widgets/linkList":20,"react":187,"react/addons":38,"sparkboard-tools":188,"underscore":204}],7:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../../config":31,"../../firebase":26,"../../models":27,"../body":2,"../widgets/linkList":20,"react":187,"react/addons":38,"sparkboard-tools":188,"underscore":196}],8:[function(require,module,exports){
 var Body, Component, DynamicLoader, React;
 
 React = require("react");
@@ -705,10 +741,14 @@ Component = React.createClass({
   render: function() {
     var loggedIn;
     loggedIn = (typeof user !== "undefined" && user !== null ? user.id : void 0) != null;
-    return <Body>
-        <a className={loggedIn ? "hidden" : ""} href="#" onClick={this.login}>Login</a>
-        <a className={loggedIn ? "" : "hidden"} href="/">Home</a>
-      </Body>;
+    return Body(null, React.DOM.a({
+      "className": (loggedIn ? "hidden" : ""),
+      "href": "#",
+      "onClick": this.login
+    }, "Login"), React.DOM.a({
+      "className": (loggedIn ? "" : "hidden"),
+      "href": "/"
+    }, "Home"));
   }
 });
 
@@ -716,8 +756,7 @@ module.exports = Component;
 
 
 
-},{"../body":1,"../widgets/dynamicLoader":17,"react":187}],8:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../body":2,"../widgets/dynamicLoader":17,"react":187}],9:[function(require,module,exports){
 var Body, Component, DynamicLoader, React;
 
 React = require("react");
@@ -736,9 +775,9 @@ Component = React.createClass({
     }, 600);
   },
   render: function() {
-    return <Body className="loading">
-          <DynamicLoader />
-          </Body>;
+    return Body({
+      "className": "loading"
+    }, DynamicLoader(null));
   }
 });
 
@@ -746,74 +785,7 @@ module.exports = Component;
 
 
 
-},{"../body":1,"../widgets/dynamicLoader":17,"react":187}],9:[function(require,module,exports){
-/** @jsx React.DOM */;
-var Body, Collection, Home, Nav, Photography, React, SubscriptionMixin, Writing, subscriptions;
-
-React = require("react");
-
-Body = require("../body");
-
-Nav = require("../widgets/nav");
-
-Writing = require("./writing");
-
-Photography = require("./photography");
-
-SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
-
-subscriptions = require("../../componentssubscriptions");
-
-Collection = require("../../componentsmodels").Collection;
-
-Home = React.createClass({
-  mixins: [SubscriptionMixin],
-  statics: {
-    subscriptions: function(props) {
-      return {
-        writing: subscriptions.WritingList(20, '/users/' + props.settings.ownerId + '/writing'),
-        photos: subscriptions.PhotoList()
-      };
-    },
-    getMetadata: function(props) {
-      return {
-        title: props.settings.siteTitle,
-        description: props.settings.siteDescription
-      };
-    }
-  },
-  render: function() {
-    var photos, writing;
-    writing = new Collection(this.props.writing);
-    photos = new Collection(this.props.photos);
-    return <div className="content">
-                <Nav />
-                <h1>{this.props.settings.homeTitle}</h1>
-                <ul className="link-list" >
-                    {writing.map(function(post){  
-                        return <li key={post.get("id")} >
-                            <a href={"/"+post.get("permalink")}>{post.get("title")}</a> 
-                        </li>})}
-                    <li key="more"><a href="/writing" className="more-link btn btn-standard" >more &rarr;</a></li>
-                </ul>
-            <div className="home-photos">
-                {photos.map(function(photo){
-                    return  <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}>
-                                <img src={photo.get("url")+"/convert?w=120&h=120&fit=crop"} />
-                            </a>
-                    })}
-            </div>
-
-        </div>;
-  }
-});
-
-module.exports = Home;
-
-
-
-},{"../../componentsmodels":28,"../../componentssubscriptions":31,"../body":1,"../widgets/nav":21,"./photography":11,"./writing":14,"react":187,"sparkboard-tools":188}],10:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../body":2,"../widgets/dynamicLoader":17,"react":187}],10:[function(require,module,exports){
 var Body, Component, React;
 
 React = require("react");
@@ -822,9 +794,7 @@ Body = require("../body");
 
 Component = React.createClass({
   render: function() {
-    return <Body>
-          <h1>So much paths. We not couldn't find one this.</h1>
-      </Body>;
+    return Body(null, React.DOM.h1(null, "So much paths. We not couldn\'t find one this."));
   }
 });
 
@@ -832,8 +802,7 @@ module.exports = Component;
 
 
 
-},{"../body":1,"react":187}],11:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../body":2,"react":187}],11:[function(require,module,exports){
 var Body, Collection, Component, PhotoList, React, SubscriptionMixin;
 
 React = require("react");
@@ -842,9 +811,9 @@ Body = require("../body");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-PhotoList = require("../../componentssubscriptions").PhotoList;
+PhotoList = require("../../subscriptions").PhotoList;
 
-Collection = require("../../componentsmodels").Collection;
+Collection = require("../../models").Collection;
 
 Component = React.createClass({
   mixins: [SubscriptionMixin],
@@ -892,18 +861,41 @@ Component = React.createClass({
     }
   },
   render: function() {
-    var deletePhoto, photos;
+    var deletePhoto, photos, _ref;
     deletePhoto = this.deletePhoto;
     photos = new Collection(this.props.photos);
-    return <Body breadcrumb={["photography"]} className={"content "+ ((photos.size() > 0) ? "" : "loading")} style={{maxWidth:960}}>
-            <h1>Photography</h1>
-            <div className="photos text-center">
-                <div className="showIfUser">
-                    <a style={{display:'block',maxWidth:780, margin:"20px auto 30px"}} className="btn btn-standard" onClick={this.uploadPhoto}>Upload Photos</a>
-                </div>
-              {photos.map(function(photo){return <a key={photo.get("id")} href={"/seeing/"+photo.get("id")}><div data-id={photo.get("id")} onClick={deletePhoto} className="photo-delete">&times;</div><img src={photo.get("url")+"/convert?w=220&h=220&fit=crop"} /></a>})}
-            </div>
-        </Body>;
+    return Body({
+      "breadcrumb": ["photography"],
+      "className": "content " + ((_ref = photos.size() > 0) != null ? _ref : {
+        "": "loading"
+      }),
+      "style": {
+        maxWidth: 960
+      }
+    }, React.DOM.h1(null, "Photography"), React.DOM.div({
+      "className": "photos text-center"
+    }, React.DOM.div({
+      "className": "showIfUser"
+    }, React.DOM.a({
+      "style": {
+        display: 'block',
+        maxWidth: 780,
+        margin: "20px auto 30px"
+      },
+      "className": "btn btn-standard",
+      "onClick": this.uploadPhoto
+    }, "Upload Photos")), photos.map(function(photo) {
+      return React.DOM.a({
+        "key": photo.get("id"),
+        "href": "/seeing/" + photo.get("id")
+      }, React.DOM.div({
+        "data-id": photo.get("id"),
+        "onClick": deletePhoto,
+        "className": "photo-delete"
+      }, "\u00d7"), React.DOM.img({
+        "src": photo.get("url") + "/convert?w=220&h=220&fit=crop"
+      }));
+    })));
   }
 });
 
@@ -911,8 +903,7 @@ module.exports = Component;
 
 
 
-},{"../../componentsmodels":28,"../../componentssubscriptions":31,"../body":1,"react":187,"sparkboard-tools":188}],12:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../models":27,"../../subscriptions":30,"../body":2,"react":187,"sparkboard-tools":188}],12:[function(require,module,exports){
 var Component, DynamicLoader, FIREBASE_URL, Firebase, Nav, React, SubscriptionMixin, firebaseSubscription, simplePagination, snapshotToArray, _, _ref, _ref1;
 
 _ = require("underscore");
@@ -925,7 +916,7 @@ DynamicLoader = require("../widgets/dynamicLoader");
 
 simplePagination = require("../widgets/simplePagination");
 
-_ref = require("../../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("../../firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ref1 = require("sparkboard-tools"), SubscriptionMixin = _ref1.SubscriptionMixin, firebaseSubscription = _ref1.firebaseSubscription;
 
@@ -993,20 +984,44 @@ Component = React.createClass({
   render: function() {
     var conversion;
     conversion = "/convert?w=1000&h=1000";
-    return <div className={"content "+(_.isEmpty(this.props.photo) ? "loading" : "")} style={{maxWidth:960}}>
-            <div  className="photo-single">
-                <a style={{color:'white',position:'absolute',top:10,left:10,fontSize:16,color:'#999999'}} href="/seeing">&larr; back</a>
-                <a className="imageContainer"  style={{backgroundImage:"url("+this.props.photo.url+conversion+")"}}  href={this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}></a>
-                <simplePagination 
-                    next={this.props.photoNext.id ? ("/seeing/"+this.props.photoNext.id) : false} 
-                    prev={this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false} 
-                    back="/seeing" />
-            </div>
-            
-            <div style={{opacity:0,position:'absolute',height:0,width:0,overflow:'hidden'}}>
-                <img src={this.props.photoNext.url+conversion} />
-            </div> 
-        </div>;
+    return React.DOM.div({
+      "className": "content " + (_.isEmpty(this.props.photo) ? "loading" : ""),
+      "style": {
+        maxWidth: 960
+      }
+    }, React.DOM.div({
+      "className": "photo-single"
+    }, React.DOM.a({
+      "style": {
+        color: 'white',
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        fontSize: 16,
+        color: '#999999'
+      },
+      "href": "/seeing"
+    }, "\u2190 back"), React.DOM.a({
+      "className": "imageContainer",
+      "style": {
+        backgroundImage: "url(" + this.props.photo.url + conversion + ")"
+      },
+      "href": (this.props.photoNext.id ? "/seeing/" + this.props.photoNext.id : "/seeing")
+    }), simplePagination({
+      "next": (this.props.photoNext.id ? "/seeing/" + this.props.photoNext.id : false),
+      "prev": (this.props.photoPrev.id ? "/seeing/" + this.props.photoPrev.id : false),
+      "back": "/seeing"
+    })), React.DOM.div({
+      "style": {
+        opacity: 0,
+        position: 'absolute',
+        height: 0,
+        width: 0,
+        overflow: 'hidden'
+      }
+    }, React.DOM.img({
+      "src": this.props.photoNext.url + conversion
+    })));
   }
 });
 
@@ -1014,8 +1029,7 @@ module.exports = Component;
 
 
 
-},{"../../componentsfirebase":27,"../widgets/dynamicLoader":17,"../widgets/nav":21,"../widgets/simplePagination":22,"react":187,"sparkboard-tools":188,"underscore":204}],13:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../firebase":26,"../widgets/dynamicLoader":17,"../widgets/nav":21,"../widgets/simplePagination":22,"react":187,"sparkboard-tools":188,"underscore":196}],13:[function(require,module,exports){
 var Body, Component, React, SubscriptionMixin, subscriptions, _;
 
 _ = require("underscore");
@@ -1026,7 +1040,7 @@ Body = require("../body");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-subscriptions = require("../../componentssubscriptions");
+subscriptions = require("../../subscriptions");
 
 Component = React.createClass({
   mixins: [SubscriptionMixin],
@@ -1044,19 +1058,21 @@ Component = React.createClass({
     }
   },
   render: function() {
-    return this.transferPropsTo(<Body breadcrumb={['tags']} className={"content "+ ((this.props.tags.length > 0) ? "" : "loading")}>
-            <h1>Tags</h1>
-            <ul className="link-list">
-                {
-                    this.props.tags.map(function(tag){
-                        console.log(tag);
-                        return <li key={tag.id} >
-                                <a href={"/tags/"+tag.id}>{tag.id}</a>
-                                </li>
-                        })
-                }
-            </ul>
-        </Body>);
+    var _ref;
+    return this.transferPropsTo(Body({
+      "breadcrumb": ['tags'],
+      "className": "content " + ((_ref = this.props.tags.length > 0) != null ? _ref : {
+        "": "loading"
+      })
+    }, React.DOM.h1(null, "Tags"), React.DOM.ul({
+      "className": "link-list"
+    }, this.props.tags.map(function(tag) {
+      return React.DOM.li({
+        "key": tag.id
+      }, React.DOM.a({
+        "href": "/tags/" + tag.id
+      }, tag.id));
+    }))));
   }
 });
 
@@ -1064,8 +1080,7 @@ module.exports = Component;
 
 
 
-},{"../../componentssubscriptions":31,"../body":1,"react":187,"sparkboard-tools":188,"underscore":204}],14:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../subscriptions":30,"../body":2,"react":187,"sparkboard-tools":188,"underscore":196}],14:[function(require,module,exports){
 var Body, Component, React, SubscriptionMixin, subscriptions, _;
 
 _ = require("underscore");
@@ -1076,7 +1091,7 @@ Body = require("../body");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-subscriptions = require("../../componentssubscriptions");
+subscriptions = require("../../subscriptions");
 
 Component = React.createClass({
   mixins: [SubscriptionMixin],
@@ -1113,18 +1128,18 @@ Component = React.createClass({
         title = "#" + tag;
         breadcrumb = ['tags', tag];
     }
-    return this.transferPropsTo(<Body breadcrumb={breadcrumb} className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
-            <h1>{title}</h1>
-            <ul className="link-list">
-                {
-                    this.props.writing.map(function(post){
-                        return <li key={post.id} >
-                                <a href={"/"+post.permalink}>{post.title}</a>
-                                </li>
-                        })
-                }
-            </ul>
-        </Body>);
+    return this.transferPropsTo(Body({
+      "breadcrumb": breadcrumb,
+      "className": "content " + (this.props.writing.length > 0 ? "" : "loading")
+    }, React.DOM.h1(null, title), React.DOM.ul({
+      "className": "link-list"
+    }, this.props.writing.map(function(post) {
+      return React.DOM.li({
+        "key": post.id
+      }, React.DOM.a({
+        "href": "/" + post.permalink
+      }, post.title));
+    }))));
   }
 });
 
@@ -1132,21 +1147,20 @@ module.exports = Component;
 
 
 
-},{"../../componentssubscriptions":31,"../body":1,"react":187,"sparkboard-tools":188,"underscore":204}],15:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../subscriptions":30,"../body":2,"react":187,"sparkboard-tools":188,"underscore":196}],15:[function(require,module,exports){
 var Body, Component, FIREBASE_URL, Firebase, Model, React, SubscriptionMixin, TagList, firebaseSubscription, marked, ownerId, simplePagination, slugify, snapshotToArray, textareaAutosize, unsafeCharacters, _, _ref, _ref1, _ref2;
 
 _ = require("underscore");
 
 React = require("react");
 
-_ref = require("../../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("../../firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ref1 = require("sparkboard-tools"), SubscriptionMixin = _ref1.SubscriptionMixin, firebaseSubscription = _ref1.firebaseSubscription;
 
 _ref2 = require("sparkboard-tools").utils, snapshotToArray = _ref2.snapshotToArray, slugify = _ref2.slugify;
 
-Model = require("../../componentsmodels").Model;
+Model = require("../../models").Model;
 
 ownerId = require("../../../config").ownerId;
 
@@ -1259,21 +1273,36 @@ Component = React.createClass({
     var post, tags;
     post = new Model(this.props.post);
     tags = _(post.get("tags")).keys();
-    return <Body  breadcrumb={["writing", post.get("permalink")]}  
-                navInclude ={<a href={"/ideas/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>}
-                className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
-            
-            <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
-            <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
-            <TagList tags={tags} 
-                     url={function(tag){return "/tags/"+slugify(tag)}}
-                     label={function(tag){return "#"+tag}}/>
-            <simplePagination
-                className={post.get("publishDate") ? "" : "hidden"} 
-                back="/writing"
-                next={this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false} 
-                prev={this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} />  
-        </Body>;
+    return Body({
+      "breadcrumb": ["writing", post.get("permalink")],
+      "navInclude": React.DOM.a({
+        "href": "/ideas/" + post.get("slug"),
+        "className": "right btn btn-trans showIfUser "
+      }, "Edit"),
+      "className": "content " + (_.isEmpty(post.attributes) ? "loading" : "")
+    }, React.DOM.h1({
+      "className": "text-center"
+    }, React.DOM.a({
+      "href": "/" + post.get("permalink")
+    }, post.get("title"))), React.DOM.div({
+      "className": "writing-body",
+      "dangerouslySetInnerHTML": {
+        __html: marked(post.get("body") || "")
+      }
+    }), TagList({
+      "tags": tags,
+      "url": (function(tag) {
+        return "/tags/" + slugify(tag);
+      }),
+      "label": (function(tag) {
+        return "#" + tag;
+      })
+    }), simplePagination({
+      "className": (post.get("publishDate") ? "" : "hidden"),
+      "back": "/writing",
+      "next": (this.props.postNext.permalink ? "/" + this.props.postNext.permalink : false),
+      "prev": (this.props.postPrev.permalink ? "/" + this.props.postPrev.permalink : false)
+    }));
   }
 });
 
@@ -1281,8 +1310,7 @@ module.exports = Component;
 
 
 
-},{"../../../config":32,"../../componentsfirebase":27,"../../componentsmodels":28,"../body":1,"../widgets/simplePagination":22,"../widgets/tagList":23,"../widgets/textareaAutosize":24,"marked":36,"react":187,"sparkboard-tools":188,"underscore":204}],16:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"../../../config":31,"../../firebase":26,"../../models":27,"../body":2,"../widgets/simplePagination":22,"../widgets/tagList":23,"../widgets/textareaAutosize":24,"marked":34,"react":187,"sparkboard-tools":188,"underscore":196}],16:[function(require,module,exports){
 var Addons, Component, React, getRootComponent, _;
 
 React = require("react");
@@ -1326,7 +1354,7 @@ Component = React.createClass({
   render: function() {
     var currentLink, currentLinkStyle, currentPath, exactMatch, _ref;
     currentPath = (typeof window !== "undefined" && window !== null ? window.location.pathname : void 0) || getRootComponent(this).props.path;
-    currentLink = <a>{this.props.label}</a>;
+    currentLink = React.DOM.a(null, this.props.label);
     if (this.props.replaceWithSelectedLink) {
       exactMatch = false;
       React.Children.forEach(this.props.children.props.children, function(child) {
@@ -1342,21 +1370,18 @@ Component = React.createClass({
       });
     }
     currentLinkStyle = ((_ref = currentLink.props.selectedStyle) != null ? _ref.style : void 0) || {};
-    return this.transferPropsTo(
-          <div  className={"dropdown "+(this.state.active ? "active" : "")}
-                onMouseEnter={this.show}
-                onMouseLeave={this.hide}>
-            <a  
-                className="selectedDropdownLink" 
-                href={currentLink.props.href} 
-                style={currentLinkStyle}>
-                {currentLink.props.children}
-            </a>
-            <div onClick={this.toggle} className="caret" />
-
-            {this.props.children}
-        </div>
-        );
+    return this.transferPropsTo(React.DOM.div({
+      "className": "dropdown " + (this.state.active ? "active" : ""),
+      "onMouseEnter": this.show,
+      "onMouseLeave": this.hide
+    }, React.DOM.a({
+      "className": "selectedDropdownLink",
+      "href": currentLink.props.href,
+      "style": currentLinkStyle
+    }, currentLink.props.children), React.DOM.div({
+      "onClick": this.toggle,
+      "className": "caret"
+    }), this.props.children));
   }
 });
 
@@ -1364,8 +1389,7 @@ module.exports = Component;
 
 
 
-},{"react":187,"react/addons":38,"sparkboard-tools":188,"underscore":204}],17:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"react":187,"react/addons":38,"sparkboard-tools":188,"underscore":196}],17:[function(require,module,exports){
 var Component, React, between, shapes, _;
 
 React = require("react");
@@ -1473,9 +1497,11 @@ Component = React.createClass({
     return loader.style.top = "" + (between(20, 80)) + "%";
   },
   render: function() {
-    return <div ref="loader" className="loader" style={this.state}>
-
-        </div>;
+    return React.DOM.div({
+      "ref": "loader",
+      "className": "loader",
+      "style": this.state
+    });
   }
 });
 
@@ -1483,25 +1509,34 @@ module.exports = Component;
 
 
 
-},{"react":187,"underscore":204}],18:[function(require,module,exports){
-/** @jsx React.DOM */;
+},{"react":187,"underscore":196}],18:[function(require,module,exports){
 var Component, React;
 
 React = require("react");
 
 Component = React.createClass({
   render: function() {
-    return <head>
-            <title >{this.props.title}</title>
-            <meta name='description' content={this.props.description} />
-            <meta charSet="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <link rel="stylesheet" type="text/css" href="/app.css" />
-            <script type='text/javascript' src='/js/firebase.min.js'></script>
-            <script type='text/javascript' src='/js/firebase-simple-login.js'></script>
-            <script src="/js/app.js"></script>
-            
-        </head>;
+    return React.DOM.head(null, React.DOM.title(null, this.props.title), React.DOM.meta({
+      "name": 'description',
+      "content": this.props.description
+    }), React.DOM.meta({
+      "charSet": "utf-8"
+    }), React.DOM.meta({
+      "name": "viewport",
+      "content": "width=device-width, initial-scale=1.0"
+    }), React.DOM.link({
+      "rel": "stylesheet",
+      "type": "text/css",
+      "href": "/app.css"
+    }), React.DOM.script({
+      "type": 'text/javascript',
+      "src": '/js/firebase.min.js'
+    }), React.DOM.script({
+      "type": 'text/javascript',
+      "src": '/js/firebase-simple-login.js'
+    }), React.DOM.script({
+      "src": "/js/app.js"
+    }));
   }
 });
 
@@ -1510,7 +1545,6 @@ module.exports = Component;
 
 
 },{"react":187}],19:[function(require,module,exports){
-/** @jsx React.DOM */;
 var ActiveLink, React, a, getRootComponent;
 
 React = require("react");
@@ -1528,7 +1562,9 @@ ActiveLink = React.createClass({
     return this.getPath() === this.props.href;
   },
   render: function() {
-    return this.transferPropsTo(<a className={(this.isActive() ? "activeLink" : "")}>{this.props.children}</a>);
+    return this.transferPropsTo(React.DOM.a({
+      "className": (this.isActive() ? "activeLink" : "")
+    }, this.props.children));
   }
 });
 
@@ -1537,16 +1573,21 @@ module.exports = ActiveLink;
 
 
 },{"react":187,"sparkboard-tools":188}],20:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, React;
 
 React = require("react");
 
 Component = React.createClass({
   render: function() {
-    return this.transferPropsTo(<ul className="link-list">
-            {this.props.list.map(function(link){return <li key={link.id}><a href={link.href}>{link.title}</a></li>})}
-        </ul>);
+    return this.transferPropsTo(React.DOM.ul({
+      "className": "link-list"
+    }, this.props.list.map(function(link) {
+      return React.DOM.li({
+        "key": link.id
+      }, React.DOM.a({
+        "href": link.href
+      }, link.title));
+    })));
   }
 });
 
@@ -1555,7 +1596,6 @@ module.exports = Component;
 
 
 },{"react":187}],21:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, Dropdown, Link, React;
 
 React = require("react");
@@ -1568,18 +1608,24 @@ Component = React.createClass({
   render: function() {
     var breadcrumb;
     breadcrumb = this.props.breadcrumb || [];
-    return this.transferPropsTo(<div className='nav-main'>
-		    <div className="breadcrumb">
-				<Link href="/">Matt.is</Link>
-				{breadcrumb.map(function(slug){return <Link key={slug} href={"/"+slug}>{slug}</Link>})}
-		  	</div>
-		    <div className="right">
-				{this.props.children}
-				<Link href="/ideas" className="showIfUser btn btn-block">Ideas</Link>
-				<Link href="/logout" className="btn btn-block showIfUser">Sign Out</Link>
-				<Link href="/login" className="btn btn-block hideIfUser hidden">Sign In</Link>
-			</div>
-		</div>);
+    return this.transferPropsTo(React.DOM.div({
+      "className": 'nav-main'
+    }, React.DOM.div({
+      "className": "right"
+    }, this.props.children, Link({
+      "href": "/ideas",
+      "className": "showIfUser btn btn-block"
+    }, "Ideas"), Link({
+      "href": "/logout",
+      "className": "btn btn-block showIfUser"
+    }, "Sign Out"), Link({
+      "href": "/login",
+      "className": "btn btn-block hideIfUser hidden"
+    }, "Sign In")), React.DOM.div({
+      "className": "breadcrumb"
+    }, Link({
+      "href": "/"
+    }, "Matt.is"))));
   }
 });
 
@@ -1588,7 +1634,6 @@ module.exports = Component;
 
 
 },{"./dropdown":16,"./link":19,"react":187}],22:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, React, getRootComponent;
 
 React = require("react");
@@ -1633,11 +1678,22 @@ Component = React.createClass({
     }
   },
   render: function() {
-    return this.transferPropsTo(<div className="paginate-simple">
-            <a ref="back" className="hidden" href={this.props.back} />
-            <a ref="prev" onClick={this.prev} className={"prev "+(this.props.prev ? "" : "hidden")} href={this.props.prev}/>
-            <a ref="next" className={"next "+(this.props.next ? "" : "hidden")} href={this.props.next}/>
-        </div>);
+    return this.transferPropsTo(React.DOM.div({
+      "className": "paginate-simple"
+    }, React.DOM.a({
+      "ref": "back",
+      "className": "hidden",
+      "href": this.props.back
+    }), React.DOM.a({
+      "ref": "prev",
+      "onClick": this.prev,
+      "className": "prev " + (this.props.prev ? "" : "hidden"),
+      "href": this.props.prev
+    }), React.DOM.a({
+      "ref": "next",
+      "className": "next " + (this.props.next ? "" : "hidden"),
+      "href": this.props.next
+    })));
   }
 });
 
@@ -1646,7 +1702,6 @@ module.exports = Component;
 
 
 },{"react":187,"sparkboard-tools":188}],23:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, React;
 
 React = require("react");
@@ -1656,11 +1711,15 @@ Component = React.createClass({
     var labelFor, urlFor;
     urlFor = this.props.url;
     labelFor = this.props.label;
-    return <ul className="tag-list">
-          {this.props.tags.map(function(tag, i){
-            return(<li key={i+tag}><a href={urlFor(tag)}>{labelFor(tag)}</a></li>)
-          })}
-        </ul>;
+    return React.DOM.ul({
+      "className": "tag-list"
+    }, this.props.tags.map(function(tag, i) {
+      return React.DOM.li({
+        "key": i + tag
+      }, React.DOM.a({
+        "href": urlFor(tag)
+      }, labelFor(tag)));
+    }));
   }
 });
 
@@ -1669,7 +1728,6 @@ module.exports = Component;
 
 
 },{"react":187}],24:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, React;
 
 React = require("react");
@@ -1687,12 +1745,11 @@ Component = React.createClass({
     return this.autoSize();
   },
   render: function() {
-    return this.transferPropsTo(
-        <textarea placeholder="Write here" 
-                  className="textarea-autosize" 
-                  onKeyUp={this.handleChange}>
-        </textarea>
-      );
+    return this.transferPropsTo(React.DOM.textarea({
+      "placeholder": "Write here",
+      "className": "textarea-autosize",
+      "onKeyUp": this.handleChange
+    }));
   }
 });
 
@@ -1701,7 +1758,6 @@ module.exports = Component;
 
 
 },{"react":187}],25:[function(require,module,exports){
-/** @jsx React.DOM */;
 var Component, React, closestData;
 
 React = require("react");
@@ -1733,9 +1789,10 @@ Component = React.createClass({
     };
   },
   render: function() {
-    return this.transferPropsTo(<div onClick={this.handleClick} className={(this.state.hidden ? "toggle-hide-true" : "toggle-hide-false")}>
-          {this.props.children}
-        </div>);
+    return this.transferPropsTo(React.DOM.div({
+      "onClick": this.handleClick,
+      "className": (this.state.hidden ? "toggle-hide-true" : "toggle-hide-false")
+    }, this.props.children));
   }
 });
 
@@ -1744,19 +1801,6 @@ module.exports = Component;
 
 
 },{"react":187,"sparkboard-tools":188}],26:[function(require,module,exports){
-window._ = require("underscore");
-
-window.React = require("react");
-
-window.Components = require("../components");
-
-(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document);;
-
-filepicker.setKey('AnxudJKfXTrKhIJEP599Iz');
-
-
-
-},{"../components":2,"react":187,"underscore":204}],27:[function(require,module,exports){
 (function (process){
 var Firebase;
 
@@ -1764,12 +1808,12 @@ this.Firebase = Firebase = (typeof window !== "undefined" && window !== null ? w
 
 this.Firebase.goOffline();
 
-this.FIREBASE_URL = process.env.FIREBASE_URL || require("../../config").FIREBASE_URL;
+this.FIREBASE_URL = process.env.FIREBASE_URL || require("../config").FIREBASE_URL;
 
 
 
-}).call(this,require("oMfpAn"))
-},{"../../config":32,"firebase":33,"oMfpAn":35}],28:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"../config":31,"1YiZ5S":33,"firebase":32}],27:[function(require,module,exports){
 
 /*
     Light-weight models to wrap data.
@@ -1778,7 +1822,7 @@ var Collection, FIREBASE_URL, Firebase, Model, Post, PostCollection, collectionM
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ref = require("../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("./firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ = require("underscore");
 
@@ -1895,14 +1939,14 @@ this.PostCollection = PostCollection;
 
 
 
-},{"../componentsfirebase":27,"underscore":204}],29:[function(require,module,exports){
+},{"./firebase":26,"underscore":196}],28:[function(require,module,exports){
 var FIREBASE_URL, Firebase, Router, routes, _ref;
 
 _ref = require("./firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 routes = require("./routes");
 
-Router = require("sparkboard-tools").Router.create(routes);
+Router = require("react-router").create(routes);
 
 module.exports = function(path, callback) {
   var ref, refPath;
@@ -1924,7 +1968,7 @@ module.exports = function(path, callback) {
 
 
 
-},{"./firebase":27,"./routes":30,"sparkboard-tools":188}],30:[function(require,module,exports){
+},{"./firebase":26,"./routes":29,"react-router":36}],29:[function(require,module,exports){
 var routes;
 
 routes = [
@@ -1961,9 +2005,6 @@ routes = [
   }, {
     path: "/seeing/:id",
     handler: "PhotographyView"
-  }, {
-    path: "/map",
-    handler: "Map"
   }
 ];
 
@@ -1971,18 +2012,16 @@ module.exports = routes;
 
 
 
-},{}],31:[function(require,module,exports){
-var FIREBASE_URL, Firebase, firebaseRelationalSubscription, firebaseSubscription, ownerId, root, snapshotToArray, _, _ref, _ref1;
+},{}],30:[function(require,module,exports){
+var FIREBASE_URL, Firebase, firebaseRelationalSubscription, firebaseSubscription, root, snapshotToArray, _, _ref, _ref1;
 
-_ref = require("../componentsfirebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
+_ref = require("./firebase"), Firebase = _ref.Firebase, FIREBASE_URL = _ref.FIREBASE_URL;
 
 _ = require("underscore");
 
 snapshotToArray = require("sparkboard-tools").utils.snapshotToArray;
 
 _ref1 = require("sparkboard-tools"), firebaseSubscription = _ref1.firebaseSubscription, firebaseRelationalSubscription = _ref1.firebaseRelationalSubscription;
-
-ownerId = require("../../config").ownerId;
 
 root = new Firebase(FIREBASE_URL);
 
@@ -2044,244 +2083,16 @@ this.WritingList = function(limit, indexPath) {
 
 
 
-},{"../../config":32,"../componentsfirebase":27,"sparkboard-tools":188,"underscore":204}],32:[function(require,module,exports){
+},{"./firebase":26,"sparkboard-tools":188,"underscore":196}],31:[function(require,module,exports){
 this.FIREBASE_URL = "https://matt-is.firebaseIO.com";
 
 this.ownerId = "15538074";
 
 
 
+},{}],32:[function(require,module,exports){
+
 },{}],33:[function(require,module,exports){
-
-},{}],34:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2346,7 +2157,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],36:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -3616,7 +3427,7 @@ if (typeof exports === 'object') {
 }());
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],37:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.6.0
@@ -6109,7 +5920,128 @@ if (typeof exports === 'object') {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],38:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
+module.exports = require("./lib/router")
+},{"./lib/router":37}],37:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.1
+(function() {
+  var RouterMixin, closestTag, urlPattern, _;
+
+  _ = require("underscore");
+
+  urlPattern = require('url-pattern');
+
+  closestTag = function(el, tag) {
+    tag = tag.toUpperCase();
+    if (el.nodeName === tag) {
+      return el;
+    }
+    while (el = el.parentNode) {
+      if (el.nodeName === tag) {
+        return el;
+      }
+    }
+    return null;
+  };
+
+  RouterMixin = this.Mixin = {
+    handleClick: function(e) {
+      var link, _ref;
+      if (link = closestTag(e.target, 'A')) {
+        if (((_ref = link.getAttribute("href")) != null ? _ref[0] : void 0) === "/") {
+          e.preventDefault();
+          e.stopPropagation();
+          return this.navigate(link.pathname);
+        }
+      }
+    },
+    handlePopstate: function() {
+      var path;
+      path = window.location.pathname;
+      if (this.props.matchedRoute.path !== path) {
+        return this.matchRoute(path, (function(_this) {
+          return function(matchedRoute) {
+            return _this.setProps({
+              matchedRoute: matchedRoute
+            });
+          };
+        })(this));
+      }
+    },
+    componentDidMount: function() {
+      window.addEventListener('popstate', this.handlePopstate);
+      return window.Router = this;
+    },
+    matchStaticRoute: function(path) {
+      var matchedRoute, params, pattern, route, _i, _len, _ref;
+      if (path[path.length - 1] !== "/") {
+        path += "/";
+      }
+      _ref = this.routes || [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        route = _ref[_i];
+        if (route.path[route.path.length - 1] !== "/") {
+          route.path += "/";
+        }
+        pattern = urlPattern.newPattern(route.path);
+        params = pattern.match(path);
+        if (params) {
+          matchedRoute = {
+            path: path,
+            params: params,
+            handler: route.handler
+          };
+        }
+      }
+      return matchedRoute || null;
+    },
+    matchRoute: function(path, callback, options) {
+      var matchedRoute;
+      if (options == null) {
+        options = {};
+      }
+      if (path[path.length - 1] !== "/") {
+        path += "/";
+      }
+      matchedRoute = this.matchStaticRoute(path);
+      if (matchedRoute) {
+        return callback(matchedRoute);
+      } else {
+        return this.fallbackRoute(path, function(matchedRoute) {
+          return callback(matchedRoute);
+        });
+      }
+    },
+    navigate: function(path, callback) {
+      return this.matchRoute(path, (function(_this) {
+        return function(matchedRoute) {
+          window.history.pushState(null, null, path);
+          return _this.setProps({
+            matchedRoute: matchedRoute
+          }, callback);
+        };
+      })(this));
+    }
+  };
+
+  this.create = function(routes) {
+    var Router;
+    Router = _.clone(RouterMixin);
+    _.extend(Router, {
+      routes: routes,
+      add: function(route) {
+        return this.routes.push(route);
+      },
+      addFallback: function(fallback) {
+        return this.fallbackRoute = fallback;
+      }
+    });
+    return Router;
+  };
+
+}).call(this);
+
+},{"underscore":196,"url-pattern":197}],38:[function(require,module,exports){
 module.exports = require('./lib/ReactWithAddons');
 
 },{"./lib/ReactWithAddons":120}],39:[function(require,module,exports){
@@ -6264,8 +6196,8 @@ var CSSCore = {
 
 module.exports = CSSCore;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],41:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],41:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -7616,8 +7548,8 @@ var DOMProperty = {
 
 module.exports = DOMProperty;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],48:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],48:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -7801,8 +7733,8 @@ var DOMPropertyOperations = {
 
 module.exports = DOMPropertyOperations;
 
-}).call(this,require("oMfpAn"))
-},{"./DOMProperty":47,"./escapeTextForBrowser":149,"./memoizeStringOnly":171,"./warning":186,"oMfpAn":35}],49:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./DOMProperty":47,"./escapeTextForBrowser":149,"./memoizeStringOnly":171,"./warning":186,"1YiZ5S":33}],49:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -7992,8 +7924,8 @@ var Danger = {
 
 module.exports = Danger;
 
-}).call(this,require("oMfpAn"))
-},{"./ExecutionEnvironment":59,"./createNodesFromMarkup":143,"./emptyFunction":147,"./getMarkupWrap":156,"./invariant":163,"oMfpAn":35}],50:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ExecutionEnvironment":59,"./createNodesFromMarkup":143,"./emptyFunction":147,"./getMarkupWrap":156,"./invariant":163,"1YiZ5S":33}],50:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -8534,8 +8466,8 @@ var EventListener = {
 
 module.exports = EventListener;
 
-}).call(this,require("oMfpAn"))
-},{"./emptyFunction":147,"oMfpAn":35}],55:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./emptyFunction":147,"1YiZ5S":33}],55:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -8833,8 +8765,8 @@ var EventPluginHub = {
 
 module.exports = EventPluginHub;
 
-}).call(this,require("oMfpAn"))
-},{"./EventPluginRegistry":56,"./EventPluginUtils":57,"./ExecutionEnvironment":59,"./accumulate":136,"./forEachAccumulated":152,"./invariant":163,"./isEventSupported":164,"./monitorCodeUse":176,"oMfpAn":35}],56:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./EventPluginRegistry":56,"./EventPluginUtils":57,"./ExecutionEnvironment":59,"./accumulate":136,"./forEachAccumulated":152,"./invariant":163,"./isEventSupported":164,"./monitorCodeUse":176,"1YiZ5S":33}],56:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9118,8 +9050,8 @@ var EventPluginRegistry = {
 
 module.exports = EventPluginRegistry;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],57:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],57:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9336,8 +9268,8 @@ var EventPluginUtils = {
 
 module.exports = EventPluginUtils;
 
-}).call(this,require("oMfpAn"))
-},{"./EventConstants":53,"./invariant":163,"oMfpAn":35}],58:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./EventConstants":53,"./invariant":163,"1YiZ5S":33}],58:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9483,8 +9415,8 @@ var EventPropagators = {
 
 module.exports = EventPropagators;
 
-}).call(this,require("oMfpAn"))
-},{"./EventConstants":53,"./EventPluginHub":55,"./accumulate":136,"./forEachAccumulated":152,"oMfpAn":35}],59:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./EventConstants":53,"./EventPluginHub":55,"./accumulate":136,"./forEachAccumulated":152,"1YiZ5S":33}],59:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -9741,8 +9673,8 @@ var LinkedValueUtils = {
 
 module.exports = LinkedValueUtils;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactPropTypes":107,"./invariant":163,"./warning":186,"oMfpAn":35}],62:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactPropTypes":107,"./invariant":163,"./warning":186,"1YiZ5S":33}],62:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -9929,8 +9861,8 @@ var PooledClass = {
 
 module.exports = PooledClass;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],64:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],64:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10030,8 +9962,8 @@ React.version = '0.10.0';
 
 module.exports = React;
 
-}).call(this,require("oMfpAn"))
-},{"./DOMPropertyOperations":48,"./EventPluginUtils":57,"./ExecutionEnvironment":59,"./ReactChildren":68,"./ReactComponent":69,"./ReactCompositeComponent":71,"./ReactContext":72,"./ReactCurrentOwner":73,"./ReactDOM":74,"./ReactDOMComponent":76,"./ReactDefaultInjection":86,"./ReactInstanceHandles":95,"./ReactMount":98,"./ReactMultiChild":100,"./ReactPerf":103,"./ReactPropTypes":107,"./ReactServerRendering":111,"./ReactTextComponent":115,"./onlyChild":179,"oMfpAn":35}],65:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./DOMPropertyOperations":48,"./EventPluginUtils":57,"./ExecutionEnvironment":59,"./ReactChildren":68,"./ReactComponent":69,"./ReactCompositeComponent":71,"./ReactContext":72,"./ReactCurrentOwner":73,"./ReactDOM":74,"./ReactDOMComponent":76,"./ReactDefaultInjection":86,"./ReactInstanceHandles":95,"./ReactMount":98,"./ReactMultiChild":100,"./ReactPerf":103,"./ReactPropTypes":107,"./ReactServerRendering":111,"./ReactTextComponent":115,"./onlyChild":179,"1YiZ5S":33}],65:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10076,8 +10008,8 @@ var ReactBrowserComponentMixin = {
 
 module.exports = ReactBrowserComponentMixin;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactMount":98,"./invariant":163,"oMfpAn":35}],66:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactMount":98,"./invariant":163,"1YiZ5S":33}],66:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -10285,8 +10217,8 @@ var ReactCSSTransitionGroupChild = React.createClass({
 
 module.exports = ReactCSSTransitionGroupChild;
 
-}).call(this,require("oMfpAn"))
-},{"./CSSCore":40,"./React":64,"./ReactTransitionEvents":117,"./onlyChild":179,"oMfpAn":35}],68:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./CSSCore":40,"./React":64,"./ReactTransitionEvents":117,"./onlyChild":179,"1YiZ5S":33}],68:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10421,8 +10353,8 @@ var ReactChildren = {
 
 module.exports = ReactChildren;
 
-}).call(this,require("oMfpAn"))
-},{"./PooledClass":63,"./invariant":163,"./traverseAllChildren":184,"oMfpAn":35}],69:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./PooledClass":63,"./invariant":163,"./traverseAllChildren":184,"1YiZ5S":33}],69:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -11020,8 +10952,8 @@ var ReactComponent = {
 
 module.exports = ReactComponent;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactCurrentOwner":73,"./ReactOwner":102,"./ReactUpdates":119,"./invariant":163,"./keyMirror":169,"./merge":172,"./monitorCodeUse":176,"oMfpAn":35}],70:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactCurrentOwner":73,"./ReactOwner":102,"./ReactUpdates":119,"./invariant":163,"./keyMirror":169,"./merge":172,"./monitorCodeUse":176,"1YiZ5S":33}],70:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -11148,8 +11080,8 @@ var ReactComponentBrowserEnvironment = {
 
 module.exports = ReactComponentBrowserEnvironment;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactDOMIDOperations":78,"./ReactMarkupChecksum":97,"./ReactMount":98,"./ReactPerf":103,"./ReactReconcileTransaction":109,"./getReactRootElementInContainer":158,"./invariant":163,"oMfpAn":35}],71:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactDOMIDOperations":78,"./ReactMarkupChecksum":97,"./ReactMount":98,"./ReactPerf":103,"./ReactReconcileTransaction":109,"./getReactRootElementInContainer":158,"./invariant":163,"1YiZ5S":33}],71:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12739,8 +12671,8 @@ var ReactCompositeComponent = {
 
 module.exports = ReactCompositeComponent;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactComponent":69,"./ReactContext":72,"./ReactCurrentOwner":73,"./ReactErrorUtils":89,"./ReactOwner":102,"./ReactPerf":103,"./ReactPropTransferer":104,"./ReactPropTypeLocationNames":105,"./ReactPropTypeLocations":106,"./ReactUpdates":119,"./instantiateReactComponent":162,"./invariant":163,"./keyMirror":169,"./merge":172,"./mixInto":175,"./monitorCodeUse":176,"./objMap":177,"./shouldUpdateReactComponent":182,"./warning":186,"oMfpAn":35}],72:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactComponent":69,"./ReactContext":72,"./ReactCurrentOwner":73,"./ReactErrorUtils":89,"./ReactOwner":102,"./ReactPerf":103,"./ReactPropTransferer":104,"./ReactPropTypeLocationNames":105,"./ReactPropTypeLocations":106,"./ReactUpdates":119,"./instantiateReactComponent":162,"./invariant":163,"./keyMirror":169,"./merge":172,"./mixInto":175,"./monitorCodeUse":176,"./objMap":177,"./shouldUpdateReactComponent":182,"./warning":186,"1YiZ5S":33}],72:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -13549,8 +13481,8 @@ mixInto(ReactDOMComponent, ReactBrowserComponentMixin);
 
 module.exports = ReactDOMComponent;
 
-}).call(this,require("oMfpAn"))
-},{"./CSSPropertyOperations":42,"./DOMProperty":47,"./DOMPropertyOperations":48,"./ReactBrowserComponentMixin":65,"./ReactComponent":69,"./ReactEventEmitter":90,"./ReactMount":98,"./ReactMultiChild":100,"./ReactPerf":103,"./escapeTextForBrowser":149,"./invariant":163,"./keyOf":170,"./merge":172,"./mixInto":175,"oMfpAn":35}],77:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./CSSPropertyOperations":42,"./DOMProperty":47,"./DOMPropertyOperations":48,"./ReactBrowserComponentMixin":65,"./ReactComponent":69,"./ReactEventEmitter":90,"./ReactMount":98,"./ReactMultiChild":100,"./ReactPerf":103,"./escapeTextForBrowser":149,"./invariant":163,"./keyOf":170,"./merge":172,"./mixInto":175,"1YiZ5S":33}],77:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -13835,8 +13767,8 @@ var ReactDOMIDOperations = {
 
 module.exports = ReactDOMIDOperations;
 
-}).call(this,require("oMfpAn"))
-},{"./CSSPropertyOperations":42,"./DOMChildrenOperations":46,"./DOMPropertyOperations":48,"./ReactMount":98,"./ReactPerf":103,"./invariant":163,"oMfpAn":35}],79:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./CSSPropertyOperations":42,"./DOMChildrenOperations":46,"./DOMPropertyOperations":48,"./ReactMount":98,"./ReactPerf":103,"./invariant":163,"1YiZ5S":33}],79:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -14084,8 +14016,8 @@ var ReactDOMInput = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMInput;
 
-}).call(this,require("oMfpAn"))
-},{"./AutoFocusMixin":39,"./DOMPropertyOperations":48,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./ReactMount":98,"./invariant":163,"./merge":172,"oMfpAn":35}],81:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./AutoFocusMixin":39,"./DOMPropertyOperations":48,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./ReactMount":98,"./invariant":163,"./merge":172,"1YiZ5S":33}],81:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14143,8 +14075,8 @@ var ReactDOMOption = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMOption;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./warning":186,"oMfpAn":35}],82:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./warning":186,"1YiZ5S":33}],82:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14327,8 +14259,8 @@ var ReactDOMSelect = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMSelect;
 
-}).call(this,require("oMfpAn"))
-},{"./AutoFocusMixin":39,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./invariant":163,"./merge":172,"oMfpAn":35}],83:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./AutoFocusMixin":39,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./invariant":163,"./merge":172,"1YiZ5S":33}],83:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -14666,8 +14598,8 @@ var ReactDOMTextarea = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMTextarea;
 
-}).call(this,require("oMfpAn"))
-},{"./AutoFocusMixin":39,"./DOMPropertyOperations":48,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./invariant":163,"./merge":172,"./warning":186,"oMfpAn":35}],85:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./AutoFocusMixin":39,"./DOMPropertyOperations":48,"./LinkedValueUtils":61,"./ReactBrowserComponentMixin":65,"./ReactCompositeComponent":71,"./ReactDOM":74,"./invariant":163,"./merge":172,"./warning":186,"1YiZ5S":33}],85:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -14872,8 +14804,8 @@ module.exports = {
   inject: inject
 };
 
-}).call(this,require("oMfpAn"))
-},{"./ChangeEventPlugin":43,"./ClientReactRootIndex":44,"./CompositionEventPlugin":45,"./DefaultDOMPropertyConfig":50,"./DefaultEventPluginOrder":51,"./EnterLeaveEventPlugin":52,"./ExecutionEnvironment":59,"./MobileSafariClickEventPlugin":62,"./ReactBrowserComponentMixin":65,"./ReactComponentBrowserEnvironment":70,"./ReactDOM":74,"./ReactDOMButton":75,"./ReactDOMForm":77,"./ReactDOMImg":79,"./ReactDOMInput":80,"./ReactDOMOption":81,"./ReactDOMSelect":82,"./ReactDOMTextarea":84,"./ReactDefaultBatchingStrategy":85,"./ReactDefaultPerf":87,"./ReactEventTopLevelCallback":92,"./ReactInjection":93,"./ReactInstanceHandles":95,"./ReactMount":98,"./SelectEventPlugin":121,"./ServerReactRootIndex":122,"./SimpleEventPlugin":123,"./createFullPageComponent":142,"oMfpAn":35}],87:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ChangeEventPlugin":43,"./ClientReactRootIndex":44,"./CompositionEventPlugin":45,"./DefaultDOMPropertyConfig":50,"./DefaultEventPluginOrder":51,"./EnterLeaveEventPlugin":52,"./ExecutionEnvironment":59,"./MobileSafariClickEventPlugin":62,"./ReactBrowserComponentMixin":65,"./ReactComponentBrowserEnvironment":70,"./ReactDOM":74,"./ReactDOMButton":75,"./ReactDOMForm":77,"./ReactDOMImg":79,"./ReactDOMInput":80,"./ReactDOMOption":81,"./ReactDOMSelect":82,"./ReactDOMTextarea":84,"./ReactDefaultBatchingStrategy":85,"./ReactDefaultPerf":87,"./ReactEventTopLevelCallback":92,"./ReactInjection":93,"./ReactInstanceHandles":95,"./ReactMount":98,"./SelectEventPlugin":121,"./ServerReactRootIndex":122,"./SimpleEventPlugin":123,"./createFullPageComponent":142,"1YiZ5S":33}],87:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -15701,8 +15633,8 @@ var ReactEventEmitter = merge(ReactEventEmitterMixin, {
 
 module.exports = ReactEventEmitter;
 
-}).call(this,require("oMfpAn"))
-},{"./EventConstants":53,"./EventListener":54,"./EventPluginHub":55,"./EventPluginRegistry":56,"./ExecutionEnvironment":59,"./ReactEventEmitterMixin":91,"./ViewportMetrics":135,"./invariant":163,"./isEventSupported":164,"./merge":172,"oMfpAn":35}],91:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./EventConstants":53,"./EventListener":54,"./EventPluginHub":55,"./EventPluginRegistry":56,"./ExecutionEnvironment":59,"./ReactEventEmitterMixin":91,"./ViewportMetrics":135,"./invariant":163,"./isEventSupported":164,"./merge":172,"1YiZ5S":33}],91:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -16441,8 +16373,8 @@ var ReactInstanceHandles = {
 
 module.exports = ReactInstanceHandles;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactRootIndex":110,"./invariant":163,"oMfpAn":35}],96:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactRootIndex":110,"./invariant":163,"1YiZ5S":33}],96:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -17205,8 +17137,8 @@ var ReactMount = {
 
 module.exports = ReactMount;
 
-}).call(this,require("oMfpAn"))
-},{"./DOMProperty":47,"./ReactEventEmitter":90,"./ReactInstanceHandles":95,"./ReactPerf":103,"./containsNode":139,"./getReactRootElementInContainer":158,"./instantiateReactComponent":162,"./invariant":163,"./shouldUpdateReactComponent":182,"oMfpAn":35}],99:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./DOMProperty":47,"./ReactEventEmitter":90,"./ReactInstanceHandles":95,"./ReactPerf":103,"./containsNode":139,"./getReactRootElementInContainer":158,"./instantiateReactComponent":162,"./invariant":163,"./shouldUpdateReactComponent":182,"1YiZ5S":33}],99:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -17939,8 +17871,8 @@ var ReactOwner = {
 
 module.exports = ReactOwner;
 
-}).call(this,require("oMfpAn"))
-},{"./emptyObject":148,"./invariant":163,"oMfpAn":35}],103:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./emptyObject":148,"./invariant":163,"1YiZ5S":33}],103:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18028,8 +17960,8 @@ function _noMeasure(objName, fnName, func) {
 
 module.exports = ReactPerf;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],104:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],104:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18179,8 +18111,8 @@ var ReactPropTransferer = {
 
 module.exports = ReactPropTransferer;
 
-}).call(this,require("oMfpAn"))
-},{"./emptyFunction":147,"./invariant":163,"./joinClasses":168,"./merge":172,"oMfpAn":35}],105:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./emptyFunction":147,"./invariant":163,"./joinClasses":168,"./merge":172,"1YiZ5S":33}],105:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18214,8 +18146,8 @@ if ("production" !== process.env.NODE_ENV) {
 
 module.exports = ReactPropTypeLocationNames;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],106:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],106:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -18608,8 +18540,8 @@ function createChainableTypeChecker(validate) {
 
 module.exports = Props;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactComponent":69,"./ReactPropTypeLocationNames":105,"./createObjectFrom":144,"./warning":186,"oMfpAn":35}],108:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactComponent":69,"./ReactPropTypeLocationNames":105,"./createObjectFrom":144,"./warning":186,"1YiZ5S":33}],108:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -18986,8 +18918,8 @@ module.exports = {
   renderComponentToStaticMarkup: renderComponentToStaticMarkup
 };
 
-}).call(this,require("oMfpAn"))
-},{"./ReactComponent":69,"./ReactInstanceHandles":95,"./ReactMarkupChecksum":97,"./ReactServerRenderingTransaction":112,"./instantiateReactComponent":162,"./invariant":163,"oMfpAn":35}],112:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactComponent":69,"./ReactInstanceHandles":95,"./ReactMarkupChecksum":97,"./ReactServerRenderingTransaction":112,"./instantiateReactComponent":162,"./invariant":163,"1YiZ5S":33}],112:[function(require,module,exports){
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -20284,8 +20216,8 @@ var ReactUpdates = {
 
 module.exports = ReactUpdates;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactPerf":103,"./invariant":163,"oMfpAn":35}],120:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactPerf":103,"./invariant":163,"1YiZ5S":33}],120:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20341,8 +20273,8 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = React;
 
 
-}).call(this,require("oMfpAn"))
-},{"./LinkedStateMixin":60,"./React":64,"./ReactCSSTransitionGroup":66,"./ReactTestUtils":114,"./ReactTransitionGroup":118,"./cloneWithProps":138,"./cx":145,"./update":185,"oMfpAn":35}],121:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./LinkedStateMixin":60,"./React":64,"./ReactCSSTransitionGroup":66,"./ReactTestUtils":114,"./ReactTransitionGroup":118,"./cloneWithProps":138,"./cx":145,"./update":185,"1YiZ5S":33}],121:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -20998,8 +20930,8 @@ var SimpleEventPlugin = {
 
 module.exports = SimpleEventPlugin;
 
-}).call(this,require("oMfpAn"))
-},{"./EventConstants":53,"./EventPluginUtils":57,"./EventPropagators":58,"./SyntheticClipboardEvent":124,"./SyntheticDragEvent":126,"./SyntheticEvent":127,"./SyntheticFocusEvent":128,"./SyntheticKeyboardEvent":129,"./SyntheticMouseEvent":130,"./SyntheticTouchEvent":131,"./SyntheticUIEvent":132,"./SyntheticWheelEvent":133,"./invariant":163,"./keyOf":170,"oMfpAn":35}],124:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./EventConstants":53,"./EventPluginUtils":57,"./EventPropagators":58,"./SyntheticClipboardEvent":124,"./SyntheticDragEvent":126,"./SyntheticEvent":127,"./SyntheticFocusEvent":128,"./SyntheticKeyboardEvent":129,"./SyntheticMouseEvent":130,"./SyntheticTouchEvent":131,"./SyntheticUIEvent":132,"./SyntheticWheelEvent":133,"./invariant":163,"./keyOf":170,"1YiZ5S":33}],124:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -21956,8 +21888,8 @@ var Transaction = {
 
 module.exports = Transaction;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],135:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],135:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22053,8 +21985,8 @@ function accumulate(current, next) {
 
 module.exports = accumulate;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],137:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],137:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22157,8 +22089,8 @@ function cloneWithProps(child, props) {
 
 module.exports = cloneWithProps;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactPropTransferer":104,"./keyOf":170,"./warning":186,"oMfpAn":35}],139:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactPropTransferer":104,"./keyOf":170,"./warning":186,"1YiZ5S":33}],139:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22266,8 +22198,8 @@ function copyProperties(obj, a, b, c, d, e, f) {
 
 module.exports = copyProperties;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],141:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],141:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22426,8 +22358,8 @@ function createFullPageComponent(componentClass) {
 
 module.exports = createFullPageComponent;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactCompositeComponent":71,"./invariant":163,"oMfpAn":35}],143:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactCompositeComponent":71,"./invariant":163,"1YiZ5S":33}],143:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -22523,8 +22455,8 @@ function createNodesFromMarkup(markup, handleScript) {
 
 module.exports = createNodesFromMarkup;
 
-}).call(this,require("oMfpAn"))
-},{"./ExecutionEnvironment":59,"./createArrayFrom":141,"./getMarkupWrap":156,"./invariant":163,"oMfpAn":35}],144:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ExecutionEnvironment":59,"./createArrayFrom":141,"./getMarkupWrap":156,"./invariant":163,"1YiZ5S":33}],144:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -22588,8 +22520,8 @@ function createObjectFrom(keys, values /* = true */) {
 
 module.exports = createObjectFrom;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],145:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],145:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22769,8 +22701,8 @@ if ("production" !== process.env.NODE_ENV) {
 
 module.exports = emptyObject;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],149:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],149:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -22879,8 +22811,8 @@ function flattenChildren(children) {
 
 module.exports = flattenChildren;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"./traverseAllChildren":184,"oMfpAn":35}],151:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"./traverseAllChildren":184,"1YiZ5S":33}],151:[function(require,module,exports){
 /**
  * Copyright 2014 Facebook, Inc.
  *
@@ -23235,8 +23167,8 @@ function getMarkupWrap(nodeName) {
 
 module.exports = getMarkupWrap;
 
-}).call(this,require("oMfpAn"))
-},{"./ExecutionEnvironment":59,"./invariant":163,"oMfpAn":35}],157:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ExecutionEnvironment":59,"./invariant":163,"1YiZ5S":33}],157:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -23561,8 +23493,8 @@ function instantiateReactComponent(descriptor) {
 
 module.exports = instantiateReactComponent;
 
-}).call(this,require("oMfpAn"))
-},{"./warning":186,"oMfpAn":35}],163:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./warning":186,"1YiZ5S":33}],163:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -23627,8 +23559,8 @@ if ("production" !== process.env.NODE_ENV) {
 
 module.exports = invariant;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],164:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],164:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -23925,8 +23857,8 @@ var keyMirror = function(obj) {
 
 module.exports = keyMirror;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],170:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],170:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -24188,8 +24120,8 @@ var mergeHelpers = {
 
 module.exports = mergeHelpers;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"./keyMirror":169,"oMfpAn":35}],174:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"./keyMirror":169,"1YiZ5S":33}],174:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -24312,8 +24244,8 @@ function monitorCodeUse(eventName, data) {
 
 module.exports = monitorCodeUse;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],177:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],177:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -24457,8 +24389,8 @@ function onlyChild(children) {
 
 module.exports = onlyChild;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactComponent":69,"./invariant":163,"oMfpAn":35}],180:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactComponent":69,"./invariant":163,"1YiZ5S":33}],180:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -24617,8 +24549,8 @@ function shouldUpdateReactComponent(prevComponentInstance, nextDescriptor) {
 
 module.exports = shouldUpdateReactComponent;
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],183:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],183:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -24696,8 +24628,8 @@ function toArray(obj) {
 
 module.exports = toArray;
 
-}).call(this,require("oMfpAn"))
-},{"./invariant":163,"oMfpAn":35}],184:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./invariant":163,"1YiZ5S":33}],184:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -24890,8 +24822,8 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 
-}).call(this,require("oMfpAn"))
-},{"./ReactInstanceHandles":95,"./ReactTextComponent":115,"./invariant":163,"oMfpAn":35}],185:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./ReactInstanceHandles":95,"./ReactTextComponent":115,"./invariant":163,"1YiZ5S":33}],185:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -25053,8 +24985,8 @@ function update(value, spec) {
 
 module.exports = update;
 
-}).call(this,require("oMfpAn"))
-},{"./copyProperties":140,"./invariant":163,"./keyOf":170,"oMfpAn":35}],186:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./copyProperties":140,"./invariant":163,"./keyOf":170,"1YiZ5S":33}],186:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -25105,21 +25037,19 @@ if ("production" !== process.env.NODE_ENV) {
 
 module.exports = warning;
 
-}).call(this,require("oMfpAn"))
-},{"./emptyFunction":147,"oMfpAn":35}],187:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"./emptyFunction":147,"1YiZ5S":33}],187:[function(require,module,exports){
 module.exports = require('./lib/React');
 
 },{"./lib/React":64}],188:[function(require,module,exports){
 exports.SubscriptionMixin = require("./lib/react-subscription-mixin")
 exports.fetchSubscriptions = require("./lib/fetch-subscriptions")
 exports.utils = require("./lib/utils")
-exports.Router = require("./lib/router")
-exports.mergeFirebaseRules = require("./lib/merge-firebase-rules")
 
 exports.firebaseSubscription = require("./lib/firebase-subscription")
 exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subscription")
 
-},{"./lib/fetch-subscriptions":189,"./lib/firebase-relational-subscription":190,"./lib/firebase-subscription":191,"./lib/merge-firebase-rules":192,"./lib/react-subscription-mixin":193,"./lib/router":194,"./lib/utils":195}],189:[function(require,module,exports){
+},{"./lib/fetch-subscriptions":189,"./lib/firebase-relational-subscription":190,"./lib/firebase-subscription":191,"./lib/react-subscription-mixin":192,"./lib/utils":193}],189:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
 
 /*
@@ -25184,7 +25114,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 }).call(this);
 
-},{"async":196,"underscore":202}],190:[function(require,module,exports){
+},{"async":194,"underscore":195}],190:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
 (function() {
   var _;
@@ -25331,7 +25261,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 }).call(this);
 
-},{"underscore":202}],191:[function(require,module,exports){
+},{"underscore":195}],191:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
 
 /*
@@ -25514,89 +25444,6 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 /*
 
-  **Problem:** Firebase expects a single JSON file to specify security rules for an app. But a large app will have many rules, and I'd rather separate these rules into different files.
-
-  **Solution:** This module iterates over a directory of JSON/JS/CoffeeScript files, creates a nested hash of all the rules (maintaining the structure of the files/directories), and outputs all rules into a single JSON file.
- */
-
-(function() {
-  var argv, fs, path, readPath, renameParent, requireDirectory, traverse, writePath, _;
-
-  requireDirectory = require('require-directory');
-
-  argv = require("optimist").argv;
-
-  _ = require("underscore");
-
-  fs = require("fs");
-
-  traverse = require("traverse");
-
-  path = require("path");
-
-  readPath = argv._[0];
-
-  writePath = argv._[1];
-
-  renameParent = function(traversal, context, object, from, to) {
-    var basePath, newPath;
-    if (context.key === from) {
-      basePath = context.parent.path;
-      newPath = basePath.concat([to]);
-      traversal.set(newPath, object);
-      return context.remove();
-    }
-  };
-
-  module.exports = function(readPath, writePath) {
-    var key, rules, rulesFromFiles, traversal, _i, _len, _ref;
-    console.log("Begin to merge Firebase rules:");
-    if (!readPath) {
-      console.log("...No path provided. Quitting.");
-      return false;
-    } else {
-      console.log("...Reading from: " + readPath);
-    }
-    rulesFromFiles = requireDirectory(module, readPath, /_[^\/]*$/);
-    traversal = traverse(rulesFromFiles);
-    traversal.forEach(function(object) {
-      renameParent(traversal, this, object, "validate", ".validate");
-      renameParent(traversal, this, object, "read", ".read");
-      return renameParent(traversal, this, object, "write", ".write");
-    });
-    traversal.forEach(function(object) {
-      var basePath, key, newPath, value, _ref;
-      if ((_ref = this.key) === 'index' || _ref === 'root') {
-        basePath = this.parent.path;
-        for (key in object) {
-          value = object[key];
-          newPath = basePath.concat([key]);
-          traversal.set(newPath, value);
-        }
-        return this.remove();
-      }
-    });
-    rules = JSON.stringify(rulesFromFiles, null, 4);
-    fs.writeFileSync(writePath, rules);
-    console.log("...Compiled rules: " + writePath);
-    readPath = path.resolve(readPath);
-    _ref = _(require.cache).keys();
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      key = _ref[_i];
-      if (key.match(RegExp("^" + readPath))) {
-        delete require.cache[key];
-      }
-    }
-    return rules;
-  };
-
-}).call(this);
-
-},{"fs":33,"optimist":197,"path":34,"require-directory":200,"traverse":201,"underscore":202}],193:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.1
-
-/*
-
     Subscription mixin for React.
 
     Expects a 'manifest' of subscriptions in `statics.subscriptions`
@@ -25711,144 +25558,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 }).call(this);
 
-},{"./utils":195}],194:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.1
-
-/*
-
-    Router for React.
-
-    Use @Mixin on the client and @create on the server.
-
-    On the client, @Mixin goes into the root component and sets
-    route matches into props.matchedRoute.
-
-    Expects a path list:
-
-        routes =  [
-            { path: "/",                 handler: Home },
-            { path: "/writing",          handler: Writing },
-            { path: "/writing/:slug",    handler: WritingView },
-            { path: "*",                 handler: NotFound }
-        ]
-
-    When matchRoute(path) is called, a matchedRoute object
-    is set into this.props:
-
-        matchedRoute:
-            path: "/writing/my-post"
-            params:
-                slug: "my-post"
-            handler: WritingView
- */
-
-(function() {
-  var RouterMixin, closestTag, urlPattern, _;
-
-  _ = require("underscore");
-
-  urlPattern = require('url-pattern');
-
-  closestTag = require("./utils").closestTag;
-
-  RouterMixin = this.Mixin = {
-    handleClick: function(e) {
-      var link, _ref;
-      if (link = closestTag(e.target, 'A')) {
-        if (((_ref = link.getAttribute("href")) != null ? _ref[0] : void 0) === "/") {
-          e.preventDefault();
-          e.stopPropagation();
-          return this.navigate(link.pathname);
-        }
-      }
-    },
-    handlePopstate: function() {
-      var path;
-      path = window.location.pathname;
-      if (this.props.matchedRoute.path !== path) {
-        return this.matchRoute(path, (function(_this) {
-          return function(matchedRoute) {
-            return _this.setProps({
-              matchedRoute: matchedRoute
-            });
-          };
-        })(this));
-      }
-    },
-    componentDidMount: function() {
-      window.addEventListener('popstate', this.handlePopstate);
-      return window.Router = this;
-    },
-    matchStaticRoute: function(path) {
-      var matchedRoute, params, pattern, route, _i, _len, _ref;
-      if (path[path.length - 1] !== "/") {
-        path += "/";
-      }
-      _ref = this.routes || [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        route = _ref[_i];
-        if (route.path[route.path.length - 1] !== "/") {
-          route.path += "/";
-        }
-        pattern = urlPattern.newPattern(route.path);
-        params = pattern.match(path);
-        if (params) {
-          matchedRoute = {
-            path: path,
-            params: params,
-            handler: route.handler
-          };
-        }
-      }
-      return matchedRoute || null;
-    },
-    matchRoute: function(path, callback, options) {
-      var matchedRoute;
-      if (options == null) {
-        options = {};
-      }
-      if (path[path.length - 1] !== "/") {
-        path += "/";
-      }
-      matchedRoute = this.matchStaticRoute(path);
-      if (matchedRoute) {
-        return callback(matchedRoute);
-      } else {
-        return this.fallbackRoute(path, function(matchedRoute) {
-          return callback(matchedRoute);
-        });
-      }
-    },
-    navigate: function(path, callback) {
-      return this.matchRoute(path, (function(_this) {
-        return function(matchedRoute) {
-          window.history.pushState(null, null, path);
-          return _this.setProps({
-            matchedRoute: matchedRoute
-          }, callback);
-        };
-      })(this));
-    }
-  };
-
-  this.create = function(routes) {
-    var Router;
-    Router = _.clone(RouterMixin);
-    _.extend(Router, {
-      routes: routes,
-      add: function(route) {
-        return this.routes.push(route);
-      },
-      addFallback: function(fallback) {
-        return this.fallbackRoute = fallback;
-      }
-    });
-    return Router;
-  };
-
-}).call(this);
-
-},{"./utils":195,"underscore":202,"url-pattern":203}],195:[function(require,module,exports){
+},{"./utils":193}],193:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
 (function() {
   var _;
@@ -25930,7 +25640,7 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 }).call(this);
 
-},{"underscore":202}],196:[function(require,module,exports){
+},{"underscore":195}],194:[function(require,module,exports){
 (function (process){
 /*jshint onevar: false, indent:4 */
 /*global setImmediate: false, setTimeout: false, console: false */
@@ -26968,992 +26678,8 @@ exports.firebaseRelationalSubscription = require("./lib/firebase-relational-subs
 
 }());
 
-}).call(this,require("oMfpAn"))
-},{"oMfpAn":35}],197:[function(require,module,exports){
-(function (process){
-var path = require('path');
-var minimist = require('minimist');
-var wordwrap = require('wordwrap');
-
-/*  Hack an instance of Argv with process.argv into Argv
-    so people can do
-        require('optimist')(['--beeble=1','-z','zizzle']).argv
-    to parse a list of args and
-        require('optimist').argv
-    to get a parsed version of process.argv.
-*/
-
-var inst = Argv(process.argv.slice(2));
-Object.keys(inst).forEach(function (key) {
-    Argv[key] = typeof inst[key] == 'function'
-        ? inst[key].bind(inst)
-        : inst[key];
-});
-
-var exports = module.exports = Argv;
-function Argv (processArgs, cwd) {
-    var self = {};
-    if (!cwd) cwd = process.cwd();
-    
-    self.$0 = process.argv
-        .slice(0,2)
-        .map(function (x) {
-            var b = rebase(cwd, x);
-            return x.match(/^\//) && b.length < x.length
-                ? b : x
-        })
-        .join(' ')
-    ;
-    
-    if (process.env._ != undefined && process.argv[1] == process.env._) {
-        self.$0 = process.env._.replace(
-            path.dirname(process.execPath) + '/', ''
-        );
-    }
-    
-    var options = {
-        boolean: [],
-        string: [],
-        alias: {},
-        default: []
-    };
-    
-    self.boolean = function (bools) {
-        options.boolean.push.apply(options.boolean, [].concat(bools));
-        return self;
-    };
-    
-    self.string = function (strings) {
-        options.string.push.apply(options.string, [].concat(strings));
-        return self;
-    };
-    
-    self.default = function (key, value) {
-        if (typeof key === 'object') {
-            Object.keys(key).forEach(function (k) {
-                self.default(k, key[k]);
-            });
-        }
-        else {
-            options.default[key] = value;
-        }
-        return self;
-    };
-    
-    self.alias = function (x, y) {
-        if (typeof x === 'object') {
-            Object.keys(x).forEach(function (key) {
-                self.alias(key, x[key]);
-            });
-        }
-        else {
-            options.alias[x] = (options.alias[x] || []).concat(y);
-        }
-        return self;
-    };
-    
-    var demanded = {};
-    self.demand = function (keys) {
-        if (typeof keys == 'number') {
-            if (!demanded._) demanded._ = 0;
-            demanded._ += keys;
-        }
-        else if (Array.isArray(keys)) {
-            keys.forEach(function (key) {
-                self.demand(key);
-            });
-        }
-        else {
-            demanded[keys] = true;
-        }
-        
-        return self;
-    };
-    
-    var usage;
-    self.usage = function (msg, opts) {
-        if (!opts && typeof msg === 'object') {
-            opts = msg;
-            msg = null;
-        }
-        
-        usage = msg;
-        
-        if (opts) self.options(opts);
-        
-        return self;
-    };
-    
-    function fail (msg) {
-        self.showHelp();
-        if (msg) console.error(msg);
-        process.exit(1);
-    }
-    
-    var checks = [];
-    self.check = function (f) {
-        checks.push(f);
-        return self;
-    };
-    
-    var descriptions = {};
-    self.describe = function (key, desc) {
-        if (typeof key === 'object') {
-            Object.keys(key).forEach(function (k) {
-                self.describe(k, key[k]);
-            });
-        }
-        else {
-            descriptions[key] = desc;
-        }
-        return self;
-    };
-    
-    self.parse = function (args) {
-        return parseArgs(args);
-    };
-    
-    self.option = self.options = function (key, opt) {
-        if (typeof key === 'object') {
-            Object.keys(key).forEach(function (k) {
-                self.options(k, key[k]);
-            });
-        }
-        else {
-            if (opt.alias) self.alias(key, opt.alias);
-            if (opt.demand) self.demand(key);
-            if (typeof opt.default !== 'undefined') {
-                self.default(key, opt.default);
-            }
-            
-            if (opt.boolean || opt.type === 'boolean') {
-                self.boolean(key);
-            }
-            if (opt.string || opt.type === 'string') {
-                self.string(key);
-            }
-            
-            var desc = opt.describe || opt.description || opt.desc;
-            if (desc) {
-                self.describe(key, desc);
-            }
-        }
-        
-        return self;
-    };
-    
-    var wrap = null;
-    self.wrap = function (cols) {
-        wrap = cols;
-        return self;
-    };
-    
-    self.showHelp = function (fn) {
-        if (!fn) fn = console.error;
-        fn(self.help());
-    };
-    
-    self.help = function () {
-        var keys = Object.keys(
-            Object.keys(descriptions)
-            .concat(Object.keys(demanded))
-            .concat(Object.keys(options.default))
-            .reduce(function (acc, key) {
-                if (key !== '_') acc[key] = true;
-                return acc;
-            }, {})
-        );
-        
-        var help = keys.length ? [ 'Options:' ] : [];
-        
-        if (usage) {
-            help.unshift(usage.replace(/\$0/g, self.$0), '');
-        }
-        
-        var switches = keys.reduce(function (acc, key) {
-            acc[key] = [ key ].concat(options.alias[key] || [])
-                .map(function (sw) {
-                    return (sw.length > 1 ? '--' : '-') + sw
-                })
-                .join(', ')
-            ;
-            return acc;
-        }, {});
-        
-        var switchlen = longest(Object.keys(switches).map(function (s) {
-            return switches[s] || '';
-        }));
-        
-        var desclen = longest(Object.keys(descriptions).map(function (d) { 
-            return descriptions[d] || '';
-        }));
-        
-        keys.forEach(function (key) {
-            var kswitch = switches[key];
-            var desc = descriptions[key] || '';
-            
-            if (wrap) {
-                desc = wordwrap(switchlen + 4, wrap)(desc)
-                    .slice(switchlen + 4)
-                ;
-            }
-            
-            var spadding = new Array(
-                Math.max(switchlen - kswitch.length + 3, 0)
-            ).join(' ');
-            
-            var dpadding = new Array(
-                Math.max(desclen - desc.length + 1, 0)
-            ).join(' ');
-            
-            var type = null;
-            
-            if (options.boolean[key]) type = '[boolean]';
-            if (options.string[key]) type = '[string]';
-            
-            if (!wrap && dpadding.length > 0) {
-                desc += dpadding;
-            }
-            
-            var prelude = '  ' + kswitch + spadding;
-            var extra = [
-                type,
-                demanded[key]
-                    ? '[required]'
-                    : null
-                ,
-                options.default[key] !== undefined
-                    ? '[default: ' + JSON.stringify(options.default[key]) + ']'
-                    : null
-                ,
-            ].filter(Boolean).join('  ');
-            
-            var body = [ desc, extra ].filter(Boolean).join('  ');
-            
-            if (wrap) {
-                var dlines = desc.split('\n');
-                var dlen = dlines.slice(-1)[0].length
-                    + (dlines.length === 1 ? prelude.length : 0)
-                
-                body = desc + (dlen + extra.length > wrap - 2
-                    ? '\n'
-                        + new Array(wrap - extra.length + 1).join(' ')
-                        + extra
-                    : new Array(wrap - extra.length - dlen + 1).join(' ')
-                        + extra
-                );
-            }
-            
-            help.push(prelude + body);
-        });
-        
-        help.push('');
-        return help.join('\n');
-    };
-    
-    Object.defineProperty(self, 'argv', {
-        get : function () { return parseArgs(processArgs) },
-        enumerable : true,
-    });
-    
-    function parseArgs (args) {
-        var argv = minimist(args, options);
-        argv.$0 = self.$0;
-        
-        if (demanded._ && argv._.length < demanded._) {
-            fail('Not enough non-option arguments: got '
-                + argv._.length + ', need at least ' + demanded._
-            );
-        }
-        
-        var missing = [];
-        Object.keys(demanded).forEach(function (key) {
-            if (!argv[key]) missing.push(key);
-        });
-        
-        if (missing.length) {
-            fail('Missing required arguments: ' + missing.join(', '));
-        }
-        
-        checks.forEach(function (f) {
-            try {
-                if (f(argv) === false) {
-                    fail('Argument check failed: ' + f.toString());
-                }
-            }
-            catch (err) {
-                fail(err)
-            }
-        });
-        
-        return argv;
-    }
-    
-    function longest (xs) {
-        return Math.max.apply(
-            null,
-            xs.map(function (x) { return x.length })
-        );
-    }
-    
-    return self;
-};
-
-// rebase an absolute path to a relative one with respect to a base directory
-// exported for tests
-exports.rebase = rebase;
-function rebase (base, dir) {
-    var ds = path.normalize(dir).split('/').slice(1);
-    var bs = path.normalize(base).split('/').slice(1);
-    
-    for (var i = 0; ds[i] && ds[i] == bs[i]; i++);
-    ds.splice(0, i); bs.splice(0, i);
-    
-    var p = path.normalize(
-        bs.map(function () { return '..' }).concat(ds).join('/')
-    ).replace(/\/$/,'').replace(/^$/, '.');
-    return p.match(/^[.\/]/) ? p : './' + p;
-};
-
-}).call(this,require("oMfpAn"))
-},{"minimist":198,"oMfpAn":35,"path":34,"wordwrap":199}],198:[function(require,module,exports){
-module.exports = function (args, opts) {
-    if (!opts) opts = {};
-    
-    var flags = { bools : {}, strings : {} };
-    
-    [].concat(opts['boolean']).filter(Boolean).forEach(function (key) {
-        flags.bools[key] = true;
-    });
-    
-    [].concat(opts.string).filter(Boolean).forEach(function (key) {
-        flags.strings[key] = true;
-    });
-    
-    var aliases = {};
-    Object.keys(opts.alias || {}).forEach(function (key) {
-        aliases[key] = [].concat(opts.alias[key]);
-        aliases[key].forEach(function (x) {
-            aliases[x] = [key].concat(aliases[key].filter(function (y) {
-                return x !== y;
-            }));
-        });
-    });
-    
-    var defaults = opts['default'] || {};
-    
-    var argv = { _ : [] };
-    Object.keys(flags.bools).forEach(function (key) {
-        setArg(key, defaults[key] === undefined ? false : defaults[key]);
-    });
-    
-    var notFlags = [];
-
-    if (args.indexOf('--') !== -1) {
-        notFlags = args.slice(args.indexOf('--')+1);
-        args = args.slice(0, args.indexOf('--'));
-    }
-
-    function setArg (key, val) {
-        var value = !flags.strings[key] && isNumber(val)
-            ? Number(val) : val
-        ;
-        setKey(argv, key.split('.'), value);
-        
-        (aliases[key] || []).forEach(function (x) {
-            setKey(argv, x.split('.'), value);
-        });
-    }
-    
-    for (var i = 0; i < args.length; i++) {
-        var arg = args[i];
-        
-        if (/^--.+=/.test(arg)) {
-            // Using [\s\S] instead of . because js doesn't support the
-            // 'dotall' regex modifier. See:
-            // http://stackoverflow.com/a/1068308/13216
-            var m = arg.match(/^--([^=]+)=([\s\S]*)$/);
-            setArg(m[1], m[2]);
-        }
-        else if (/^--no-.+/.test(arg)) {
-            var key = arg.match(/^--no-(.+)/)[1];
-            setArg(key, false);
-        }
-        else if (/^--.+/.test(arg)) {
-            var key = arg.match(/^--(.+)/)[1];
-            var next = args[i + 1];
-            if (next !== undefined && !/^-/.test(next)
-            && !flags.bools[key]
-            && (aliases[key] ? !flags.bools[aliases[key]] : true)) {
-                setArg(key, next);
-                i++;
-            }
-            else if (/^(true|false)$/.test(next)) {
-                setArg(key, next === 'true');
-                i++;
-            }
-            else {
-                setArg(key, flags.strings[key] ? '' : true);
-            }
-        }
-        else if (/^-[^-]+/.test(arg)) {
-            var letters = arg.slice(1,-1).split('');
-            
-            var broken = false;
-            for (var j = 0; j < letters.length; j++) {
-                var next = arg.slice(j+2);
-                
-                if (next === '-') {
-                    setArg(letters[j], next)
-                    continue;
-                }
-                
-                if (/[A-Za-z]/.test(letters[j])
-                && /-?\d+(\.\d*)?(e-?\d+)?$/.test(next)) {
-                    setArg(letters[j], next);
-                    broken = true;
-                    break;
-                }
-                
-                if (letters[j+1] && letters[j+1].match(/\W/)) {
-                    setArg(letters[j], arg.slice(j+2));
-                    broken = true;
-                    break;
-                }
-                else {
-                    setArg(letters[j], flags.strings[letters[j]] ? '' : true);
-                }
-            }
-            
-            var key = arg.slice(-1)[0];
-            if (!broken && key !== '-') {
-                if (args[i+1] && !/^(-|--)[^-]/.test(args[i+1])
-                && !flags.bools[key]
-                && (aliases[key] ? !flags.bools[aliases[key]] : true)) {
-                    setArg(key, args[i+1]);
-                    i++;
-                }
-                else if (args[i+1] && /true|false/.test(args[i+1])) {
-                    setArg(key, args[i+1] === 'true');
-                    i++;
-                }
-                else {
-                    setArg(key, flags.strings[key] ? '' : true);
-                }
-            }
-        }
-        else {
-            argv._.push(
-                flags.strings['_'] || !isNumber(arg) ? arg : Number(arg)
-            );
-        }
-    }
-    
-    Object.keys(defaults).forEach(function (key) {
-        if (!hasKey(argv, key.split('.'))) {
-            setKey(argv, key.split('.'), defaults[key]);
-            
-            (aliases[key] || []).forEach(function (x) {
-                setKey(argv, x.split('.'), defaults[key]);
-            });
-        }
-    });
-    
-    notFlags.forEach(function(key) {
-        argv._.push(key);
-    });
-
-    return argv;
-};
-
-function hasKey (obj, keys) {
-    var o = obj;
-    keys.slice(0,-1).forEach(function (key) {
-        o = (o[key] || {});
-    });
-
-    var key = keys[keys.length - 1];
-    return key in o;
-}
-
-function setKey (obj, keys, value) {
-    var o = obj;
-    keys.slice(0,-1).forEach(function (key) {
-        if (o[key] === undefined) o[key] = {};
-        o = o[key];
-    });
-    
-    var key = keys[keys.length - 1];
-    if (o[key] === undefined || typeof o[key] === 'boolean') {
-        o[key] = value;
-    }
-    else if (Array.isArray(o[key])) {
-        o[key].push(value);
-    }
-    else {
-        o[key] = [ o[key], value ];
-    }
-}
-
-function isNumber (x) {
-    if (typeof x === 'number') return true;
-    if (/^0x[0-9a-f]+$/i.test(x)) return true;
-    return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(e[-+]?\d+)?$/.test(x);
-}
-
-function longest (xs) {
-    return Math.max.apply(null, xs.map(function (x) { return x.length }));
-}
-
-},{}],199:[function(require,module,exports){
-var wordwrap = module.exports = function (start, stop, params) {
-    if (typeof start === 'object') {
-        params = start;
-        start = params.start;
-        stop = params.stop;
-    }
-    
-    if (typeof stop === 'object') {
-        params = stop;
-        start = start || params.start;
-        stop = undefined;
-    }
-    
-    if (!stop) {
-        stop = start;
-        start = 0;
-    }
-    
-    if (!params) params = {};
-    var mode = params.mode || 'soft';
-    var re = mode === 'hard' ? /\b/ : /(\S+\s+)/;
-    
-    return function (text) {
-        var chunks = text.toString()
-            .split(re)
-            .reduce(function (acc, x) {
-                if (mode === 'hard') {
-                    for (var i = 0; i < x.length; i += stop - start) {
-                        acc.push(x.slice(i, i + stop - start));
-                    }
-                }
-                else acc.push(x)
-                return acc;
-            }, [])
-        ;
-        
-        return chunks.reduce(function (lines, rawChunk) {
-            if (rawChunk === '') return lines;
-            
-            var chunk = rawChunk.replace(/\t/g, '    ');
-            
-            var i = lines.length - 1;
-            if (lines[i].length + chunk.length > stop) {
-                lines[i] = lines[i].replace(/\s+$/, '');
-                
-                chunk.split(/\n/).forEach(function (c) {
-                    lines.push(
-                        new Array(start + 1).join(' ')
-                        + c.replace(/^\s+/, '')
-                    );
-                });
-            }
-            else if (chunk.match(/\n/)) {
-                var xs = chunk.split(/\n/);
-                lines[i] += xs.shift();
-                xs.forEach(function (c) {
-                    lines.push(
-                        new Array(start + 1).join(' ')
-                        + c.replace(/^\s+/, '')
-                    );
-                });
-            }
-            else {
-                lines[i] += chunk;
-            }
-            
-            return lines;
-        }, [ new Array(start + 1).join(' ') ]).join('\n');
-    };
-};
-
-wordwrap.soft = wordwrap;
-
-wordwrap.hard = function (start, stop) {
-    return wordwrap(start, stop, { mode : 'hard' });
-};
-
-},{}],200:[function(require,module,exports){
-var fs = require('fs');
-var join = require('path').join;
-var resolve = require('path').resolve;
-var dirname = require('path').dirname;
-
-var requireDirectory = module.exports = function(m, path, exclude, callback){
-  var defaultDelegate = function(path, filename){
-    return filename[0] !== '.' && /\.(js|json|coffee)$/i.test(filename);
-  };
-  var delegate = defaultDelegate;
-  var retval = {};
-
-  // if no path was passed in, assume the equivelant of __dirname from caller
-  if(!path){
-    path = dirname(m.filename);
-  }
-
-  // if a RegExp was passed in as exclude, create a delegate that blacklists that RegExp
-  // if a function was passed in as exclude, use that function as the delegate
-  // default to an always-yes delegate
-  if(exclude instanceof RegExp){
-    delegate = function(path, filename){
-      if(!defaultDelegate(path, filename)){
-        return false;
-      }else if(exclude.test(path)){
-        return false;
-      }else{
-        return true;
-      }
-    };
-  }else if(exclude && {}.toString.call(exclude) === '[object Function]'){
-    delegate = exclude;
-  }
-
-  // get the path of each file in specified directory, append to current tree node, recurse
-  path = resolve(path);
-  fs.readdirSync(path).forEach(function(filename){
-    var joined = join(path, filename);
-    if(fs.statSync(joined).isDirectory()){
-      retval[filename] = requireDirectory(m, joined, delegate, callback); // this node is a directory; recurse
-    }else{
-      if(joined !== m.filename && delegate(joined, filename)){
-        var name = filename.substring(0, filename.lastIndexOf('.')); // hash node shouldn't include file extension
-        retval[name] = m.require(joined);
-        if (callback && typeof(callback) === 'function') {
-          callback(null, retval[name]);
-        }
-      }
-    }
-  });
-  return retval;
-};
-
-},{"fs":33,"path":34}],201:[function(require,module,exports){
-var traverse = module.exports = function (obj) {
-    return new Traverse(obj);
-};
-
-function Traverse (obj) {
-    this.value = obj;
-}
-
-Traverse.prototype.get = function (ps) {
-    var node = this.value;
-    for (var i = 0; i < ps.length; i ++) {
-        var key = ps[i];
-        if (!node || !hasOwnProperty.call(node, key)) {
-            node = undefined;
-            break;
-        }
-        node = node[key];
-    }
-    return node;
-};
-
-Traverse.prototype.has = function (ps) {
-    var node = this.value;
-    for (var i = 0; i < ps.length; i ++) {
-        var key = ps[i];
-        if (!node || !hasOwnProperty.call(node, key)) {
-            return false;
-        }
-        node = node[key];
-    }
-    return true;
-};
-
-Traverse.prototype.set = function (ps, value) {
-    var node = this.value;
-    for (var i = 0; i < ps.length - 1; i ++) {
-        var key = ps[i];
-        if (!hasOwnProperty.call(node, key)) node[key] = {};
-        node = node[key];
-    }
-    node[ps[i]] = value;
-    return value;
-};
-
-Traverse.prototype.map = function (cb) {
-    return walk(this.value, cb, true);
-};
-
-Traverse.prototype.forEach = function (cb) {
-    this.value = walk(this.value, cb, false);
-    return this.value;
-};
-
-Traverse.prototype.reduce = function (cb, init) {
-    var skip = arguments.length === 1;
-    var acc = skip ? this.value : init;
-    this.forEach(function (x) {
-        if (!this.isRoot || !skip) {
-            acc = cb.call(this, acc, x);
-        }
-    });
-    return acc;
-};
-
-Traverse.prototype.paths = function () {
-    var acc = [];
-    this.forEach(function (x) {
-        acc.push(this.path); 
-    });
-    return acc;
-};
-
-Traverse.prototype.nodes = function () {
-    var acc = [];
-    this.forEach(function (x) {
-        acc.push(this.node);
-    });
-    return acc;
-};
-
-Traverse.prototype.clone = function () {
-    var parents = [], nodes = [];
-    
-    return (function clone (src) {
-        for (var i = 0; i < parents.length; i++) {
-            if (parents[i] === src) {
-                return nodes[i];
-            }
-        }
-        
-        if (typeof src === 'object' && src !== null) {
-            var dst = copy(src);
-            
-            parents.push(src);
-            nodes.push(dst);
-            
-            forEach(objectKeys(src), function (key) {
-                dst[key] = clone(src[key]);
-            });
-            
-            parents.pop();
-            nodes.pop();
-            return dst;
-        }
-        else {
-            return src;
-        }
-    })(this.value);
-};
-
-function walk (root, cb, immutable) {
-    var path = [];
-    var parents = [];
-    var alive = true;
-    
-    return (function walker (node_) {
-        var node = immutable ? copy(node_) : node_;
-        var modifiers = {};
-        
-        var keepGoing = true;
-        
-        var state = {
-            node : node,
-            node_ : node_,
-            path : [].concat(path),
-            parent : parents[parents.length - 1],
-            parents : parents,
-            key : path.slice(-1)[0],
-            isRoot : path.length === 0,
-            level : path.length,
-            circular : null,
-            update : function (x, stopHere) {
-                if (!state.isRoot) {
-                    state.parent.node[state.key] = x;
-                }
-                state.node = x;
-                if (stopHere) keepGoing = false;
-            },
-            'delete' : function (stopHere) {
-                delete state.parent.node[state.key];
-                if (stopHere) keepGoing = false;
-            },
-            remove : function (stopHere) {
-                if (isArray(state.parent.node)) {
-                    state.parent.node.splice(state.key, 1);
-                }
-                else {
-                    delete state.parent.node[state.key];
-                }
-                if (stopHere) keepGoing = false;
-            },
-            keys : null,
-            before : function (f) { modifiers.before = f },
-            after : function (f) { modifiers.after = f },
-            pre : function (f) { modifiers.pre = f },
-            post : function (f) { modifiers.post = f },
-            stop : function () { alive = false },
-            block : function () { keepGoing = false }
-        };
-        
-        if (!alive) return state;
-        
-        function updateState() {
-            if (typeof state.node === 'object' && state.node !== null) {
-                if (!state.keys || state.node_ !== state.node) {
-                    state.keys = objectKeys(state.node)
-                }
-                
-                state.isLeaf = state.keys.length == 0;
-                
-                for (var i = 0; i < parents.length; i++) {
-                    if (parents[i].node_ === node_) {
-                        state.circular = parents[i];
-                        break;
-                    }
-                }
-            }
-            else {
-                state.isLeaf = true;
-                state.keys = null;
-            }
-            
-            state.notLeaf = !state.isLeaf;
-            state.notRoot = !state.isRoot;
-        }
-        
-        updateState();
-        
-        // use return values to update if defined
-        var ret = cb.call(state, state.node);
-        if (ret !== undefined && state.update) state.update(ret);
-        
-        if (modifiers.before) modifiers.before.call(state, state.node);
-        
-        if (!keepGoing) return state;
-        
-        if (typeof state.node == 'object'
-        && state.node !== null && !state.circular) {
-            parents.push(state);
-            
-            updateState();
-            
-            forEach(state.keys, function (key, i) {
-                path.push(key);
-                
-                if (modifiers.pre) modifiers.pre.call(state, state.node[key], key);
-                
-                var child = walker(state.node[key]);
-                if (immutable && hasOwnProperty.call(state.node, key)) {
-                    state.node[key] = child.node;
-                }
-                
-                child.isLast = i == state.keys.length - 1;
-                child.isFirst = i == 0;
-                
-                if (modifiers.post) modifiers.post.call(state, child);
-                
-                path.pop();
-            });
-            parents.pop();
-        }
-        
-        if (modifiers.after) modifiers.after.call(state, state.node);
-        
-        return state;
-    })(root).node;
-}
-
-function copy (src) {
-    if (typeof src === 'object' && src !== null) {
-        var dst;
-        
-        if (isArray(src)) {
-            dst = [];
-        }
-        else if (isDate(src)) {
-            dst = new Date(src.getTime ? src.getTime() : src);
-        }
-        else if (isRegExp(src)) {
-            dst = new RegExp(src);
-        }
-        else if (isError(src)) {
-            dst = { message: src.message };
-        }
-        else if (isBoolean(src)) {
-            dst = new Boolean(src);
-        }
-        else if (isNumber(src)) {
-            dst = new Number(src);
-        }
-        else if (isString(src)) {
-            dst = new String(src);
-        }
-        else if (Object.create && Object.getPrototypeOf) {
-            dst = Object.create(Object.getPrototypeOf(src));
-        }
-        else if (src.constructor === Object) {
-            dst = {};
-        }
-        else {
-            var proto =
-                (src.constructor && src.constructor.prototype)
-                || src.__proto__
-                || {}
-            ;
-            var T = function () {};
-            T.prototype = proto;
-            dst = new T;
-        }
-        
-        forEach(objectKeys(src), function (key) {
-            dst[key] = src[key];
-        });
-        return dst;
-    }
-    else return src;
-}
-
-var objectKeys = Object.keys || function keys (obj) {
-    var res = [];
-    for (var key in obj) res.push(key)
-    return res;
-};
-
-function toS (obj) { return Object.prototype.toString.call(obj) }
-function isDate (obj) { return toS(obj) === '[object Date]' }
-function isRegExp (obj) { return toS(obj) === '[object RegExp]' }
-function isError (obj) { return toS(obj) === '[object Error]' }
-function isBoolean (obj) { return toS(obj) === '[object Boolean]' }
-function isNumber (obj) { return toS(obj) === '[object Number]' }
-function isString (obj) { return toS(obj) === '[object String]' }
-
-var isArray = Array.isArray || function isArray (xs) {
-    return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
-forEach(objectKeys(Traverse.prototype), function (key) {
-    traverse[key] = function (obj) {
-        var args = [].slice.call(arguments, 1);
-        var t = new Traverse(obj);
-        return t[key].apply(t, args);
-    };
-});
-
-var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
-    return key in obj;
-};
-
-},{}],202:[function(require,module,exports){
+}).call(this,require("1YiZ5S"))
+},{"1YiZ5S":33}],195:[function(require,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -29298,7 +28024,9 @@ var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
   }
 }).call(this);
 
-},{}],203:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
+module.exports=require(195)
+},{}],197:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
 var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -29403,6 +28131,4 @@ module.exports = {
   }
 };
 
-},{}],204:[function(require,module,exports){
-module.exports=require(202)
-},{}]},{},[26])
+},{}]},{},[1])

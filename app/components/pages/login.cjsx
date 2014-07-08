@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 DynamicLoader = require("../widgets/dynamicLoader")
@@ -10,9 +10,9 @@ Component = React.createClass
 
     render: ->
       loggedIn = user?.id?
-      `<Body>
-        <a className={loggedIn ? "hidden" : ""} href="#" onClick={this.login}>Login</a>
-        <a className={loggedIn ? "" : "hidden"} href="/">Home</a>
-      </Body>`
+      <Body>
+        <a className={if loggedIn then "hidden" else ""} href="#" onClick={this.login}>Login</a>
+        <a className={if loggedIn then "" else "hidden"} href="/">Home</a>
+      </Body>
 
 module.exports = Component

@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 _ = require("underscore")
@@ -88,8 +88,8 @@ Component = React.createClass
         loader.style.top = "#{between(20, 80)}%"
 
     render: ->
-        `<div ref="loader" className="loader" style={this.state}>
+        <div ref="loader" className="loader" style={this.state}>
 
-        </div>`
+        </div>
 
 module.exports = Component

@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 a = React.DOM.a
@@ -14,6 +14,6 @@ ActiveLink = React.createClass
 
     render: ->
 
-        this.transferPropsTo(`<a className={(this.isActive() ? "activeLink" : "")}>{this.props.children}</a>`)
+        this.transferPropsTo(<a className={(if this.isActive() then "activeLink" else "")}>{this.props.children}</a>)
 
 module.exports = ActiveLink

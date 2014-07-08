@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 _ = require("underscore")
 React = require("react")
@@ -195,7 +195,7 @@ Component = React.createClass
         else
             breadcrumb = ["ideas", this.props.post.id]
 
-        `<Body  breadcrumb={breadcrumb}  
+        <Body  breadcrumb={breadcrumb}  
                 navInclude={<span><a  onClick={this.save} 
                                 className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>
                                 Save</a>
@@ -205,7 +205,7 @@ Component = React.createClass
                             <a  href={viewLink}
                                 className={"btn btn-standard right showIfUser"}>
                                 View</a></span>}
-                className={"content "+(loading ? "loading" : "")}>
+                className={"content "+(if loading then "loading" else "")}>
 
             
             <textareaAutosize   placeholder="Title..."
@@ -233,7 +233,7 @@ Component = React.createClass
                     <div>
                         <input  ref="date" 
                                 onChange={this.changeDate} 
-                                className={"grey "+(this.state.validDate ? "success" : "error")} 
+                                className={"grey "+(if this.state.validDate then "success" else "error")} 
                                 defaultValue={moment(this.state.date).format(dateFormat)}/>
                     </div>
                     <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
@@ -252,6 +252,6 @@ Component = React.createClass
             
 
             
-        </Body>`
+        </Body>
 
 module.exports = Component

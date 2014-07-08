@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 _ = require("underscore")
 React = require("react")
@@ -55,19 +55,19 @@ Component = React.createClass
 
     render: ->
         conversion = "/convert?w=1000&h=1000"
-        `<div className={"content "+(_.isEmpty(this.props.photo) ? "loading" : "")} style={{maxWidth:960}}>
+        <div className={"content "+(if _.isEmpty(this.props.photo) then "loading" else "")} style={{maxWidth:960}}>
             <div  className="photo-single">
                 <a style={{color:'white',position:'absolute',top:10,left:10,fontSize:16,color:'#999999'}} href="/seeing">&larr; back</a>
-                <a className="imageContainer"  style={{backgroundImage:"url("+this.props.photo.url+conversion+")"}}  href={this.props.photoNext.id ? "/seeing/"+this.props.photoNext.id : "/seeing"}></a>
+                <a className="imageContainer"  style={{backgroundImage:"url("+this.props.photo.url+conversion+")"}}  href={if this.props.photoNext.id then "/seeing/"+this.props.photoNext.id else "/seeing"}></a>
                 <simplePagination 
-                    next={this.props.photoNext.id ? ("/seeing/"+this.props.photoNext.id) : false} 
-                    prev={this.props.photoPrev.id ? ("/seeing/"+this.props.photoPrev.id) : false} 
+                    next={if this.props.photoNext.id then ("/seeing/"+this.props.photoNext.id) else false} 
+                    prev={if this.props.photoPrev.id then ("/seeing/"+this.props.photoPrev.id) else false} 
                     back="/seeing" />
             </div>
             
             <div style={{opacity:0,position:'absolute',height:0,width:0,overflow:'hidden'}}>
                 <img src={this.props.photoNext.url+conversion} />
             </div> 
-        </div>`
+        </div>
 
 module.exports = Component

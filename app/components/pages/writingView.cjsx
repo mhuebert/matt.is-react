@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 _ = require("underscore")
 React = require("react")
@@ -90,20 +90,21 @@ Component = React.createClass
     render: ->
         post = new Model(this.props.post)
         tags = _(post.get("tags")).keys()
-        `<Body  breadcrumb={["writing", post.get("permalink")]}  
-                navInclude ={<a href={"/ideas/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>}
-                className={"content "+(_.isEmpty(post.attributes) ? "loading" : "")}>
+        
+        <Body   breadcrumb= {["writing", post.get("permalink")]}  
+                navInclude = {<a href={"/ideas/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>}
+                className= {"content "+(if _.isEmpty(post.attributes) then "loading" else "")}>
             
             <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
             <TagList tags={tags} 
-                     url={function(tag){return "/tags/"+slugify(tag)}}
-                     label={function(tag){return "#"+tag}}/>
+                     url={(tag)->"/tags/"+slugify(tag)}
+                     label={(tag)->"#"+tag}/>
             <simplePagination
-                className={post.get("publishDate") ? "" : "hidden"} 
+                className={if post.get("publishDate") then "" else "hidden"} 
                 back="/writing"
-                next={this.props.postNext.permalink ? ("/"+this.props.postNext.permalink) : false} 
-                prev={this.props.postPrev.permalink ? ("/"+this.props.postPrev.permalink) : false} />  
-        </Body>`
+                next={if this.props.postNext.permalink then ("/"+this.props.postNext.permalink) else false} 
+                prev={if this.props.postPrev.permalink then ("/"+this.props.postPrev.permalink) else false} />  
+        </Body>
 
 module.exports = Component

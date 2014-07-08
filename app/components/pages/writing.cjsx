@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 _ = require("underscore")
 React = require("react")
@@ -35,17 +35,17 @@ Component = React.createClass
                 title = "#"+tag
                 breadcrumb = ['tags', tag]
 
-        `this.transferPropsTo(<Body breadcrumb={breadcrumb} className={"content "+ ((this.props.writing.length > 0) ? "" : "loading")}>
+        this.transferPropsTo(<Body breadcrumb={breadcrumb} className={"content "+ (if (this.props.writing.length > 0) then "" else "loading")}>
             <h1>{title}</h1>
             <ul className="link-list">
                 {
-                    this.props.writing.map(function(post){
-                        return <li key={post.id} >
-                                <a href={"/"+post.permalink}>{post.title}</a>
-                                </li>
-                        })
+                    this.props.writing.map( (post) ->
+                        <li key={post.id} >
+                            <a href={"/"+post.permalink}>{post.title}</a>
+                        </li>
+                    )
                 }
             </ul>
-        </Body>)`
+        </Body>)
 
 module.exports = Component

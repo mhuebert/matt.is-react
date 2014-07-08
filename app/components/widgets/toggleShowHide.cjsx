@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 {closestData} = require("sparkboard-tools").utils
@@ -16,8 +16,8 @@ Component = React.createClass
     getInitialState: ->
       hidden: true
     render: ->
-        `this.transferPropsTo(<div onClick={this.handleClick} className={(this.state.hidden ? "toggle-hide-true" : "toggle-hide-false")}>
+        this.transferPropsTo(<div onClick={this.handleClick} className={(if this.state.hidden then "toggle-hide-true" else "toggle-hide-false")}>
           {this.props.children}
-        </div>)`
+        </div>)
 
 module.exports = Component

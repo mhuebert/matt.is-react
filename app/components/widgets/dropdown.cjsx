@@ -1,4 +1,4 @@
-`/** @jsx React.DOM */`
+# @cjsx React.DOM
 
 React = require("react")
 _ = require("underscore")
@@ -28,7 +28,7 @@ Component = React.createClass
     render: ->
         currentPath = window?.location.pathname || getRootComponent(this).props.path
         
-        currentLink = `<a>{this.props.label}</a>`
+        currentLink = <a>{this.props.label}</a>
 
         if this.props.replaceWithSelectedLink
           exactMatch = false
@@ -42,8 +42,8 @@ Component = React.createClass
         
         currentLinkStyle = currentLink.props.selectedStyle?.style || {}
 
-        `this.transferPropsTo(
-          <div  className={"dropdown "+(this.state.active ? "active" : "")}
+        this.transferPropsTo(
+          <div  className={"dropdown "+(if this.state.active then "active" else "")}
                 onMouseEnter={this.show}
                 onMouseLeave={this.hide}>
             <a  
@@ -56,6 +56,6 @@ Component = React.createClass
 
             {this.props.children}
         </div>
-        )`
+        )
 
 module.exports = Component
