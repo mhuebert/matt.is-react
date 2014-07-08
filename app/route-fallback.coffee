@@ -1,6 +1,6 @@
 {Firebase, FIREBASE_URL} = require("./firebase")
 routes = require("./routes")
-Router = require("sparkboard-tools").Router.create(routes)
+Router = require("react-router").create(routes)
 
 module.exports = (path, callback) ->
   refPath = FIREBASE_URL+"/permalinks#{path}"

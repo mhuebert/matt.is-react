@@ -37,6 +37,7 @@
     "sparkboard-tools": "sparkboard/sparkboard-tools",
     "merge-firebase-rules": "sparkboard/merge-firebase-rules",
     "firebase-index-server": "sparkboard/firebase-index-server",
+    "react-router": "mhuebert/react-router",
     "node-cjsx": "^0.1.2"
   },
   "devDependencies": {

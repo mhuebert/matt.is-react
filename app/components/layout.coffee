@@ -3,8 +3,7 @@
 React = require("react")
 # React.initializeTouchEvents(true)
 _ = require("underscore")
-
-RouterMixin = require("sparkboard-tools").Router.Mixin
+RouterMixin = require("react-router").Mixin
 
 Head = require("./widgets/head")
 

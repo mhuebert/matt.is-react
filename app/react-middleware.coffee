@@ -24,7 +24,7 @@ components = require("./components")
 
 # Router - use the same routes on the client and server.
 routes = require("./routes")
-Router = require("sparkboard-tools").Router.create(routes)
+Router = require("react-router").create(routes)
 Router.addFallback require("./route-fallback")
 
 settings = {}
