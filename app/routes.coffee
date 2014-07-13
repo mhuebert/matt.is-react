@@ -1,7 +1,9 @@
 
 routes =  [
     { path: "/",                 handler: "Home" },
+    { path: "/quotes",                 handler: "Home" },
     { path: "/writing",          handler: "Writing" },
+    { path: "/settings",                 handler: "Settings" },
     { path: "/tags/:tag",         handler: "Writing" },
     { path: "/writing/:id",      handler: "WritingView" },
     { path: "/tags",            handler: "Tags" },

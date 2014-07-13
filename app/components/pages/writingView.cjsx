@@ -4,14 +4,19 @@ _ = require("underscore")
 React = require("react")
 
 
+
+subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
+
 {Firebase, FIREBASE_URL} = require("../../firebase")
-{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+{firebaseSubscription} = require("sparkboard-tools")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
 {Model} = require("../../models")
 {ownerId} = require("../../../config")
 
 TagList = require("../widgets/tagList")
-Body = require("../body")
+
+Body = require("../widgets/body")
 
 simplePagination = require("../widgets/simplePagination")
 textareaAutosize = require("../widgets/textareaAutosize")
@@ -29,7 +34,7 @@ unsafeCharacters = /[^\w\s.!?,:;'"]/
 
 Component = React.createClass
 
-    mixins: [SubscriptionMixin]
+    mixins: [AsyncSubscriptionMixin]
 
 
     statics:
@@ -88,13 +93,16 @@ Component = React.createClass
                     oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
 
     render: ->
-        post = new Model(this.props.post)
+        post = new Model(@subs('post'))
         tags = _(post.get("tags")).keys()
         
-        <Body   breadcrumb= {["writing", post.get("permalink")]}  
-                navInclude = {<a href={"/ideas/"+post.get("slug")} className="right btn btn-trans showIfUser ">Edit</a>}
-                className= {"content "+(if _.isEmpty(post.attributes) then "loading" else "")}>
-            
+        <Body   className="writingView"
+                sidebar={true}
+                header={true}
+                contentFilter={false}
+                breadcrumb={['writing']}
+                >
+            <a href={"/ideas/"+post.get("slug")} className="right btn btn-white showIfUser ">Edit</a>
             <h1 className="text-center"><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
             <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
             <TagList tags={tags} 
@@ -103,8 +111,8 @@ Component = React.createClass
             <simplePagination
                 className={if post.get("publishDate") then "" else "hidden"} 
                 back="/writing"
-                next={if this.props.postNext.permalink then ("/"+this.props.postNext.permalink) else false} 
-                prev={if this.props.postPrev.permalink then ("/"+this.props.postPrev.permalink) else false} />  
+                next={if @subs('postNext').permalink then ("/"+@subs('postNext').permalink) else false} 
+                prev={if @subs('postPrev').permalink then ("/"+@subs('postPrev').permalink) else false} />  
         </Body>
 
 module.exports = Component

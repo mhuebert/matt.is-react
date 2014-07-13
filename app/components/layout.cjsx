@@ -4,6 +4,7 @@ React = require("react")
 # React.initializeTouchEvents(true)
 _ = require("underscore")
 RouterMixin = require("react-router").Mixin
+# ReactAsync = require('react-async')
 
 Head = require("./widgets/head")
 
@@ -11,13 +12,20 @@ Head = require("./widgets/head")
 
 components = require("./index")
 
+between = (n1, n2) ->
+  Math.floor Math.random()*(n2-n1)
+setAccentColor = ->
+  window.accentColor = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0,4)]
+
 Layout = React.createClass
     mixins: [RouterMixin]
     routes: require("../routes")
     fallbackRoute: require("../route-fallback")
-    firebaseRefCache: [] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
+    firebaseRefCache: ['themes', 'people', 'settings'] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
     componentWillMount: ->
+        if window?
+            setAccentColor()
         if window? and !window.auth
             window.auth = new FirebaseSimpleLogin new Firebase(FIREBASE_URL), (err, user) =>
                 if err
@@ -30,13 +38,11 @@ Layout = React.createClass
     componentDidMount: ->
         setTimeout =>
             for url in @firebaseRefCache
-                ref = new Firebase(url)
-                @_firebaseRefCache.push(ref)
-                ref.on "child_added", ->
+                do (url) =>
+                    ref = new Firebase(FIREBASE_URL+"/"+url)
+                    @_firebaseRefCache.push(ref)
+                    ref.on "child_added", ->
         , 100
-        settingsRef = new Firebase(FIREBASE_URL+"/settings")
-        settingsRef.on "value", (snap) =>
-            @setProps settings: snap.val()||{}
         
     getHandler: ->
         components[this.props.matchedRoute.handler]
@@ -58,6 +64,7 @@ Layout = React.createClass
                     description={metadata.description || this.props.description} />
             <body className={if this.props.user then "loggedIn" else "loggedOut"}  onClick={this.handleClick}>
                 {this.transferPropsTo(<Handler subscriptions={subscriptionData} ref="handler" />)}
+
             </body>
         </html>
 

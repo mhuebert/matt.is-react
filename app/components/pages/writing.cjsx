@@ -2,16 +2,15 @@
 
 _ = require("underscore")
 React = require("react")
+Body = require("../widgets/body")
+ContentFilter = require("../widgets/contentFilter")
 
-Body = require("../body")
-
-
-{SubscriptionMixin} = require("sparkboard-tools")
 subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
 
 Component = React.createClass
 
-    mixins: [SubscriptionMixin]
+    mixins: [AsyncSubscriptionMixin]
 
     statics:
         getMetadata: ->
@@ -26,7 +25,7 @@ Component = React.createClass
             writing: subscriptions.WritingList(50, indexPath)
 
     render: ->
-        
+        writing = @state.writing || []
         switch tag = this.props.matchedRoute.params.tag 
             when undefined
                 title = "Writing"
@@ -35,17 +34,19 @@ Component = React.createClass
                 title = "#"+tag
                 breadcrumb = ['tags', tag]
 
-        this.transferPropsTo(<Body breadcrumb={breadcrumb} className={"content "+ (if (this.props.writing.length > 0) then "" else "loading")}>
-            <h1>{title}</h1>
-            <ul className="link-list">
-                {
-                    this.props.writing.map( (post) ->
-                        <li key={post.id} >
-                            <a href={"/"+post.permalink}>{post.title}</a>
-                        </li>
-                    )
-                }
-            </ul>
-        </Body>)
+        <Body sidebar={true} breadcrumb={['writing']}>
+            <ContentFilter />
+            <div className="inner-content">
+                <ul className="link-list">
+                    {
+                        @subs('writing').map( (post) ->
+                            <li key={post.id} >
+                                <a href={"/"+post.permalink}>{post.title}</a>
+                            </li>
+                        )
+                    }
+                </ul>
+            </div>
+        </Body>
 
 module.exports = Component

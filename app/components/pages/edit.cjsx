@@ -4,7 +4,7 @@ _ = require("underscore")
 React = require("react")
 
 
-Body = require("../body")
+Body = require("../widgets/body")
 simplePagination = require("../widgets/simplePagination")
 {slugify} = require("sparkboard-tools").utils
 textareaAutosize = require("../widgets/textareaAutosize")
@@ -15,14 +15,16 @@ moment = require("moment")
 dateFormat = "MMMM D, YYYY"
 
 {Firebase, FIREBASE_URL} = require("../../firebase")
-{SubscriptionMixin, firebaseSubscription} = require("sparkboard-tools")
+{firebaseSubscription} = require("sparkboard-tools")
+subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
 
 firebaseIdFromPath = (path) -> 
     path?.match(/\+(-.*)$/)?[1]
 
 Component = React.createClass
 
-    mixins: [SubscriptionMixin]
+    mixins: [AsyncSubscriptionMixin]
     statics:
         getMetadata: (props) ->
             title: props.post?.title
@@ -43,16 +45,16 @@ Component = React.createClass
 
     
 
-    getInitialState: -> 
-        validDate: true
-        date: Date.now()
-        permalink: null
+    getInitialState: -> {}
+    # validDate: true
+    # date: Date.now()
+    # permalink: null
 
     componentWillUnmount: ->
-        window?.removeEventListener('keydown', this.keyShortcuts)
+        window?.removeEventListener('keydown', @keyShortcuts)
     componentDidMount: ->
         this.refs.body.getDOMNode().focus()
-        window.addEventListener('keydown', this.keyShortcuts)
+        window.addEventListener('keydown', @keyShortcuts)
     keyShortcuts: (e) ->
         if (e.metaKey or e.ctrlKey)
             if e.which == 83
@@ -61,7 +63,7 @@ Component = React.createClass
             if e.which == 8
                 e.preventDefault() and e.stopPropagation()
                 @delete()
-            if e.which == 80 and this.props.matchedRoute.params.id
+            if e.which == 80 and @props.matchedRoute.params.id
                 e.preventDefault() and e.stopPropagation()
                 @publish()
     
@@ -76,7 +78,7 @@ Component = React.createClass
                 self.setState post
 
     publish: ->
-        ref = new Firebase(FIREBASE_URL+"/posts/#{this.state.id}")
+        ref = new Firebase(FIREBASE_URL+"/posts/#{@state.id}")
         
         publishDate = Date.now()
         post = 
@@ -87,41 +89,41 @@ Component = React.createClass
             if !error
                 @save()
                 @setState loading: false
-                this._owner.navigate "/"+this.props.post.permalink
+                @_owner.navigate "/"+@subs('post').permalink
     
     updatePostLocations: ->
-        switch this.props.post.publishDate?
+        switch @subs('post').publishDate?
             when true  
                 location = "writing"
                 notLocation = "ideas"
             when false
                 location = "ideas"
                 notLocation = "writing"
-        priority = this.props.post.date || Date.now()
-        postRef = this.props.subscriptions.post.ref.root().child("posts").child(this.props.post.id)
-        postRef.root().child("users/#{user.id}/#{location}/#{this.props.post.id}").setWithPriority(true, priority)
-        postRef.root().child("users/#{user.id}/#{notLocation}/#{this.props.post.id}").set(null)
+        priority = @subs('post').date || Date.now()
+        postRef = @state.subscriptions.post.ref.root().child("posts").child(@subs('post').id)
+        postRef.root().child("users/#{user.id}/#{location}/#{@subs('post').id}").setWithPriority(true, priority)
+        postRef.root().child("users/#{user.id}/#{notLocation}/#{@subs('post').id}").set(null)
 
     save: (callback) ->
-        this.setState saving: true
-        post = _(this.state).pick "title", "body", "slug", "wordCount", "description"
-        post.wordCount = (this.state.body || "").split(" ").length
+        @setState saving: true
+        post = _(@state).pick "title", "body", "slug", "wordCount", "description"
+        post.wordCount = (@state.body || "").split(" ").length
         post.owner = user.id
-        priority = this.props.post.publishDate || Date.now()
+        priority = @subs('post').publishDate || Date.now()
 
-        location = if this.props.post.publishDate then "/writing" else "/ideas"
-        root = this.props.subscriptions.post.ref.root()
+        location = if @subs('post').publishDate then "/writing" else "/ideas"
+        root = @state.subscriptions.post.ref.root()
 
-        if @permalinkReady() and this.props.post.permalink != this.state.permalink
-            post.permalink = this.state.permalink
-            root.child("permalinks/#{this.props.post.permalink}").set(null)
-            root.child("permalinks").child(this.state.permalink).set
-                redirect: "/writing/#{this.props.post.id}"
+        if @permalinkReady() and @subs('post').permalink != @state.permalink
+            post.permalink = @state.permalink
+            root.child("permalinks/#{@subs('post').permalink}").set(null)
+            root.child("permalinks").child(@state.permalink).set
+                redirect: "/writing/#{@subs('post').id}"
                 owner: user.id
 
-        postRef = root.child("posts").child(this.props.post.id)
+        postRef = root.child("posts").child(@subs('post').id)
         postRef.update post, =>
-            this.setState 
+            @setState 
                 saving: false
             callback?()
         postRef.setPriority priority
@@ -133,7 +135,7 @@ Component = React.createClass
         
 
     handleTitleChange: (e) ->
-        this.setState title: e.target.value.replace unsafeCharacters, ""
+        @setState title: e.target.value.replace unsafeCharacters, ""
 
     handleBodyChange: (e) ->
         @setState body: e.target.value
@@ -156,65 +158,63 @@ Component = React.createClass
         dateString = e.target.value
         momentObject = moment(dateString, dateFormat, true)
         @setState validDate: momentObject.isValid()
-        dataRef = this.props.subscriptions.post.ref
+        dataRef = @state.subscriptions.post.ref
         if momentObject.isValid()
             unixDate = momentObject.valueOf()
-            this.props.subscriptions.post.ref.setPriority unixDate
-            published = this.props.post.publishDate?
+            @state.subscriptions.post.ref.setPriority unixDate
+            published = @subs('post').publishDate?
             if published
                 dataRef.update publishDate: unixDate
             location = if published then "writing" else "ideas"
-            indexRef = dataRef.root().child("/users/#{user.id}/#{location}").child(this.props.post.id)
+            indexRef = dataRef.root().child("/users/#{user.id}/#{location}").child(@subs('post').id)
             indexRef.setPriority unixDate
 
     objectModified: ->
-        !_.isEqual this.props.post, _(this.state).pick("title", "body", "id", "wordCount")
+        !_.isEqual @subs('post'), _(@state).pick("title", "body", "id", "wordCount")
 
     delete: ->
         if confirm("Are you sure? This cannot be undone.")
 
-            id = this.state.id
-            permalink = this.state.permalink
-            rootRef = this.props.subscriptions.post.ref.root()
-            this.props.subscriptions.post.ref.remove (err) =>
+            id = @state.id
+            permalink = @state.permalink
+            rootRef = @state.subscriptions.post.ref.root()
+            @state.subscriptions.post.ref.remove (err) =>
                 if !err
                     rootRef.child("users/#{user.id}/writing/#{id}").set(null)
                     rootRef.child("users/#{user.id}/ideas/#{id}").set(null)
                     rootRef.child("permalinks/#{permalink}").set(null)
                     
-                    this._owner.navigate "/"
+                    @_owner.navigate "/"
 
-    permalinkReady: -> (this.state.permalinkAvailable and this.state.permalinkChecked == this.state.permalink)
+    permalinkReady: -> (@state.permalinkAvailable and @state.permalinkChecked == @state.permalink)
     render: ->
-        isPublished = this.props.post?.publishDate?
-        loading = _.isEmpty this.props.post
-        if isPublished then viewLink = "/"+this.props.post.permalink else viewLink = "/writing/#{this.props.post.id}"
+        isPublished = @subs('post')?.publishDate?
+        loading = _.isEmpty @subs('post')
+        if isPublished then viewLink = "/"+@subs('post').permalink else viewLink = "/writing/#{@subs('post').id}"
 
         if isPublished 
-            breadcrumb = ["writing", this.props.post.permalink]
+            breadcrumb = ["writing", @subs('post').permalink]
         else
-            breadcrumb = ["ideas", this.props.post.id]
+            breadcrumb = ["ideas", @subs('post').id]
 
-        <Body  breadcrumb={breadcrumb}  
-                navInclude={<span><a  onClick={this.save} 
-                                className={"btn btn-dark right showIfUser "+(this.state.saving ? "loading" : "")+(this.objectModified() ? "" : " disabled")}>
-                                Save</a>
-                            <a  onClick={this.publish} 
-                                className={(isPublished ? " hidden" : "")+" btn btn-standard right showIfUser"}>
-                                Publish</a>
-                            <a  href={viewLink}
-                                className={"btn btn-standard right showIfUser"}>
-                                View</a></span>}
-                className={"content "+(if loading then "loading" else "")}>
+        <Body  breadcrumb={breadcrumb} sidebar={true}>
 
-            
-            <textareaAutosize   placeholder="Title..."
+            <span><a  onClick={@save} 
+                    className={"btn btn-white btn-list right showIfUser "+(@state.saving ? "loading" : "")+(@objectModified() ? "" : " disabled")}>
+                    Save</a>
+                <a  onClick={@publish} 
+                    className={(isPublished ? " hidden" : "")+" btn btn-white btn-list right showIfUser"}>
+                    Publish</a>
+                <a  href={viewLink}
+                    className={"btn btn-white btn-list right showIfUser"}>
+                    View</a></span>
+            <textareaAutosize   placeholder="Title"
                                 className="h1 text-center" 
                                 ref="title" 
                                 rows="1"
-                                onChange={this.handleTitleChange} 
+                                onChange={@handleTitleChange} 
                                 contentEditable="true" 
-                                value={this.state.title}/>
+                                value={@state.title}/>
             
             <toggleShowHide>
                 <div className='text-center' style={{margin:"-30px 0 10px"}}>
@@ -227,28 +227,31 @@ Component = React.createClass
                     </div>
                     <div>
                         <input  placeholder="Description" 
-                                onChange={this.handleDescriptionChange} 
-                                value={this.state.description}/>
+                                onChange={@handleDescriptionChange} 
+                                value={@state.description}/>
                     </div>
                     <div>
                         <input  ref="date" 
-                                onChange={this.changeDate} 
-                                className={"grey "+(if this.state.validDate then "success" else "error")} 
-                                defaultValue={moment(this.state.date).format(dateFormat)}/>
+                                onChange={@changeDate} 
+                                className={"grey "+(if @state.validDate then "success" else "error")} 
+                                defaultValue={moment(@state.date).format(dateFormat)}/>
                     </div>
-                    <a className="btn btn-red btn-small" onClick={this.delete}>Delete</a>
+                    <a className="btn btn-red btn-small" onClick={@delete}>Delete</a>
+                
+                        <textareaAutosize   ref="preview" 
+                                            onChange={@handlePreviewChange} 
+                                            className="idea-preview" 
+                                            name="preview" 
+                                            value={@state.preview}
+                                            placeholder="Summary"/>
                 </div>
+
             </toggleShowHide>
 
-            <textareaAutosize   ref="preview" 
-                                onChange={this.handlePreviewChange} 
-                                className="idea-preview" 
-                                name="preview" 
-                                value={this.state.preview}
-                                placeholder="Other"/>
+            
             
 
-            <textareaAutosize ref="body" onChange={this.handleBodyChange} className="idea-body" name="body" value={this.state.body} />
+            <textareaAutosize ref="body" onChange={@handleBodyChange} placeholder="Text" className="idea-body" name="body" value={@state.body} />
             
 
             

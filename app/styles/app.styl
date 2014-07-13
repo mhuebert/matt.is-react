@@ -9,7 +9,87 @@ lightBackgroundShadow = inset 0 0 1px #d5d5d5
 lightBackgroundShadow = inset 0px 1px 2px #ddd
 lightBackgroundShadowHover = inset 0 0 1px #bbb
 
-paragraphSpacing = 24px
+paragraphSpacing = 18px
+
+
+body
+    background #e7e7e7
+body, input, textarea, select, button
+    font-size 18px
+    font-family georgia
+    line-height 140%    
+.right-col
+    h3
+        margin 13px 0 7px 0
+        color black
+        a:visited
+            color black
+
+    a
+        color black
+    input
+        font-size 14px
+        line-height 14px
+        margin -2px 0 5px 0
+        border none
+        border-bottom 2px solid #ccc
+        background transparent
+        padding 0 0 2px 0
+        width 100%
+        transition(border-color, 0.25s, linear)
+        &:focus
+            border-color #aaa
+            outline none
+
+.right
+    float right
+.clear
+    clear both
+h3
+    font-family 'Georgia'
+    font-weight bold
+    font-size 11px
+    text-transform uppercase
+
+.content-filter
+    border-bottom 5px solid black
+    position relative
+    display block
+    text-align center
+    // margin-top 50px
+    li
+        display inline
+    a, a:visited
+        display inline-block
+        z-index 1
+        margin 0 4px
+        position relative
+        color black
+        font-family 'Helvetica Neue', Helvetica, sans-serif
+        font-weight 500
+        font-size 15px
+        line-height 15px
+        padding 0 0 6px
+        display inline-block
+        margin-bottom -10px
+        border-bottom 15px none transparent
+        // transition(border-color, 0.25s, ease-out)
+        // border-width 15px
+        // border-style none
+        // border-color transparent
+        &.activeLink
+            // border-bottom 15px solid #D0021B
+            border-style solid
+            text-decoration none
+            cursor default
+
+        // &.activeLink:after
+        //     display block
+        //     width 100px
+        //     // bottom -10px
+        //     height 5px
+        //     background #D0021B
+        //     // position absolute
 
 lightBackgroundHover()
     box-shadow none
@@ -114,7 +194,6 @@ blockquote
             box-shadow(none)
             margin 10px
             background transparent
-
             &.next:after, &:hover.next:after
                 left 18px
                 triangle(35px, 40px, 'right', #777)
@@ -215,14 +294,6 @@ input.grey
     // animation(around 3s infinite)
     // animation-timing-function(linear)
 
-body
-    background #eee
-    // background #e4d6ce
-    // background #eadcdc
-body, input, textarea, select, button
-    font-size 20px
-    font-family georgia
-    line-height 140%    
 
 .controls
     font-family helvetica
@@ -249,6 +320,19 @@ body, input, textarea, select, button
         &:hover
             cursor default
             text-decoration none
+.btn-white
+    font-family helvetica
+    background white
+    border-bottom 2px solid #ddd
+    padding 6px 9px
+    text-align center
+    font-size 14px
+    margin-bottom 10px
+    font-weight 500
+.btn.btn-list
+    margin-left 10px
+.btn-block
+    display block
 .btn-small
     padding 3px 6px
     font-size 80%
@@ -277,7 +361,7 @@ a
     &:visited
         color c35051
 h1, .h1, h2
-    font-size 49.5px
+    font-size 40px
     margin 0 0 30px
     text-align center
     line-height 120%
@@ -296,11 +380,6 @@ h2
 .text-center
     text-align center
 .nav-main
-    // z-index 2
-    position absolute
-    top 0
-    left 0
-    // font-family helvetica
     font-weight 200
     box-sizing border-box
     width 100%
@@ -327,8 +406,6 @@ a.activeLink, a.activeLink:hover
 
 .breadcrumb
     float left
-    margin-top 10px
-    margin-left 15px
     a 
         color black
     a:before
@@ -336,6 +413,8 @@ a.activeLink, a.activeLink:hover
         margin 0 4px
         display inline-block
         color black
+    a.last-update:before
+        display none
     a:first-child:before
         display none
     a.activeLink
@@ -409,7 +488,10 @@ a.activeLink, a.activeLink:hover
         display inline-block
         width 70px
         height 70px
-        lightBackground()
+        // lightBackground()
+        border-radius(4px)
+        background white
+        border-bottom 2px solid rgba(0,0,0,0.15)
         position relative
         &:after
             content "- "
@@ -436,7 +518,7 @@ a.activeLink, a.activeLink:hover
     transition(border-color, 0.25s, linear)
     width 100%
     background transparent
-    margin 30px 0 20px 0
+    margin 0 0 10px
     padding 3px 0
     font-size 24px
     border-style none none solid none
@@ -455,7 +537,6 @@ a.activeLink, a.activeLink:hover
     width 100%
     background transparent
     border none
-    font-size 20px
     line-height 140%
     overflow hidden
     // margin-bottom 350px
@@ -484,9 +565,7 @@ a.activeLink, a.activeLink:hover
 .loading .loader
     display block    
 .content
-    max-width 700px
-    margin 0 auto
-    padding 60px 20px 20px
+    
     >*
         transition(opacity, 0.2s, linear)
     // &.loading
@@ -528,19 +607,122 @@ ul.writing-list
         margin-bottom 5px
 .hidden
     display none !important
+
+.writingView
+    // padding 15px
+    h1
+        font-size 30px
+        margin-bottom 15px
+.header
+    background #ddd
+    margin-bottom 13px
+    box-sizing border-box
+    h1
+        font-size 40px
+        margin 0
+        line-height 120px
+        height 120px
+.above-header
+    margin 18px 0
+    font-size 16px
+    line-height 16px
+    font-size 14px
+    font-family helvetica
+    font-weight 500
+    background-color #eee
+    padding 7px 9px
+    border-bottom 1px solid #ddd
+
+.content
+    // margin 0 190px 0 18px
+    margin 0 auto
+    max-width 800px
+    &.single-col
+        margin-right 18px
+        // .left-col
+        //     padding 0
+        //     background transparent
+        //     border none
+.left-col
+    box-sizing border-box
+    width 610px
+    padding 0 18px 20px
+    float left
+    &:after
+        content " "
+        border-bottom 5px solid black
+        display block
+    // max-width 600px
+    // margin 0 auto 20px
+
+    // background #eee
+    // padding 18px
+    // border-bottom 2px solid #ddd
+.filter-bottom, .left-col:after
+    content: " "
+    clear both
+    display block
+.filter-bottom
+    border-bottom 5px solid black
+.right-col
+    box-sizing border-box
+    font-size 13px
+    line-height 15px
+    color #777
+    padding 18px 18px 0 0
+    float left
+    width 190px
+    margin-bottom 18px
+    ul
+        margin-bottom 13px
+    border-bottom 5px solid black
+    // &:after
+    //     content " "
+    //     border-bottom 5px solid black
+    //     display block
+.left-col .header
+    display none
+@media(max-width:800px)
+    .inner-content
+        margin 0 18px 
+    .left-col .header
+        display block
+    .right-col .header
+        display none
+    .left-col, .right-col
+        float none
+        width auto
+        padding 0
+    .right-col
+        padding 18px 18px 0
+        line-height 17px
+        li
+            display inline-block
+            a
+                margin-right 4px
+            a:after
+                content ","
+    .header
+        margin 18px 18px 13px
+        h1
+            height 80px
+            line-height 80px
+    .content-filter
+        margin-top 13px
+    .above-header
+        margin-top 0
+        padding 7px 18px
+
+
 @media(max-width:450px)
-    .nav-main
-        margin-bottom 20px
-        text-align center
     body
         font-size 100%
-    .content
-        padding-top 50px
-    .link-list
-        font-size 116%
-        line-height 160%
-    h1, .h1
-        font-size 36px
-        margin 0 0 20px
     .content img
         max-width 100%
+    .content-filter a
+        font-size 14px
+@media(max-width:410px)
+    .content-filter 
+        margin-bottom 12px
+        a
+            font-size 13px

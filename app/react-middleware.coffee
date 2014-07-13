@@ -6,6 +6,8 @@ nodeJSX = require("node-jsx")
 url = require("url")
 _ = require("underscore")
 
+ReactAsync = require('react-async')
+
 {safeStringify} = require("sparkboard-tools").utils
 {fetchSubscriptions} = require("sparkboard-tools")
 {Firebase, FIREBASE_URL} = require("./firebase")
@@ -48,6 +50,7 @@ module.exports = (req, res, next) ->
         handler = components[matchedRoute.handler]
 
         subscriptions = handler.subscriptions?(props) || {}
+        _.extend subscriptions, Layout.subscriptions?(props) || {}
 
         # Fetch data from Firebase & put it into props:
         fetchSubscriptions subscriptions, (subscriptionData) ->
@@ -55,11 +58,14 @@ module.exports = (req, res, next) ->
 
             # Create our root component, and render it into HTML:
             App = Layout(props)
-            html = React.renderComponentToString(App)
-            html += "
-                <script>
-                    var Layout = React.renderComponent(Components.Layout(#{safeStringify(props)}), document)
-                </script>
-            "
-            res.setHeader('Content-Type', 'text/html')
-            res.send html
+            # html = React.renderComponentToString(App)
+            ReactAsync.renderComponentToStringWithAsyncState App, (err, html) ->
+                console.log if err
+                html = err.stack if err
+                html += "
+                    <script>
+                        var Layout = React.renderComponent(Components.Layout(#{safeStringify(props)}), document)
+                    </script>
+                "
+                res.setHeader('Content-Type', 'text/html')
+                res.send html

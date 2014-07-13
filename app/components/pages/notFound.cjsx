@@ -1,13 +1,12 @@
 # @cjsx React.DOM
 
 React = require("react")
-Body = require("../body")
+Body = require("../widgets/body")
 
 Component = React.createClass
 
     render: ->
-      <Body>
-          <h1>So much paths. We not couldn't find one this.</h1>
+      <Body sidebar={true}>
+        <h1>So much paths. Could not find this one :-/.</h1>
       </Body>
-
 module.exports = Component

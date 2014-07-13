@@ -8,7 +8,12 @@ module.exports =
   settings:
     write: "(data.child('ownerId').val() == null || data.child('ownerId').val() == auth.id)"
     read: true
-
+  themes:
+    read: true
+    write: true
+  people:
+    read: true
+    write: true
   tags:
     read: true
     users:

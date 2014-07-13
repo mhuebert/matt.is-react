@@ -10,7 +10,7 @@ Addons = require("react/addons")
 {Collection} = require("../../models")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
 
-Body = require("../body")
+Body = require("../widgets/body")
 LinkList = require("../widgets/linkList")
 
 
