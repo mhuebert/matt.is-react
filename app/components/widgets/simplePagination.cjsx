@@ -26,9 +26,8 @@ Component = React.createClass
 
     render: ->
         this.transferPropsTo(<div className="paginate-simple">
-            <a ref="back" className="hidden" href={this.props.back} />
-            <a ref="prev" onClick={this.prev} className={"prev "+(if this.props.prev then "" else "hidden")} href={this.props.prev}/>
-            <a ref="next" className={"next "+(if this.props.next then "" else "hidden")} href={this.props.next}/>
+            <a ref="prev" onClick={this.prev} className={"btn btn-white prev "+(if this.props.prev then "" else "hidden")} href={this.props.prev}/>
+            <a ref="next" className={"btn btn-white next "+(if this.props.next then "" else "hidden")} href={this.props.next}/>
         </div>)
 
 module.exports = Component

@@ -14,8 +14,8 @@ Component = React.createClass
 	getInitialState: -> {}
 	render: ->
 		links = [ 
-			['All', '/'], 
-			['Quotes', '/quotes'], 
+			['Feed', '/'], 
+			# ['Quotes', '/quotes'], 
 			['Images', '/images'], 
 			['Playlists', '/playlists'],
 			['Links', '/links'],

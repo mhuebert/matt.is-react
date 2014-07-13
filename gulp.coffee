@@ -14,7 +14,7 @@ mergeFirebaseRules = require("merge-firebase-rules")
 gulp.task 'stylus', ->
     gulp.src './app/styles/*.styl'
     .pipe stylus({use: ['nib'], set: ['compress']})
-    .pipe(gulp.dest('./app/public/'))
+    .pipe(gulp.dest('./app/public/styles'))
 
 gulp.task 'scripts', ->
     gulp.src('./app/app.coffee', {read: false})
@@ -25,8 +25,8 @@ gulp.task 'scripts', ->
             noParse: ['jquery', 'underscore']
             }))
         .pipe(rename('app.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('./app/public/js'))
-        # .pipe(uglify())
         # .pipe(rename('app.min.js'))
         # .pipe(gulp.dest('./public/js'))
 

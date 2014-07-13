@@ -12,7 +12,7 @@ ContentFilter = require("./contentFilter")
 Component = React.createClass
     
     render: ->
-      <div className={"content"+(if @props.sidebar then "" else " single-col")}>
+      <div className={"content"+(if @props.sidebar == false then " single-col" else "")}>
           <div className="left-col">
               <AboveHeader breadcrumb={@props.breadcrumb} />
               <Header />
@@ -20,7 +20,7 @@ Component = React.createClass
               {@transferPropsTo(<div>{@props.children}</div>)}
           </div>
 
-          <div className={"right-col"+(if @props.sidebar then "" else " hidden")}>
+          <div className={"right-col"+(if @props.sidebar == false then " hidden" else "")}>
               <Sidebar />
           </div>
           <div className="clear" />

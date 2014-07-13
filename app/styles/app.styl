@@ -20,7 +20,7 @@ body, input, textarea, select, button
     line-height 140%    
 .right-col
     h3
-        margin 13px 0 7px 0
+        margin 13px 0 3px 0
         color black
         a:visited
             color black
@@ -359,7 +359,7 @@ a
         text-decoration underline
         cursor pointer
     &:visited
-        color c35051
+        color #c35051
 h1, .h1, h2
     font-size 40px
     margin 0 0 30px
@@ -483,32 +483,32 @@ a.activeLink, a.activeLink:hover
 .paginate-simple
     float left
     width 100%
-    margin-bottom 20px
+    margin-bottom 13px
     a
         display inline-block
-        width 70px
-        height 70px
+        width 37px
+        height 40px
         // lightBackground()
         border-radius(4px)
         background white
-        border-bottom 2px solid rgba(0,0,0,0.15)
+        border-bottom 2px solid rgba(0,0,0,0.2)
         position relative
         &:after
             content "- "
             text-indent -1000px
             overflow hidden
             position absolute
-            top 15px
+            top 10px
         &.next:after
-            left 18px
-            triangle(35px, 40px, 'right', rgba(0,0,0,0.1))
+            left 10px
+            triangle(20px, 20px, 'right', #c35051)
         &:hover.next:after
-            triangle(35px, 40px, 'right', rgba(0,0,0,0.4))
+            triangle(20px, 20px, 'right', linkColor)
         &.prev:after
-            right 18px
-            triangle(35px, 40px, 'left', rgba(0,0,0,0.1))
+            right 10px
+            triangle(20px, 20px, 'left', #c35051)
         &:hover.prev:after
-            triangle(35px, 40px, 'left', rgba(0,0,0,0.4))
+            triangle(20px, 20px, 'left', linkColor)
     .next
         float right
     .prev
@@ -519,7 +519,7 @@ a.activeLink, a.activeLink:hover
     width 100%
     background transparent
     margin 0 0 10px
-    padding 3px 0
+    padding 3px 0 0 40px
     font-size 24px
     border-style none none solid none
     border-bottom 5px solid #ddd
@@ -610,9 +610,18 @@ ul.writing-list
 
 .writingView
     // padding 15px
+    hr
+        background transparent
+        border none
+        border-bottom 2px solid #d4d4d4
     h1
-        font-size 30px
-        margin-bottom 15px
+        // font-size 30px
+        // margin-bottom 15px
+        margin-bottom 11px
+        font-size 24px
+        font-family helvetica
+        font-weight 500
+        text-align left
 .header
     background #ddd
     margin-bottom 13px
@@ -620,8 +629,10 @@ ul.writing-list
     h1
         font-size 40px
         margin 0
-        line-height 120px
-        height 120px
+        a
+            line-height 120px
+            height 120px
+            display block
 .above-header
     margin 18px 0
     font-size 16px
@@ -682,6 +693,8 @@ ul.writing-list
     //     display block
 .left-col .header
     display none
+.inner-content
+    margin 30px 40px 30px 0
 @media(max-width:800px)
     .inner-content
         margin 0 18px 
@@ -726,3 +739,46 @@ ul.writing-list
         margin-bottom 12px
         a
             font-size 13px
+form
+    padding-bottom 1px
+.ideas.link-list
+    margin-left 40px
+.input-group
+    border-bottom 2px solid #ddd
+    display block
+    padding 0
+    margin-bottom 20px
+    position relative
+    label, input
+        box-sizing border-box
+        display inline-block
+        line-height: 20px
+        padding 4px 8px
+    label
+        margin 0
+        text-align right
+        padding 0
+        font-family: "Helvetica Neue","Helvetica",sans-serif
+        font-weight 500
+        text-transform uppercase
+        position absolute
+        top 7px
+        left 10px
+        color #ccc
+        font-size 12px
+        transition(color, 0.2s, ease-out)
+
+    input:focus+label
+        color #999
+    input
+        margin 0
+        width 100%
+        border none
+        background white
+        padding 30px 10px 10px 
+        background white
+        font-family georgia
+        font-size 16px
+        &:focus
+            outline 0
+            border-color black

@@ -4,6 +4,7 @@ _ = require("underscore")
 React = require("react")
 Body = require("../widgets/body")
 ContentFilter = require("../widgets/contentFilter")
+Link = require("../widgets/link")
 
 subscriptions = require("../../subscriptions")
 {AsyncSubscriptionMixin} = subscriptions
@@ -34,6 +35,11 @@ Component = React.createClass
                 title = "#"+tag
                 breadcrumb = ['tags', tag]
 
+        componentList = {
+            link: Link
+            a: React.DOM.a
+        }
+
         <Body sidebar={true} breadcrumb={['writing']}>
             <ContentFilter />
             <div className="inner-content">
@@ -41,7 +47,9 @@ Component = React.createClass
                     {
                         @subs('writing').map( (post) ->
                             <li key={post.id} >
+                                {componentList["a"]({href:"/"+post.permalink}, post.title)} 
                                 <a href={"/"+post.permalink}>{post.title}</a>
+                                
                             </li>
                         )
                     }

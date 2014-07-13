@@ -20,7 +20,9 @@ Home = React.createClass
     render: ->
         <Body sidebar={true}>
           <ContentFilter />
-          <p>Hello</p>
+          <div className="inner-content">
+              <p>Hello</p>
+          </div>
         </Body>
 
 module.exports = Home

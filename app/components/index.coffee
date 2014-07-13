@@ -9,6 +9,7 @@
 @Ideas = require("./pages/ideas")
 @Tags = require("./pages/tags")
 @Settings = require("./pages/settings")
+@New = require("./pages/new")
 @Edit = require("./pages/edit")
 @Login = require("./pages/login")
 @Logout = require("./pages/logout")

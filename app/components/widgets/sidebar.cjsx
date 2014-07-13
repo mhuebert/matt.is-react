@@ -24,10 +24,11 @@ Component = React.createClass
 			<em>Edited in New York</em>
 			<div style={{marginTop: 13}} className="showIfUser">
 				<Link className="btn btn-white btn-block" href="/new" >New</Link>
+				<Link href="/ideas" >Ideas</Link> • 
 				<Link href="/settings" >Settings</Link> • 
 				<Link href="/logout" >Sign Out</Link>
 			</div>
-			<h3><a href="/themes/">Themes »</a></h3>
+			<h3><a href="/themes/">Topics »</a></h3>
 			<AddNode className="showIfUser" ref={subs.themes.ref} attribute="name" />
 			<ul>{
 				@subs('themes').map (theme) -> 
