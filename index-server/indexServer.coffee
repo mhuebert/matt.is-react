@@ -22,14 +22,12 @@ server = IndexServer
     sourcePath: "/elements/"
     sourceAttribute: "topics"
     indexPath: "/related/topics/"
-    keyTransform: (key) -> types[key] || key
     priority: (snap) -> snap.child("date").val()
   ,
     type: "oneToMany"
     sourcePath: "/elements/"
     sourceAttribute: "people"
     indexPath: "/related/people/"
-    keyTransform: (key) -> types[key] || key
     priority: (snap) -> snap.child("date").val()
 
   ]
