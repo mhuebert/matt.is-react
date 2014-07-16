@@ -1,5 +1,6 @@
 ownerId = "15538074"
 
+isAdmin = "auth.id == '#{ownerId}'"
 ownerOrNew = "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
 userOwnsObject = "newData.child('owner').val() == auth.id"
 
@@ -14,6 +15,9 @@ module.exports =
   people:
     read: true
     write: true
+  elements:
+    read: true
+    write: isAdmin
   tags:
     read: true
     users:

@@ -11,11 +11,21 @@ lightBackgroundShadowHover = inset 0 0 1px #bbb
 
 paragraphSpacing = 18px
 
+.dynamic-divider-container
+    position relative
+    height 40px
+    text-align center
+    font-size 12px
+    font-family helvetica
+    .dynamic-divider
+        cursor pointer
+        &:hover
+            color white
 
 body
     background #e7e7e7
 body, input, textarea, select, button
-    font-size 18px
+    font-size 16px
     font-family georgia
     line-height 140%    
 .right-col
@@ -24,9 +34,10 @@ body, input, textarea, select, button
         color black
         a:visited
             color black
-
     a
         color black
+    li a:visited
+        color #777
     input
         font-size 14px
         line-height 14px
@@ -56,6 +67,7 @@ h3
     position relative
     display block
     text-align center
+    margin-bottom 28px
     // margin-top 50px
     li
         display inline
@@ -159,6 +171,12 @@ blockquote
         list-style disc
     ul, blockquote 
         padding-left 20px
+    // a, a:visited
+    //     border-bottom 2px solid #ff0057
+    //     color black
+    //     &:hover
+    //         border-color darken(#ff0057, 20)
+    //         text-decoration none
 .writing-inline-options
     padding 15px
     margin-bottom: 20px
@@ -264,8 +282,8 @@ em
     font-style italic
 strong
     font-weight bold
-input.error
-    border-bottom 2px solid red !important
+input.error, textarea.error
+    border-bottom 2px solid #ff0057 !important
 .slugPreview
     opacity 0
     display inline-block
@@ -320,19 +338,30 @@ input.grey
         &:hover
             cursor default
             text-decoration none
+.btn
+    cursor pointer
+    &:hover
+        text-decoration underline
+    &:active, &:focus
+        outline 0
+        text-decoration underline
 .btn-white
     font-family helvetica
     background white
+    border none
     border-bottom 2px solid #ddd
     padding 6px 9px
     text-align center
     font-size 14px
     margin-bottom 10px
     font-weight 500
+.btn-large
+    padding 10px 18px
 .btn.btn-list
     margin-left 10px
 .btn-block
     display block
+    margin-bottom 18px
 .btn-small
     padding 3px 6px
     font-size 80%
@@ -360,9 +389,11 @@ a
         cursor pointer
     &:visited
         color #c35051
+    &:focus
+        text-decoration underline
 h1, .h1, h2
     font-size 40px
-    margin 0 0 30px
+    margin 0 0 20px
     text-align center
     line-height 120%
     background transparent
@@ -630,8 +661,8 @@ ul.writing-list
         font-size 40px
         margin 0
         a
-            line-height 120px
-            height 120px
+            line-height 80px
+            height 80px
             display block
 .above-header
     margin 18px 0
@@ -657,18 +688,13 @@ ul.writing-list
 .left-col
     box-sizing border-box
     width 610px
-    padding 0 18px 20px
+    padding 0 18px 0
     float left
     &:after
         content " "
         border-bottom 5px solid black
         display block
-    // max-width 600px
-    // margin 0 auto 20px
-
-    // background #eee
-    // padding 18px
-    // border-bottom 2px solid #ddd
+        padding-top 10px
 .filter-bottom, .left-col:after
     content: " "
     clear both
@@ -684,7 +710,7 @@ ul.writing-list
     float left
     width 190px
     margin-bottom 18px
-    ul
+    ul, .btn-block
         margin-bottom 13px
     border-bottom 5px solid black
     // &:after
@@ -696,8 +722,6 @@ ul.writing-list
 .inner-content
     margin 30px 40px 30px 0
 @media(max-width:800px)
-    .inner-content
-        margin 0 18px 
     .left-col .header
         display block
     .right-col .header
@@ -705,9 +729,11 @@ ul.writing-list
     .left-col, .right-col
         float none
         width auto
-        padding 0
+    .left-col
+        padding 0 18px
     .right-col
-        padding 18px 18px 0
+        padding 18px 0 0
+        margin 0 18px 18px
         line-height 17px
         li
             display inline-block
@@ -715,16 +741,20 @@ ul.writing-list
                 margin-right 4px
             a:after
                 content ","
+            a:last-child:after
+                content ""
     .header
-        margin 18px 18px 13px
-        h1
-            height 80px
-            line-height 80px
+        margin 18px 0 13px
+        h1 a
+            height 50px
+            line-height 50px
+            font-size 30px
     .content-filter
         margin-top 13px
     .above-header
         margin-top 0
         padding 7px 18px
+        margin 0 -18px
 
 
 @media(max-width:450px)
@@ -735,42 +765,117 @@ ul.writing-list
     .content-filter a
         font-size 14px
 @media(max-width:410px)
-    .content-filter 
-        margin-bottom 12px
-        a
-            font-size 13px
+    .content-filter a
+        font-size 13px
 form
     padding-bottom 1px
 .ideas.link-list
     margin-left 40px
+.input-message
+    .error
+        display: inline-block
+        background: white
+        margin 0 8px 0 0
+        padding: 0px 8px
+        border-radius: 14px
+        font-size: 13px
+        background: rgb(255, 0, 87)
+        color: white
+.input-subgroup
+    position relative
+    float left
+    background white
+    border-right 1px solid #eee
+    box-sizing border-box
+    &:last-child
+        border-right none
+.input-group-select
+    background white
+    .select-label
+        background #eee
+        border-radius(13px)
+        font-family helvetica
+        font-size 12px
+        font-weight 500
+        padding 2px 10px
+        display inline-block
+        margin 29px 0 8px 10px
+        box-sizing border-box
+        line-height 19px
+        color black
+        &.lastChild
+            margin-right 10px
+        &:hover
+            cursor pointer
+            text-decoration underline
+        &.selected
+            background rgb(0, 199, 252)
+            color white
+            cursor default
+            text-decoration none !important
 .input-group
     border-bottom 2px solid #ddd
     display block
     padding 0
-    margin-bottom 20px
+    margin-bottom 17px
     position relative
+    &.input-inline
+        display inline-block
+        vertical-align top
+        margin-right 18px
+
+    &:after
+        clear both
+    &.focus
+        border-color #ccc
+    select
+        border 1px solid #ddd
+        box-sizing border-box
+        height 25px
+        font-size 13px
+        line-height 13px
+        font-weight 500
+        margin 29px 10px 6px
+        // font-family helvetica
+        &:active, &:focus
+            border-color rgb(0, 199, 252)
+            outline 0
+    .input-message
+        background #eee
+        overflow hidden
+        font-family helvetica
+        font-size 13px
+        display none
+        &.active
+            padding 10px
+            display block
+            border-top 1px solid #ddd
     label, input
         box-sizing border-box
         display inline-block
         line-height: 20px
         padding 4px 8px
-    label
-        margin 0
-        text-align right
-        padding 0
+    .actions, label
+        position absolute
+        top 7px
         font-family: "Helvetica Neue","Helvetica",sans-serif
         font-weight 500
         text-transform uppercase
-        position absolute
-        top 7px
-        left 10px
+        text-align right
         color #ccc
         font-size 12px
         transition(color, 0.2s, ease-out)
-
-    input:focus+label
+        margin 0
+        padding 0
+    label
+        left 10px
+    .actions
+        right 10px
+        a
+            margin-left 8px     
+    input:focus+label, textarea:focus+label
         color #999
-    input
+    input, textarea
         margin 0
         width 100%
         border none
@@ -782,3 +887,43 @@ form
         &:focus
             outline 0
             border-color black
+.form.bare, .input-group.bare
+    .input-group
+        border none
+        input, textarea
+            background transparent
+            padding 30px 0 10px
+            border none
+        label
+            left 0
+        .input-message
+            padding 10px 0
+            background transparent
+    .input-subgroup, .input-group-select
+        background transparent
+        border none
+    select
+        margin-left 0
+.single-purpose
+    a
+        display block
+        height 100%
+        width 100%
+        box-sizing border-box
+        text-align center
+        color black
+        text-decoration none
+        position relative
+        span
+            line-height 100px
+            font-size 100px
+            display block
+            position absolute
+            top 50%
+            margin-top -50px
+            width 100%
+            text-align center
+.left-col 
+    li
+        list-style disc
+        margin-left 20px

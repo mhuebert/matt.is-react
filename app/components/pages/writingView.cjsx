@@ -30,7 +30,7 @@ marked.setOptions
   smartLists: true
   smartypants: true
 
-unsafeCharacters = /[^\w\s.!?,:;'"]/
+# unsafeCharacters = /[^\w\s.!?,:;'"]/
 
 Component = React.createClass
 
@@ -102,19 +102,17 @@ Component = React.createClass
                 contentFilter={false}
                 breadcrumb={['writing']}
                 >
-            <div className="inner-content">
-                <a href={"/ideas/"+post.get("slug")} className="right btn btn-white showIfUser ">Edit</a>
-                <h1 ><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
-                <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
-                <TagList tags={tags} 
-                         url={(tag)->"/tags/"+slugify(tag)}
-                         label={(tag)->"#"+tag}/>
-                <simplePagination
-                    className={if post.get("publishDate") then "" else "hidden"} 
-                    back="/writing"
-                    next={if @subs('postNext').permalink then ("/"+@subs('postNext').permalink) else false} 
-                    prev={if @subs('postPrev').permalink then ("/"+@subs('postPrev').permalink) else false} />  
-            </div>
+            <a href={"/ideas/"+post.get("slug")} className="right btn btn-white showIfUser ">Edit</a>
+            <h1 ><a href={"/"+post.get("permalink")}>{post.get("title")}</a></h1>
+            <div className="writing-body" dangerouslySetInnerHTML={{__html: marked(post.get("body")||"")}}></div>
+            <TagList tags={tags} 
+                     url={(tag)->"/tags/"+slugify(tag)}
+                     label={(tag)->"#"+tag}/>
+            <simplePagination
+                className={if post.get("publishDate") then "" else "hidden"} 
+                back="/writing"
+                next={if @subs('postNext').permalink then ("/"+@subs('postNext').permalink) else false} 
+                prev={if @subs('postPrev').permalink then ("/"+@subs('postPrev').permalink) else false} />  
         </Body>
 
 module.exports = Component

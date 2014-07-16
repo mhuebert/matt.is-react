@@ -9,6 +9,12 @@ firebaseSubscription = require("./firebaseSubscription")
 root = new Firebase(FIREBASE_URL)
 async = require("async")
 
+@List = (path) ->
+  firebaseSubscription
+    ref: root.child(path)
+    server: true
+    parse: (snapshot) -> snapshotToArray(snapshot).reverse()
+    default: []
 @Themes = ->
   firebaseSubscription
     ref: root.child("/themes")

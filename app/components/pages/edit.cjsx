@@ -198,60 +198,61 @@ Component = React.createClass
             breadcrumb = ["ideas", @subs('post').id]
 
         <Body  breadcrumb={breadcrumb} sidebar={true}>
-
-            <span><a  onClick={@save} 
-                    className={"btn btn-white btn-list right showIfUser "+(@state.saving ? "loading" : "")+(@objectModified() ? "" : " disabled")}>
-                    Save</a>
-                <a  onClick={@publish} 
-                    className={(isPublished ? " hidden" : "")+" btn btn-white btn-list right showIfUser"}>
-                    Publish</a>
-                <a  href={viewLink}
-                    className={"btn btn-white btn-list right showIfUser"}>
-                    View</a></span>
-            <textareaAutosize   placeholder="Title"
-                                className="h1 text-center" 
-                                ref="title" 
-                                rows="1"
-                                onChange={@handleTitleChange} 
-                                contentEditable="true" 
-                                value={@state.title}/>
-            
-            <toggleShowHide>
-                <div className='text-center' style={{margin:"-30px 0 10px"}}>
-                    <a data-toggle-hide={false} className=" hide-if-toggle-visible writing-edit-link show-element ">options</a>
-                    <a data-toggle-hide={true} className=" hide-if-toggle-hidden writing-edit-link show-element ">hide options</a>
-                </div>
-                <div className="writing-inline-options hide-if-toggle-hidden">
-                    <div>
-                        /<input className={"grey "+(this.permalinkReady ? "success" : "error")}  placeholder="my-permalink" ref="permalink" onChange={this.changePermalink} value={this.state.permalink}/>
-                    </div>
-                    <div>
-                        <input  placeholder="Description" 
-                                onChange={@handleDescriptionChange} 
-                                value={@state.description}/>
-                    </div>
-                    <div>
-                        <input  ref="date" 
-                                onChange={@changeDate} 
-                                className={"grey "+(if @state.validDate then "success" else "error")} 
-                                defaultValue={moment(@state.date).format(dateFormat)}/>
-                    </div>
-                    <a className="btn btn-red btn-small" onClick={@delete}>Delete</a>
+            <div className="inner-content">
+                <span><a  onClick={@save} 
+                        className={"btn btn-white btn-list right showIfUser "+(@state.saving ? "loading" : "")+(@objectModified() ? "" : " disabled")}>
+                        Save</a>
+                    <a  onClick={@publish} 
+                        className={(isPublished ? " hidden" : "")+" btn btn-white btn-list right showIfUser"}>
+                        Publish</a>
+                    <a  href={viewLink}
+                        className={"btn btn-white btn-list right showIfUser"}>
+                        View</a></span>
+                <textareaAutosize   placeholder="Title"
+                                    className="h1 text-center" 
+                                    ref="title" 
+                                    rows="1"
+                                    onChange={@handleTitleChange} 
+                                    contentEditable="true" 
+                                    value={@state.title}/>
                 
-                        <textareaAutosize   ref="preview" 
-                                            onChange={@handlePreviewChange} 
-                                            className="idea-preview" 
-                                            name="preview" 
-                                            value={@state.preview}
-                                            placeholder="Summary"/>
-                </div>
+                <toggleShowHide>
+                    <div className='text-center' style={{margin:"-30px 0 10px"}}>
+                        <a data-toggle-hide={false} className=" hide-if-toggle-visible writing-edit-link show-element ">options</a>
+                        <a data-toggle-hide={true} className=" hide-if-toggle-hidden writing-edit-link show-element ">hide options</a>
+                    </div>
+                    <div className="writing-inline-options hide-if-toggle-hidden">
+                        <div>
+                            /<input className={"grey "+(this.permalinkReady ? "success" : "error")}  placeholder="my-permalink" ref="permalink" onChange={this.changePermalink} value={this.state.permalink}/>
+                        </div>
+                        <div>
+                            <input  placeholder="Description" 
+                                    onChange={@handleDescriptionChange} 
+                                    value={@state.description}/>
+                        </div>
+                        <div>
+                            <input  ref="date" 
+                                    onChange={@changeDate} 
+                                    className={"grey "+(if @state.validDate then "success" else "error")} 
+                                    defaultValue={moment(@state.date).format(dateFormat)}/>
+                        </div>
+                        <a className="btn btn-red btn-small" onClick={@delete}>Delete</a>
+                    
+                            <textareaAutosize   ref="preview" 
+                                                onChange={@handlePreviewChange} 
+                                                className="idea-preview" 
+                                                name="preview" 
+                                                value={@state.preview}
+                                                placeholder="Summary"/>
+                    </div>
 
-            </toggleShowHide>
+                </toggleShowHide>
 
-            
-            
+                
+                
 
-            <textareaAutosize ref="body" onChange={@handleBodyChange} placeholder="Text" className="idea-body" name="body" value={@state.body} />
+                <textareaAutosize ref="body" onChange={@handleBodyChange} placeholder="Text" className="idea-body" name="body" value={@state.body} />
+            </div>
             
 
             

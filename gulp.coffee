@@ -25,7 +25,7 @@ gulp.task 'scripts', ->
             noParse: ['jquery', 'underscore']
             }))
         .pipe(rename('app.js'))
-        .pipe(uglify())
+        # .pipe(uglify())
         .pipe(gulp.dest('./app/public/js'))
         # .pipe(rename('app.min.js'))
         # .pipe(gulp.dest('./public/js'))

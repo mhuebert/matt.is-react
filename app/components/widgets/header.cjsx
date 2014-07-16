@@ -19,7 +19,7 @@ Component = React.createClass
           borderBottom: "2px solid #{darken(@state.headerColor, 0.07)}"
         @transferPropsTo <div style={headerStyle} className={"header"+(if @props.header == false then "hidden" else "")}>
           <div className="header-image">
-            <h1><a className="header-caption" href="/">{@props.header?.title || @subs('settings').homeTitle}</a></h1>
+            <h1><a className="header-caption" href="/">{@props.header?.title || @subs('settings').siteTitle}</a></h1>
           </div>
         </div>
       

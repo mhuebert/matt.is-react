@@ -42,19 +42,17 @@ Component = React.createClass
 
         <Body sidebar={true} breadcrumb={['writing']}>
             <ContentFilter />
-            <div className="inner-content">
-                <ul className="link-list">
-                    {
-                        @subs('writing').map( (post) ->
-                            <li key={post.id} >
-                                {componentList["a"]({href:"/"+post.permalink}, post.title)} 
-                                <a href={"/"+post.permalink}>{post.title}</a>
-                                
-                            </li>
-                        )
-                    }
-                </ul>
-            </div>
+            <ul className="link-list">
+                {
+                    @subs('writing').map( (post) ->
+                        <li key={post.id} >
+                            {componentList["a"]({href:"/"+post.permalink}, post.title)} 
+                            <a href={"/"+post.permalink}>{post.title}</a>
+                            
+                        </li>
+                    )
+                }
+            </ul>
         </Body>
 
 module.exports = Component

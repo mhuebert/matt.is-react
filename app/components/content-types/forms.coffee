@@ -1,0 +1,6 @@
+@book = require("./bookForm")
+@text = require("./textForm")
+@image = require("./imageForm")
+@link = require("./linkForm")
+@video = require("./videoForm")
+@person = require("./personForm")
