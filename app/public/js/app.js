@@ -2798,14 +2798,14 @@ Component = React.createClass({
     var color, height, loader, rotation, styles, width;
     loader = this.refs.divider.getDOMNode();
     styles = {};
-    width = between(4, 30);
-    height = between(14, 30);
+    width = between(20, 40);
+    height = between(10, 17);
     color = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0, 4)];
-    rotation = between(-5, 5);
+    rotation = between(-3, 3);
     styles.width = "" + width + "%";
     styles.background = color;
     styles.height = "" + height + "px";
-    styles.left = "" + (between(10, (100 - width) - 10)) + "%";
+    styles.left = "" + ((100 - width) / 2) + "%";
     styles.lineHeight = "" + height + "px";
     loader.style["-webkit-transform"] = this.state.transform = this.state["-moz-transform"] = "rotate(" + rotation + "deg)";
     styles;

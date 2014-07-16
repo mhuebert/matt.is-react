@@ -21,23 +21,24 @@ types =
 
 server = IndexServer
   ref: root
-  index:
-    type: "tagIndex"
-    sourcePath: "/posts/"
-    sourceAttribute: "tags"
-    indexPath: "/tags/"
-    keyTransform: (key) -> slugify(key)
   indexes:[
     type: "oneToMany"
-    sourcePath: "/posts/"
-    sourceAttribute: "tags"
-    indexPath: "/tags/"
+    sourcePath: "/elements/"
+    sourceAttribute: "people"
+    indexPath: "/people/"
     keyTransform: (key) -> slugify(key)
   ,
     type: "oneToOne"
-    sourcePath: "/posts/"
+    sourcePath: "/elements/"
     sourceAttribute: "type"
     indexPath: "/types/"
+    keyTransform: (key) -> types[key] || key
+    priority: (snap) -> snap.child("date").val()
+  ,
+    type: "oneToMany"
+    sourcePath: "/elements/"
+    sourceAttribute: "topics"
+    indexPath: "/topics/"
     keyTransform: (key) -> types[key] || key
     priority: (snap) -> snap.child("date").val()
 
