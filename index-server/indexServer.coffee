@@ -9,16 +9,6 @@ root.auth(process.env.FIREBASE_SECRET)
 
 _ = require("underscore")
 
-types = 
-  book: "books"
-  link: "links"
-  person: "people"
-  image: "images"
-  gallery: "galleries"
-  video: "videos"
-  playlist: "playlists"
-  text: "writing"
-
 server = IndexServer
   ref: root
   indexes:[
@@ -32,7 +22,6 @@ server = IndexServer
     sourcePath: "/elements/"
     sourceAttribute: "type"
     indexPath: "/types/"
-    keyTransform: (key) -> types[key] || key
     priority: (snap) -> snap.child("date").val()
   ,
     type: "oneToMany"

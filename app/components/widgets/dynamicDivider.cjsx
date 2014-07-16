@@ -58,7 +58,7 @@ Component = React.createClass
         @setState styles
 
     render: ->
-        <div className="dynamic-divider-container" >
+        @transferPropsTo <div className="dynamic-divider-container" >
             <div className="dynamic-divider" ref="divider" style={this.state}>
             </div>
         </div>

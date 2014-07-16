@@ -2,13 +2,14 @@
 
 React = require("react/addons")
 cx = React.addons.classSet
-{FIREBASE_URL} = require("../../firebase")
-Form = require("../form/form")
-Text = require("../form/text")
-DateField = require("../form/date")
-SelectByLabels = require("../form/selectLabels")
-Computed = require("../form/computed")
-v = require("../form/validators")
+{FIREBASE_URL} = require("../../../firebase")
+Form = require("../../form/form")
+Text = require("../../form/text")
+DateField = require("../../form/date")
+ImageUpload = require("../../form/imageUpload")
+SelectByLabels = require("../../form/selectLabels")
+Computed = require("../../form/computed")
+v = require("../../form/validators")
 _ = require("underscore")
 
 Component = React.createClass
@@ -50,8 +51,6 @@ Component = React.createClass
                 className="bare"
                 fireRef={if ref then ref.child("title").toString() else undefined}
                 inputStyles={
-                  fontWeight: 500
-                  fontFamily: "'Helvetica Neue', helvetica, sans-serif"
                   fontSize: 20
                 }
                 validators={[v.required, v.min(3), v.max(40)]}/>
@@ -74,6 +73,11 @@ Component = React.createClass
                                 {name: "Idea", value:"idea"}
                                 {name: "Published", value:"published"}
                             ]}/>
+          <ImageUpload  onUpdate={@update("image")}
+                        fireRef={if ref then ref.child("image").toString() else undefined} />
+          <p>People</p>
+          <p>Topics</p>
+          <p>Author</p>
           
           <p className={cx(hidden: ref?)}>
             <input onClick={@create} type="submit" className="btn btn-large btn-white" value="Create" />
@@ -81,6 +85,10 @@ Component = React.createClass
           <p>
             Things to consider:
             <ul>
+              <li>URLs for viewing elements (distinguished by type)</li>
+              <li>Edit link for elements</li>
+              <li>permalinks</li>
+              <li>meaningful slugs</li>
               <li>Validations may be asyncronous</li>
               <li>Validations may be required before a form will submit</li>
               <li>A form may display general errors, or field-specific errors</li>

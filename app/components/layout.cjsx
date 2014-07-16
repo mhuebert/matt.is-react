@@ -21,7 +21,7 @@ Layout = React.createClass
     mixins: [RouterMixin]
     routes: require("../routes")
     fallbackRoute: require("../route-fallback")
-    firebaseRefCache: ['themes', 'people', 'settings'] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
+    firebaseRefCache: ['themes', 'people', 'settings', 'elements'] # [ FIREBASE_URL+'/ideas', FIREBASE_URL+'/writing' ]
     _firebaseRefCache: []
     componentWillMount: ->
         if window?

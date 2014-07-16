@@ -1,6 +1,7 @@
 # @cjsx React.DOM
 
-React = require("react")
+React = require("react/addons")
+cx = React.addons.classSet
 
 subscriptions = require("../../subscriptions")
 ContentFilter = require("../widgets/contentFilter")
@@ -15,20 +16,24 @@ Home = React.createClass
     mixins: [AsyncSubscriptionMixin]
     statics:
         subscriptions: (props) ->
-            people: subscriptions.WritingList(20, '/users/'+props.settings.ownerId+'/writing')
-            elements: subscriptions.List("/elements")
+            if type = props.matchedRoute.params.type
+                elements = subscriptions.ElementsByIndex("/types/"+type)
+            else
+                elements = subscriptions.List("/elements")
+            elements: elements
         getMetadata: (props) ->
             title: props.settings.siteTitle
             description: props.settings.siteDescription
     render: ->
+        elements = @subs("elements")
         <Body sidebar={true}>
             <ContentFilter />
             {
-                @subs("elements").map (element) ->
-                    Element = ContentComponents[element.type]
+                elements.map (element, index) ->
+                    Element = ContentComponents[element.type] || React.DOM.div
                     <div key={element.id}>
                         {Element(element, null)}
-                        <DynamicDivider />
+                        <DynamicDivider className={cx(hidden:(index+1 == elements.length))} />
                     </div>
             }
         </Body>

@@ -1,8 +1,13 @@
 # @cjsx React.DOM
 
-# daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-# A year is a leap year IF: 1) It's divisible by 4 and 2) It's not divisible by 100 unless 3) it's divisible by 400. 2000 was a leap year, 2100 won't be. You should probably get it working for simple division by 4 first, then add the extra rules.
+# A year is a leap year IF: 1) It's divisible by 4 and 2) 
+# It's not divisible by 100 unless 3) it's divisible by 400. 2000 was a leap year, 2100 won't be. 
+# You should probably get it working for simple division by 4 first, then add the extra rules.
+
+
+
 
 # ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][(new Date()).getDay()]
 
@@ -14,28 +19,30 @@
 # Tomorrow
 # Yesterday
 
-weekday = []
-weekday[0]=  "Sunday"
-weekday[1] = "Monday"
-weekday[2] = "Tuesday"
-weekday[3] = "Wednesday"
-weekday[4] = "Thursday"
-weekday[5] = "Friday"
-weekday[6] = "Saturday"
 
-month = []
-month[0] = "January"
-month[1] = "February"
-month[2] = "March"
-month[3] = "April"
-month[4] = "May"
-month[5] = "June"
-month[6] = "July"
-month[7] = "August"
-month[8] = "September"
-month[9] = "October"
-month[10] = "November"
-month[11] = "December"
+
+days = []
+days[0]=  "Sunday"
+days[1] = "Monday"
+days[2] = "Tuesday"
+days[3] = "Wednesday"
+days[4] = "Thursday"
+days[5] = "Friday"
+days[6] = "Saturday"
+
+months = []
+months[0] = "January"
+months[1] = "February"
+months[2] = "March"
+months[3] = "April"
+months[4] = "May"
+months[5] = "June"
+months[6] = "July"
+months[7] = "August"
+months[8] = "September"
+months[9] = "October"
+months[10] = "November"
+months[11] = "December"
 
 
 
@@ -50,10 +57,11 @@ Component = React.createClass
         year: today.getFullYear()
         month: today.getMonth()
         day: today.getDate()
+        hours: today.getHours()
         newValue: @props.default
         errors: []
     dateInWords: (date) ->
-        weekday[date.getDay()]+", "+month[date.getMonth()]+" "+date.getDate()+", "+date.getFullYear()
+        days[date.getDay()]+", "+months[date.getMonth()]+" "+date.getDate()+", "+date.getFullYear()
     handleBlur: -> 
         @save()
         @setState 
@@ -63,7 +71,9 @@ Component = React.createClass
             year: @refs.year.getDOMNode().value
             month: @refs.month.getDOMNode().value
             day: @refs.day.getDOMNode().value
-        state.newValue = (new Date(state.year, state.month, state.day)).getTime()
+            hours: @refs.hours.getDOMNode().value
+            minutes: @refs.minutes.getDOMNode().value
+        state.newValue = (new Date(state.year, state.month, state.day, state.hours)).getTime()
         # state.dateInWords = @dateInWords new Date(state.year, state.month, state.day)
         @props.onUpdate?([], state.newValue)
         @setState state
@@ -82,26 +92,49 @@ Component = React.createClass
         false if e?
     render: ->
         errors = @state.errors || []
+        monthLength = daysInMonth[@state.month]
+        currentYear = (new Date()).getFullYear()
+        if parseInt(@state.month) == 1
+            year = parseInt @state.year
+            if year % 2 == 0 and year % 4 == 0
+                if year % 100 != 0 or (year % 100 == 0 and year % 400 == 0)
+                    monthLength = 29
+
         @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
             
-            <div className="input-subgroup">
-                <label htmlFor="month">Month</label>
-                <select ref="month" onChange={@handleChange} value={@state.month}>
-                {
-                    month.map (month, index) =>
-                        <option value={index} key={index}>{month}</option>
-                }
-                </select>
+            <select ref="month" onChange={@handleChange} value={@state.month}>
+            {
+                months.map (month, index) =>
+                    <option value={index} key={index}>{month}</option>
+            }
+            </select>
 
-            </div>
-            <div className="input-subgroup">
-                <input onChange={@handleChange} ref="day" style={width:45} name="day" value={@state.day} />
-                <label htmlFor="day">Day</label>
-            </div>
-            <div className="input-subgroup">
-                <input onChange={@handleChange} ref="year" style={width:60} name="year" value={@state.year}/>
-            </div>
-            
+            <select ref="day" onChange={@handleChange} value={@state.day}>
+            {
+                [0..monthLength-1].map (index) =>
+                    <option value={index} key={index}>{index+1}</option>
+            }
+            </select>
+            <select ref="year" onChange={@handleChange} value={@state.year}>
+            {
+                [currentYear-10...currentYear+2].map (index) =>
+                    <option value={index} key={index}>{index}</option>
+            }
+            </select>
+        
+            <select ref="hours" onChange={@handleChange} value={@state.hours}>
+            {
+                [0..23].map (index) =>
+                    if index < 12
+                        hour = "#{index} am"
+                    else
+                        hour = "#{index-12} pm"
+                    if index == 0
+                        hour = "12 am"
+                    <option value={index} key={index}>{hour}</option>
+            }
+            </select>
+            <label>Date</label>
             <div className={"input-message"+(if errors.length > 0 and @state.dirty then " active" else "")}>
             {
                 errors.map (error, index) => 

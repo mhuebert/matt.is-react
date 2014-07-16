@@ -48,6 +48,23 @@ async = require("async")
         snapshotToArray(snapshot).reverse()
     default: _([])
 
+
+@ElementsByIndex = (indexPath, options={limit:50,offset:0}) ->
+
+  firebaseRelationalSubscription
+    indexRef: root.child(indexPath).limit(options.limit)
+    dataRef: root.child('/elements')
+    shouldUpdateSubscription: (oldProps, newProps) ->
+      oldProps.settings.ownerId != newProps.settings.ownerId
+    query: (ref, done) -> done(ref.limit(limit))
+    default: []
+    server: true
+    parseObject: (snapshot) ->
+        post = snapshot.val()
+        post.id = snapshot.name()
+        post
+    parseList: (list) -> list.reverse()
+
 @WritingList = (limit=50, indexPath) ->
 
   # Either load tagged posts or this user's posts, depending on the params
@@ -57,7 +74,6 @@ async = require("async")
   firebaseRelationalSubscription
     indexRef: root.child(indexPath).limit(limit)
     dataRef: root.child('/posts')
-    ref: root.child('/writing')
     shouldUpdateSubscription: (oldProps, newProps) ->
       oldProps.settings.ownerId != newProps.settings.ownerId
     query: (ref, done) -> done(ref.limit(limit))

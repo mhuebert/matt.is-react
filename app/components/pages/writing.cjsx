@@ -35,18 +35,12 @@ Component = React.createClass
                 title = "#"+tag
                 breadcrumb = ['tags', tag]
 
-        componentList = {
-            link: Link
-            a: React.DOM.a
-        }
-
         <Body sidebar={true} breadcrumb={['writing']}>
             <ContentFilter />
             <ul className="link-list">
                 {
                     @subs('writing').map( (post) ->
                         <li key={post.id} >
-                            {componentList["a"]({href:"/"+post.permalink}, post.title)} 
                             <a href={"/"+post.permalink}>{post.title}</a>
                             
                         </li>

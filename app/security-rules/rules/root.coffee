@@ -18,6 +18,9 @@ module.exports =
   elements:
     read: true
     write: isAdmin
+  types:
+    read: true
+    write: isAdmin
   tags:
     read: true
     users:

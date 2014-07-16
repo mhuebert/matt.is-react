@@ -8,7 +8,6 @@ NewTypes = require("../widgets/newTypes")
 
 contentForms = require("../content-types/forms")
 
-
 subscriptions = require("../../subscriptions")
 {SubscriptionAsyncMixin} = subscriptions
 

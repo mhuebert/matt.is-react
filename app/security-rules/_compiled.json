@@ -16,6 +16,10 @@
             ".read": true,
             ".write": "auth.id == '15538074'"
         },
+        "types": {
+            ".read": true,
+            ".write": "auth.id == '15538074'"
+        },
         "tags": {
             "users": {
                 "$user": {

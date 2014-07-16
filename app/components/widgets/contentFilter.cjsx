@@ -14,13 +14,14 @@ Component = React.createClass
 	getInitialState: -> {}
 	render: ->
 		links = [ 
-			['Feed', '/'], 
-			# ['Quotes', '/quotes'], 
-			['Images', '/images'], 
-			['Playlists', '/playlists'],
-			['Links', '/links'],
-			['Books', '/books'],
+			['Feed', '/']
 			['Writing', '/writing']
+			# ['Quotes', '/quotes'], 
+			['Images', '/type/image']
+			['Videos', '/type/video']
+			['Links', '/type/link']
+			['Books', '/type/book']
+			['Text', '/type/text']
 		]
 
 		@transferPropsTo <ul className="content-filter">

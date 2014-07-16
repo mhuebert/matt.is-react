@@ -1,0 +1,6 @@
+@book = require("./book")
+@text = require("./text")
+@image = require("./image")
+@link = require("./link")
+@video = require("./video")
+@person = require("./person")

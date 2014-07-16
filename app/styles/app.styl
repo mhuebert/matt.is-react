@@ -86,11 +86,13 @@ h3
         display inline-block
         margin-bottom -10px
         border-bottom 15px none transparent
+        margin-bottom 5px
         // transition(border-color, 0.25s, ease-out)
         // border-width 15px
         // border-style none
         // border-color transparent
         &.activeLink
+            margin-bottom -10px
             // border-bottom 15px solid #D0021B
             border-style solid
             text-decoration none
@@ -641,6 +643,7 @@ ul.writing-list
     display none !important
 
 .writingView
+    margin-right 40px
     // padding 15px
     hr
         background transparent
@@ -691,6 +694,7 @@ ul.writing-list
     width 610px
     padding 0 18px 0
     float left
+    margin-bottom 18px
     &:after
         content " "
         border-bottom 5px solid black
@@ -733,7 +737,7 @@ ul.writing-list
     .left-col
         padding 0 18px
     .right-col
-        padding 18px 0 0
+        padding 0
         margin 0 18px 18px
         line-height 17px
         li
@@ -820,6 +824,7 @@ form
     padding 0
     margin-bottom 17px
     position relative
+    background #fff
     &.input-inline
         display inline-block
         vertical-align top
@@ -833,11 +838,14 @@ form
         border 1px solid #ddd
         box-sizing border-box
         height 25px
-        font-size 13px
-        line-height 13px
+        font-size 12px
+        line-height 15px
         font-weight 500
-        margin 29px 10px 6px
-        // font-family helvetica
+        margin 27px 13px 8px 0
+        font-family helvetica
+        &:first-child
+            margin-left 11px
+
         &:active, &:focus
             border-color rgb(0, 199, 252)
             outline 0
@@ -880,7 +888,6 @@ form
         margin 0
         width 100%
         border none
-        background white
         padding 30px 10px 10px 
         background white
         font-family georgia
@@ -905,6 +912,11 @@ form
         border none
     select
         margin-left 0
+.input-single-action
+    margin 30px 10px 10px 10px
+    display block
+    height 22px
+    float left
 .single-purpose
     a
         display block
