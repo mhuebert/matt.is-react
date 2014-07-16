@@ -15,13 +15,11 @@ Component = React.createClass
 	render: ->
 		links = [ 
 			['Feed', '/']
-			['Writing', '/writing']
-			# ['Quotes', '/quotes'], 
+			['Text', '/type/text']
 			['Images', '/type/image']
 			['Videos', '/type/video']
 			['Links', '/type/link']
 			['Books', '/type/book']
-			['Text', '/type/text']
 		]
 
 		@transferPropsTo <ul className="content-filter">

@@ -400,13 +400,25 @@ module.exports = Component;
 
 
 },{"react":229}],12:[function(require,module,exports){
-var Component, React;
+var Component, React, cx;
 
-React = require("react");
+React = require("react/addons");
+
+cx = React.addons.classSet;
 
 Component = React.createClass({
   render: function() {
-    return React.DOM.div(null);
+    return React.DOM.div({
+      "className": "element-image"
+    }, React.DOM.p(null, this.props.title), React.DOM.img({
+      "className": cx({
+        hidden: !this.props.image
+      }),
+      "style": {
+        marginBottom: 18
+      },
+      "src": (this.props.image ? this.props.image + "/convert?w=500&h=500&fit=clip" : "")
+    }), React.DOM.p(null, this.props.body));
   }
 });
 
@@ -414,7 +426,7 @@ module.exports = Component;
 
 
 
-},{"react":229}],13:[function(require,module,exports){
+},{"react/addons":80}],13:[function(require,module,exports){
 this.text = require("./text");
 
 this.video = require("./video");
@@ -1850,6 +1862,9 @@ Home = React.createClass({
       } else {
         elements = subscriptions.List("/elements");
       }
+      elements.shouldUpdateSubscription = function(oldProps, newProps) {
+        return oldProps.matchedRoute.params.type !== newProps.matchedRoute.params.type;
+      };
       return {
         elements: elements
       };
@@ -2888,7 +2903,7 @@ Component = React.createClass({
   },
   render: function() {
     var links;
-    links = [['Feed', '/'], ['Writing', '/writing'], ['Images', '/type/image'], ['Videos', '/type/video'], ['Links', '/type/link'], ['Books', '/type/book'], ['Text', '/type/text']];
+    links = [['Feed', '/'], ['Text', '/type/text'], ['Images', '/type/image'], ['Videos', '/type/video'], ['Links', '/type/link'], ['Books', '/type/book']];
     return this.transferPropsTo(React.DOM.ul({
       "className": "content-filter"
     }, links.map((function(_this) {
@@ -4119,10 +4134,7 @@ this.ElementsByIndex = function(indexPath, options) {
     indexRef: root.child(indexPath).limit(options.limit),
     dataRef: root.child('/elements'),
     shouldUpdateSubscription: function(oldProps, newProps) {
-      return oldProps.settings.ownerId !== newProps.settings.ownerId;
-    },
-    query: function(ref, done) {
-      return done(ref.limit(limit));
+      return oldProps.matchedRoute.params.type !== newProps.matchedRoute.params.type;
     },
     "default": [],
     server: true,
@@ -4206,8 +4218,7 @@ this.AsyncSubscriptionMixin = {
     });
   },
   subscribe: function(props) {
-    var owner, path, subscription, _base, _ref2, _results;
-    owner = getRootComponent(this);
+    var path, subscription, _base, _ref2, _results;
     this.__subscriptions = {};
     _ref2 = typeof (_base = this.type).subscriptions === "function" ? _base.subscriptions(props) : void 0;
     _results = [];
@@ -4240,8 +4251,7 @@ this.AsyncSubscriptionMixin = {
     return this.unsubscribe();
   },
   componentWillReceiveProps: function(newProps) {
-    var newSubscriptions, owner, path, pathsToUpdate, subscription, _i, _len, _ref2, _results;
-    owner = getRootComponent(this);
+    var newSubscriptions, path, pathsToUpdate, subscription, _i, _len, _ref2, _results;
     pathsToUpdate = [];
     _ref2 = this.__subscriptions;
     for (path in _ref2) {
@@ -4257,7 +4267,7 @@ this.AsyncSubscriptionMixin = {
         path = pathsToUpdate[_i];
         this.__subscriptions[path].unsubscribe();
         this.__subscriptions[path] = newSubscriptions[path];
-        _results.push(this.__subscriptions[path].subscribe(setSubscriptionStateCallback(owner, path)));
+        _results.push(this.__subscriptions[path].subscribe(setSubscriptionStateCallback(this, path)));
       }
       return _results;
     }

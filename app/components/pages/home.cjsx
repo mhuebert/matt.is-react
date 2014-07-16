@@ -20,6 +20,8 @@ Home = React.createClass
                 elements = subscriptions.ElementsByIndex("/types/"+type)
             else
                 elements = subscriptions.List("/elements")
+            elements.shouldUpdateSubscription = (oldProps, newProps) ->
+                oldProps.matchedRoute.params.type != newProps.matchedRoute.params.type
             elements: elements
         getMetadata: (props) ->
             title: props.settings.siteTitle

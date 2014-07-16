@@ -12,12 +12,6 @@ _ = require("underscore")
 server = IndexServer
   ref: root
   indexes:[
-    type: "oneToMany"
-    sourcePath: "/elements/"
-    sourceAttribute: "people"
-    indexPath: "/people/"
-    keyTransform: (key) -> slugify(key)
-  ,
     type: "oneToOne"
     sourcePath: "/elements/"
     sourceAttribute: "type"
@@ -27,7 +21,14 @@ server = IndexServer
     type: "oneToMany"
     sourcePath: "/elements/"
     sourceAttribute: "topics"
-    indexPath: "/topics/"
+    indexPath: "/related/topics/"
+    keyTransform: (key) -> types[key] || key
+    priority: (snap) -> snap.child("date").val()
+  ,
+    type: "oneToMany"
+    sourcePath: "/elements/"
+    sourceAttribute: "people"
+    indexPath: "/related/people/"
     keyTransform: (key) -> types[key] || key
     priority: (snap) -> snap.child("date").val()
 

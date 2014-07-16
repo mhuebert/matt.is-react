@@ -13,7 +13,8 @@ async = require("async")
   firebaseSubscription
     ref: root.child(path)
     server: true
-    parse: (snapshot) -> snapshotToArray(snapshot).reverse()
+    parse: (snapshot) -> 
+        snapshotToArray(snapshot).reverse()
     default: []
 @Themes = ->
   firebaseSubscription
@@ -55,8 +56,7 @@ async = require("async")
     indexRef: root.child(indexPath).limit(options.limit)
     dataRef: root.child('/elements')
     shouldUpdateSubscription: (oldProps, newProps) ->
-      oldProps.settings.ownerId != newProps.settings.ownerId
-    query: (ref, done) -> done(ref.limit(limit))
+      oldProps.matchedRoute.params.type != newProps.matchedRoute.params.type
     default: []
     server: true
     parseObject: (snapshot) ->
@@ -118,7 +118,6 @@ ReactAsync = require('react-async')
     async.parallel tasks, (err, results) ->
       cb(null, results)
   subscribe: (props) ->
-    owner = getRootComponent(this)
     @__subscriptions = {}
     for path, subscription of @type.subscriptions?(props)
       do (path, subscription) =>
@@ -133,7 +132,6 @@ ReactAsync = require('react-async')
   componentWillUnmount: ->
     @unsubscribe()
   componentWillReceiveProps: (newProps) ->
-    owner = getRootComponent(this)
     pathsToUpdate = []
     
     for path, subscription of @__subscriptions
@@ -148,5 +146,5 @@ ReactAsync = require('react-async')
       for path in pathsToUpdate
         @__subscriptions[path].unsubscribe()
         @__subscriptions[path] = newSubscriptions[path]
-        @__subscriptions[path].subscribe setSubscriptionStateCallback(owner, path)
+        @__subscriptions[path].subscribe setSubscriptionStateCallback(this, path)
       # , 50
