@@ -472,7 +472,10 @@ module.exports = Component;
 
 
 },{"react":229}],16:[function(require,module,exports){
-var Component, React, cx, marked;
+var Component, React, cx, marked, _,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+_ = require("underscore");
 
 marked = require("marked");
 
@@ -491,7 +494,28 @@ React = require("react/addons");
 cx = React.addons.classSet;
 
 Component = React.createClass({
+  getInitialState: function() {
+    return {
+      showMore: false
+    };
+  },
+  maybeShowMore: function(e) {
+    if (__indexOf.call(e.target.classList, "show-more-trigger") >= 0) {
+      return this.setState({
+        showMore: true
+      });
+    }
+  },
   render: function() {
+    var body, multiple;
+    body = (this.props.body || "").split(/[\s\n\r]*?<break\s*?\/>\s?/m);
+    if (body[1] != null) {
+      multiple = true;
+      body[0] = body[0] + " <a class='show-more-trigger' href='#'>Read More...</a>";
+      body[1] = "<div class='part-two'>" + marked(body[1]) + "</div>";
+    }
+    body[0] = marked(body[0]);
+    body = body.join("");
     return React.DOM.div({
       "className": "element-text"
     }, React.DOM.h2(null, this.props.title), React.DOM.img({
@@ -503,9 +527,13 @@ Component = React.createClass({
       },
       "src": (this.props.image ? this.props.image + "/convert?w=500&h=500&fit=clip" : "")
     }), React.DOM.div({
-      "className": "text-body",
+      "onClick": this.maybeShowMore,
+      "className": cx({
+        "text-body": true,
+        "show-more": this.state.showMore
+      }),
       "dangerouslySetInnerHTML": {
-        __html: marked(this.props.body || "")
+        __html: body
       }
     }));
   }
@@ -515,7 +543,7 @@ module.exports = Component;
 
 
 
-},{"marked":70,"react/addons":80}],17:[function(require,module,exports){
+},{"marked":70,"react/addons":80,"underscore":238}],17:[function(require,module,exports){
 var Component, React;
 
 React = require("react");
@@ -894,7 +922,8 @@ Component = React.createClass({
     return {
       hovering: false,
       message: "",
-      errors: []
+      errors: [],
+      newValue: null
     };
   },
   save: function(e) {

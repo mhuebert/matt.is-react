@@ -50,6 +50,7 @@ Component = React.createClass
         hovering: false
         message: ""
         errors: []
+        newValue: null
 
     save: (e) ->
         @setState errors: @validate()
