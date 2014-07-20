@@ -23,4 +23,4 @@
     @setState focus: true
 
 @componentDidMount = ->
-    @props.onUpdate?(@validate(), @state.newValue)
+    @props.onUpdate?(@validate(), (@state.newValue||null))

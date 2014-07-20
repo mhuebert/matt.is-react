@@ -3,5 +3,5 @@
 @selectLabels = require("./selectLabels")
 @text = require("./text")
 @validators = require("./validators")
-@mixin = require("./mixin")
+@FieldMixin = require("./mixin-field")
 @form = require("./form")

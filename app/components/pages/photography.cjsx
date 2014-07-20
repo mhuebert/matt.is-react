@@ -4,7 +4,7 @@ React = require("react")
 Body = require("../body")
 
 {SubscriptionMixin} = require("sparkboard-tools")
-{PhotoList} = require("../../subscriptions")
+subscriptions = require("../../subscriptions")
 {Collection} = require("../../models")
 
 
@@ -13,7 +13,7 @@ Component = React.createClass
     mixins: [SubscriptionMixin]
     statics:
         subscriptions: ->
-            photos: PhotoList()
+            photos: subscriptions.List("/photos", limit:500)
         getMetadata: ->
             title: "Photography | Matt.is"
             description: "To see, or not to see."

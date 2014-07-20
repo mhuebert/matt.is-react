@@ -6,7 +6,7 @@ React = require("react")
 Body = require("../widgets/body")
 {FIREBASE_URL} = require("../../firebase")
 
-Text = require("../form/text")
+Text = require("../form-elements/text")
 
 Component = React.createClass
 

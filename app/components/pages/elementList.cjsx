@@ -7,19 +7,21 @@ subscriptions = require("../../subscriptions")
 ContentFilter = require("../widgets/contentFilter")
 Body = require("../widgets/body")
 {AsyncSubscriptionMixin} = subscriptions
-ContentComponents = require("../content-types/index")
+ContentComponents = require("../element-views/index")
 DynamicDivider = require("../widgets/dynamicDivider")
 
 
 
 Home = React.createClass
     mixins: [AsyncSubscriptionMixin]
+    componentDidMount: ->
+        window.scrollTo(0,0)
     statics:
         subscriptions: (props) ->
             if type = props.matchedRoute.params.type
                 elements = subscriptions.ElementsByIndex("/types/"+type)
             else
-                elements = subscriptions.List("/elements")
+                elements = subscriptions.List("/elements", sort: "reverse")
             elements.shouldUpdateSubscription = (oldProps, newProps) ->
                 oldProps.matchedRoute.params.type != newProps.matchedRoute.params.type
             elements: elements
@@ -33,8 +35,10 @@ Home = React.createClass
             {
                 elements.map (element, index) ->
                     Element = ContentComponents[element.type] || React.DOM.div
-                    <div key={element.id}>
-                        {Element(element, null)}
+
+                    <div key={element.id} className={"element-container element-#{element.type}"}>
+                        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser">Edit</a>
+                        {Element({element: element}, null)}
                         <DynamicDivider className={cx(hidden:(index+1 == elements.length))} />
                     </div>
             }

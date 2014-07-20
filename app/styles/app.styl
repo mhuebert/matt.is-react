@@ -795,7 +795,7 @@ form
     &:last-child
         border-right none
 .input-group-select
-    background white
+
     .select-label
         background #eee
         border-radius(13px)
@@ -804,13 +804,15 @@ form
         font-weight 500
         padding 2px 10px
         display inline-block
-        margin 29px 0 8px 10px
+        margin 10px 10px 8px 0
         box-sizing border-box
         line-height 19px
         color black
+        &:first-child
+            margin-left 11px
         &.lastChild
             margin-right 10px
-        &:hover
+        &a:hover
             cursor pointer
             text-decoration underline
         &.selected
@@ -825,6 +827,9 @@ form
     margin-bottom 17px
     position relative
     background #fff
+    &.input-group-select
+        background white
+        padding 19px 0 0 0
     &.input-inline
         display inline-block
         vertical-align top
@@ -841,7 +846,7 @@ form
         font-size 12px
         line-height 15px
         font-weight 500
-        margin 27px 13px 8px 0
+        margin 8px 13px 8px 0
         font-family helvetica
         &:first-child
             margin-left 11px
@@ -948,3 +953,18 @@ form
             display block
         .show-more-trigger
             display none
+.edit-content
+    color #777
+    text-transform lowercase
+    font-style italic
+    line-height 36px
+    position relative
+    z-index 1
+.element, .element-container
+    position relative
+.element-title, .element-title:visited
+    color black
+a.element-permalink
+    color #999
+.element-text .element-permalink
+    line-height 36px

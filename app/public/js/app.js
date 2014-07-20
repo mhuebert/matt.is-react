@@ -157,26 +157,14 @@ module.exports = Component;
 
 
 },{"./widgets/dynamicLoader":48,"./widgets/nav":53,"react":229}],4:[function(require,module,exports){
-var Component, React;
+var Component, FormMixin, React;
 
 React = require("react");
 
-Component = React.createClass({
-  render: function() {
-    return React.DOM.div(null);
-  }
-});
-
-module.exports = Component;
-
-
-
-},{"react":229}],5:[function(require,module,exports){
-var Component, React;
-
-React = require("react");
+FormMixin = require("../form-elements/mixin-form");
 
 Component = React.createClass({
+  mixins: [FormMixin],
   render: function() {
     return React.DOM.div(null, "BookForm");
   }
@@ -186,14 +174,53 @@ module.exports = Component;
 
 
 
-},{"react":229}],6:[function(require,module,exports){
-var Component, React;
+},{"../form-elements/mixin-form":21,"react":229}],5:[function(require,module,exports){
+var Component, DateField, FormMixin, ImageUpload, React, Text, cx;
 
-React = require("react");
+React = require("react/addons");
+
+cx = React.addons.classSet;
+
+Text = require("../form-elements/text");
+
+ImageUpload = require("../form-elements/imageUpload");
+
+DateField = require("../form-elements/date");
+
+FormMixin = require("../form-elements/mixin-form");
 
 Component = React.createClass({
+  mixins: [FormMixin],
+  defaults: {
+    type: "image"
+  },
   render: function() {
-    return React.DOM.div(null, "ImageForm");
+    var ref;
+    ref = this.ref();
+    return React.DOM.div(null, Text({
+      "label": "text (above)",
+      "onUpdate": this.update("title"),
+      "className": "bare",
+      "fireRef": (ref ? ref.child("title").toString() : void 0)
+    }), ImageUpload({
+      "onUpdate": this.update("image"),
+      "fireRef": (ref ? ref.child("image").toString() : void 0)
+    }), Text({
+      "label": "text (below)",
+      "onUpdate": this.update("body"),
+      "type": "textarea",
+      "fireRef": (ref ? ref.child("body").toString() : void 0),
+      "className": "bare"
+    }), React.DOM.p({
+      "className": cx({
+        hidden: ref != null
+      })
+    }, React.DOM.input({
+      "onClick": this.create,
+      "type": "submit",
+      "className": "btn btn-large btn-white",
+      "value": "Create"
+    })));
   }
 });
 
@@ -201,7 +228,7 @@ module.exports = Component;
 
 
 
-},{"react":229}],7:[function(require,module,exports){
+},{"../form-elements/date":18,"../form-elements/imageUpload":19,"../form-elements/mixin-form":21,"../form-elements/text":24,"react/addons":80}],6:[function(require,module,exports){
 this.book = require("./book");
 
 this.text = require("./text");
@@ -216,12 +243,15 @@ this.person = require("./person");
 
 
 
-},{"./book":5,"./image":6,"./link":8,"./person":9,"./text":10,"./video":11}],8:[function(require,module,exports){
-var Component, React;
+},{"./book":4,"./image":5,"./link":7,"./person":8,"./text":9,"./video":10}],7:[function(require,module,exports){
+var Component, FormMixin, React;
 
 React = require("react");
 
+FormMixin = require("../form-elements/mixin-form");
+
 Component = React.createClass({
+  mixins: [FormMixin],
   render: function() {
     return React.DOM.div(null, "LinkForm");
   }
@@ -231,14 +261,51 @@ module.exports = Component;
 
 
 
-},{"react":229}],9:[function(require,module,exports){
-var Component, React;
+},{"../form-elements/mixin-form":21,"react":229}],8:[function(require,module,exports){
+var Component, DateField, FormMixin, ImageUpload, React, Text, cx;
 
-React = require("react");
+React = require("react/addons");
+
+cx = React.addons.classSet;
+
+Text = require("../form-elements/text");
+
+ImageUpload = require("../form-elements/imageUpload");
+
+DateField = require("../form-elements/date");
+
+FormMixin = require("../form-elements/mixin-form");
 
 Component = React.createClass({
+  mixins: [FormMixin],
+  defaults: {
+    type: "person"
+  },
   render: function() {
-    return React.DOM.div(null, "PersonForm");
+    var ref;
+    ref = this.ref();
+    return React.DOM.div(null, Text({
+      "label": "Name",
+      "onUpdate": this.update("title"),
+      "fireRef": (ref ? ref.child("title").toString() : void 0)
+    }), ImageUpload({
+      "onUpdate": this.update("image"),
+      "fireRef": (ref ? ref.child("image").toString() : void 0)
+    }), Text({
+      "label": "Intro",
+      "onUpdate": this.update("body"),
+      "type": "textarea",
+      "fireRef": (ref ? ref.child("body").toString() : void 0)
+    }), React.DOM.p({
+      "className": cx({
+        hidden: ref != null
+      })
+    }, React.DOM.input({
+      "onClick": this.create,
+      "type": "submit",
+      "className": "btn btn-large btn-white",
+      "value": "Create"
+    })));
   }
 });
 
@@ -246,87 +313,57 @@ module.exports = Component;
 
 
 
-},{"react":229}],10:[function(require,module,exports){
-var Component, Computed, DateField, FIREBASE_URL, Form, ImageUpload, React, SelectByLabels, Text, cx, v, _;
+},{"../form-elements/date":18,"../form-elements/imageUpload":19,"../form-elements/mixin-form":21,"../form-elements/text":24,"react/addons":80}],9:[function(require,module,exports){
+var AsyncSubscriptionMixin, Component, DateField, FIREBASE_URL, Firebase, FormMixin, ImageUpload, React, SelectByLabels, SelectMultipleLabels, Text, cx, subscriptions, v, _, _ref;
 
 React = require("react/addons");
 
 cx = React.addons.classSet;
 
-FIREBASE_URL = require("../../../firebase").FIREBASE_URL;
+_ref = require("../../firebase"), FIREBASE_URL = _ref.FIREBASE_URL, Firebase = _ref.Firebase;
 
-Form = require("../../form/form");
+FormMixin = require("../form-elements/mixin-form");
 
-Text = require("../../form/text");
+Text = require("../form-elements/text");
 
-DateField = require("../../form/date");
+DateField = require("../form-elements/date");
 
-ImageUpload = require("../../form/imageUpload");
+ImageUpload = require("../form-elements/imageUpload");
 
-SelectByLabels = require("../../form/selectLabels");
+SelectMultipleLabels = require("../form-elements/selectMultipleLabels");
 
-Computed = require("../../form/computed");
+SelectByLabels = require("../form-elements/selectLabels");
 
-v = require("../../form/validators");
+v = require("../form-elements/validators");
 
 _ = require("underscore");
 
+subscriptions = require("../../subscriptions");
+
+AsyncSubscriptionMixin = subscriptions.AsyncSubscriptionMixin;
+
 Component = React.createClass({
-  getInitialState: function() {
-    return {
-      data: {
-        type: "text"
-      },
-      errors: {},
-      fireRef: this.props.fireRef
-    };
-  },
-  update: function(name) {
-    return (function(_this) {
-      return function(err, value) {
-        var data, errors;
-        data = _this.state.data;
-        data[name] = value;
-        errors = _this.state.errors;
-        errors[name] = err;
-        return _this.setState({
-          data: data,
-          errors: errors
-        });
+  mixins: [AsyncSubscriptionMixin, FormMixin],
+  statics: {
+    subscriptions: function(props) {
+      var subs;
+      subs = {
+        people: subscriptions.List("/people", {
+          sort: "a-z"
+        })
       };
-    })(this);
-  },
-  errorCount: function() {
-    var count, errorObject, name, _ref;
-    count = 0;
-    _ref = this.state.errors;
-    for (name in _ref) {
-      errorObject = _ref[name];
-      if (_(errorObject).keys().length > 0) {
-        count += 1;
-      }
+      return subs;
     }
-    return count;
   },
-  create: function() {
-    var id, obj, ref;
-    if (this.errorCount() === 0) {
-      ref = new Firebase(FIREBASE_URL);
-      ref = ref.child("elements").push();
-      id = ref.name();
-      obj = this.state.data;
-      obj.owner = user.id;
-      ref.setWithPriority(obj, obj.date);
-      return this.setState({
-        fireRef: ref
-      });
-    }
+  defaults: function() {
+    return {
+      type: "text"
+    };
   },
   render: function() {
     var ref;
-    ref = this.state.fireRef;
-    return Form({
-      "payload": this.state.data,
+    ref = this.ref();
+    return React.DOM.form({
       "className": "barex"
     }, Text({
       "label": "Title",
@@ -367,6 +404,12 @@ Component = React.createClass({
     }), ImageUpload({
       "onUpdate": this.update("image"),
       "fireRef": (ref ? ref.child("image").toString() : void 0)
+    }), SelectMultipleLabels({
+      "label": "Related People",
+      "onUpdate": this.update("people"),
+      "options": this.subs("people").map(function(person) {
+        return [person.id, person.name];
+      })
     }), React.DOM.p(null, "People"), React.DOM.p(null, "Topics"), React.DOM.p(null, "Author"), React.DOM.p({
       "className": cx({
         hidden: ref != null
@@ -384,14 +427,32 @@ module.exports = Component;
 
 
 
-},{"../../../firebase":60,"../../form/computed":18,"../../form/date":19,"../../form/form":20,"../../form/imageUpload":21,"../../form/selectLabels":23,"../../form/text":24,"../../form/validators":25,"react/addons":80,"underscore":238}],11:[function(require,module,exports){
+},{"../../firebase":60,"../../subscriptions":65,"../form-elements/date":18,"../form-elements/imageUpload":19,"../form-elements/mixin-form":21,"../form-elements/selectLabels":22,"../form-elements/selectMultipleLabels":23,"../form-elements/text":24,"../form-elements/validators":25,"react/addons":80,"underscore":238}],10:[function(require,module,exports){
+var Component, FormMixin, React;
+
+React = require("react");
+
+FormMixin = require("../form-elements/mixin-form");
+
+Component = React.createClass({
+  mixins: [FormMixin],
+  render: function() {
+    return React.DOM.div(null, "Video Form");
+  }
+});
+
+module.exports = Component;
+
+
+
+},{"../form-elements/mixin-form":21,"react":229}],11:[function(require,module,exports){
 var Component, React;
 
 React = require("react");
 
 Component = React.createClass({
   render: function() {
-    return React.DOM.div(null, "Video Form");
+    return React.DOM.div(null);
   }
 });
 
@@ -408,17 +469,21 @@ cx = React.addons.classSet;
 
 Component = React.createClass({
   render: function() {
+    var element;
+    element = this.props.element;
     return React.DOM.div({
       "className": "element-image"
-    }, React.DOM.p(null, this.props.title), React.DOM.img({
+    }, React.DOM.p(null, element.title), React.DOM.a({
+      "href": "/" + element.type + "/" + element.id
+    }, React.DOM.img({
       "className": cx({
-        hidden: !this.props.image
+        hidden: !element.image
       }),
       "style": {
         marginBottom: 18
       },
-      "src": (this.props.image ? this.props.image + "/convert?w=500&h=500&fit=clip" : "")
-    }), React.DOM.p(null, this.props.body));
+      "src": (element.image ? element.image + "/convert?w=500&h=500&fit=clip" : "")
+    })), React.DOM.p(null, element.body));
   }
 });
 
@@ -441,7 +506,7 @@ this.person = require("./person");
 
 
 
-},{"./book":4,"./image":12,"./link":14,"./person":15,"./text":16,"./video":17}],14:[function(require,module,exports){
+},{"./book":11,"./image":12,"./link":14,"./person":15,"./text":16,"./video":17}],14:[function(require,module,exports){
 var Component, React;
 
 React = require("react");
@@ -457,13 +522,29 @@ module.exports = Component;
 
 
 },{"react":229}],15:[function(require,module,exports){
-var Component, React;
+var Component, React, cx;
 
-React = require("react");
+React = require("react/addons");
+
+cx = React.addons.classSet;
 
 Component = React.createClass({
   render: function() {
-    return React.DOM.div(null);
+    var element;
+    element = this.props.element;
+    return React.DOM.div({
+      "className": "element-image"
+    }, React.DOM.p(null, element.title), React.DOM.a({
+      "href": "/" + element.type + "/" + element.id
+    }, React.DOM.img({
+      "className": cx({
+        hidden: !element.image
+      }),
+      "style": {
+        marginBottom: 18
+      },
+      "src": (element.image ? element.image + "/convert?w=500&h=500&fit=clip" : "")
+    })), React.DOM.p(null, element.body));
   }
 });
 
@@ -471,7 +552,7 @@ module.exports = Component;
 
 
 
-},{"react":229}],16:[function(require,module,exports){
+},{"react/addons":80}],16:[function(require,module,exports){
 var Component, React, cx, marked, _,
   __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -496,19 +577,20 @@ cx = React.addons.classSet;
 Component = React.createClass({
   getInitialState: function() {
     return {
-      showMore: false
+      showAll: this.props.showAll || false
     };
   },
-  maybeShowMore: function(e) {
+  maybeshowAll: function(e) {
     if (__indexOf.call(e.target.classList, "show-more-trigger") >= 0) {
       return this.setState({
-        showMore: true
+        showAll: true
       });
     }
   },
   render: function() {
-    var body, multiple;
-    body = (this.props.body || "").split(/[\s\n\r]*?<break\s*?\/>\s?/m);
+    var body, date, element, multiple, readableDate;
+    element = this.props.element;
+    body = (element.body || "").split(/[\s\n\r]*?<break\s*?\/>\s?/m);
     if (body[1] != null) {
       multiple = true;
       body[0] = body[0] + " <a class='show-more-trigger' href='#'>Read More...</a>";
@@ -516,21 +598,25 @@ Component = React.createClass({
     }
     body[0] = marked(body[0]);
     body = body.join("");
+    date = new Date(element.date);
+    readableDate = "" + (date.getFullYear()) + "/" + (date.getMonth()) + "/" + (date.getDate());
     return React.DOM.div({
-      "className": "element-text"
-    }, React.DOM.h2(null, this.props.title), React.DOM.img({
+      "className": "element element-text"
+    }, React.DOM.h2(null, React.DOM.a({
+      "href": "/" + element.type + "/" + element.id
+    }, element.title)), React.DOM.img({
       "className": cx({
-        hidden: !this.props.image
+        hidden: !element.image
       }),
       "style": {
         marginBottom: 18
       },
-      "src": (this.props.image ? this.props.image + "/convert?w=500&h=500&fit=clip" : "")
+      "src": (element.image ? element.image + "/convert?w=500&h=500&fit=clip" : "")
     }), React.DOM.div({
-      "onClick": this.maybeShowMore,
+      "onClick": this.maybeshowAll,
       "className": cx({
         "text-body": true,
-        "show-more": this.state.showMore
+        "show-more": this.state.showAll
       }),
       "dangerouslySetInnerHTML": {
         __html: body
@@ -559,22 +645,7 @@ module.exports = Component;
 
 
 },{"react":229}],18:[function(require,module,exports){
-var Component, React;
-
-React = require("react");
-
-Component = React.createClass({
-  render: function() {
-    return React.DOM.div(null);
-  }
-});
-
-module.exports = Component;
-
-
-
-},{"react":229}],19:[function(require,module,exports){
-var Component, FormFieldMixin, React, cx, days, daysInMonth, months;
+var Component, FieldMixin, React, cx, days, daysInMonth, months;
 
 daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -624,10 +695,10 @@ React = require("react/addons");
 
 cx = React.addons.classSet;
 
-FormFieldMixin = require("./mixin");
+FieldMixin = require("./mixin-field");
 
 Component = React.createClass({
-  mixins: [FormFieldMixin],
+  mixins: [FieldMixin],
   getInitialState: function() {
     var today;
     today = new Date();
@@ -706,7 +777,8 @@ Component = React.createClass({
       "className": cx({
         focus: this.state.focus,
         'input-group': true,
-        'input-inline': true
+        'input-inline': true,
+        'input-group-select': true
       }),
       "onFocus": this.handleFocus,
       "onBlur": this.handleBlur
@@ -806,40 +878,20 @@ module.exports = Component;
 
 
 
-},{"./mixin":22,"react/addons":80}],20:[function(require,module,exports){
-var Component, React;
-
-React = require("react");
-
-Component = React.createClass({
-  getDefaultProps: function() {
-    return {
-      payload: {}
-    };
-  },
-  handleSubmit: function(e) {
-    console.log(this.props.payload);
-    return e.preventDefault();
-  },
-  render: function() {
-    return this.transferPropsTo(React.DOM.form({
-      "onSubmit": this.handleSubmit
-    }, this.props.children));
-  }
-});
-
-module.exports = Component;
-
-
-
-},{"react":229}],21:[function(require,module,exports){
-var Component, FormFieldMixin, React, cx, saveBlob;
+},{"./mixin-field":20,"react/addons":80}],19:[function(require,module,exports){
+var AsyncSubscriptionMixin, Component, Firebase, FormFieldMixin, React, cx, firebaseSubscription, saveBlob;
 
 React = require("react/addons");
 
 cx = React.addons.classSet;
 
-FormFieldMixin = require("./mixin");
+FormFieldMixin = require("./mixin-field");
+
+Firebase = require("../../firebase").Firebase;
+
+AsyncSubscriptionMixin = require("../../subscriptions").AsyncSubscriptionMixin;
+
+firebaseSubscription = require("../../firebaseSubscription");
 
 saveBlob = function(blob, ref) {
   var url;
@@ -849,7 +901,23 @@ saveBlob = function(blob, ref) {
 };
 
 Component = React.createClass({
-  mixins: [FormFieldMixin],
+  mixins: [AsyncSubscriptionMixin, FormFieldMixin],
+  statics: {
+    subscriptions: function(props) {
+      if (!props.fireRef) {
+        return {};
+      }
+      return {
+        value: firebaseSubscription({
+          ref: new Firebase(props.fireRef),
+          parse: function(snapshot) {
+            return snapshot.val();
+          },
+          "default": null
+        })
+      };
+    }
+  },
   upload: function(e) {
     e.preventDefault();
     return filepicker.pick({
@@ -873,6 +941,12 @@ Component = React.createClass({
   },
   componentDidMount: function(e) {
     var element;
+    this.setState({
+      hovering: false,
+      message: "",
+      errors: [],
+      newValue: null
+    });
     element = this.getDOMNode();
     return filepicker.makeDropPane(element, {
       multiple: false,
@@ -918,14 +992,6 @@ Component = React.createClass({
       })(this)
     });
   },
-  getInitialState: function() {
-    return {
-      hovering: false,
-      message: "",
-      errors: [],
-      newValue: null
-    };
-  },
   save: function(e) {
     var ref, _base;
     this.setState({
@@ -966,9 +1032,9 @@ Component = React.createClass({
     }, React.DOM.label(null, "Image"), React.DOM.img({
       "style": {
         float: 'right',
-        margin: '20px 10px 0 10px'
+        margin: '0 0 0 10px'
       },
-      "src": (image ? image + "/convert?w=30&h=30&fit=clip" : "")
+      "src": (image ? image + "/convert?h=64&fit=clip" : "")
     }), React.DOM.a({
       "onClick": this.upload,
       "className": "input-single-action"
@@ -980,7 +1046,7 @@ module.exports = Component;
 
 
 
-},{"./mixin":22,"react/addons":80}],22:[function(require,module,exports){
+},{"../../firebase":60,"../../firebaseSubscription":61,"../../subscriptions":65,"./mixin-field":20,"react/addons":80}],20:[function(require,module,exports){
 this.validate = function(value) {
   var error, errors, validation, _i, _len, _ref;
   value = value || this.state.newValue;
@@ -1022,19 +1088,85 @@ this.handleFocus = function() {
 
 this.componentDidMount = function() {
   var _base;
-  return typeof (_base = this.props).onUpdate === "function" ? _base.onUpdate(this.validate(), this.state.newValue) : void 0;
+  return typeof (_base = this.props).onUpdate === "function" ? _base.onUpdate(this.validate(), this.state.newValue || null) : void 0;
 };
 
 
 
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
+var FIREBASE_URL, Firebase, _ref;
+
+_ref = require("../../firebase"), FIREBASE_URL = _ref.FIREBASE_URL, Firebase = _ref.Firebase;
+
+this.getInitialState = function() {
+  return {};
+};
+
+this.update = function(name) {
+  return (function(_this) {
+    return function(err, value) {
+      var data, errors;
+      data = _this.state.data || {};
+      data[name] = value;
+      errors = _this.state.errors || {};
+      errors[name] = err;
+      return _this.setState({
+        data: data,
+        errors: errors
+      });
+    };
+  })(this);
+};
+
+this.errorCount = function() {
+  var count, errorObject, name, _ref1;
+  count = 0;
+  _ref1 = this.state.errors;
+  for (name in _ref1) {
+    errorObject = _ref1[name];
+    if (_(errorObject).keys().length > 0) {
+      count += 1;
+    }
+  }
+  return count;
+};
+
+this.create = function() {
+  var defaults, id, obj, ref;
+  if (this.errorCount() === 0) {
+    ref = new Firebase(FIREBASE_URL);
+    ref = ref.child("elements").push();
+    id = ref.name();
+    obj = {
+      date: (new Date()).getTime()
+    };
+    if (defaults = (typeof this.defaults === "function" ? this.defaults() : void 0) || this.defaults) {
+      _.extend(obj, defaults);
+    }
+    _.extend(obj, this.state.data);
+    obj.owner = user.id;
+    return ref.setWithPriority(obj, obj.date);
+  }
+};
+
+this.ref = function() {
+  if (this.props.id) {
+    return new Firebase(FIREBASE_URL + ("/elements/" + this.props.id));
+  } else {
+    return null;
+  }
+};
+
+
+
+},{"../../firebase":60}],22:[function(require,module,exports){
 var Component, FormFieldMixin, React, cx;
 
 React = require("react/addons");
 
 cx = React.addons.classSet;
 
-FormFieldMixin = require("./mixin");
+FormFieldMixin = require("./mixin-field");
 
 Component = React.createClass({
   mixins: [FormFieldMixin],
@@ -1071,7 +1203,7 @@ Component = React.createClass({
         'input-group': true,
         'input-group-select': true
       })
-    }, React.DOM.label(null, this.props.label), this.props.options.map((function(_this) {
+    }, this.props.options.map((function(_this) {
       return function(option, index) {
         return React.DOM.a({
           "href": "#",
@@ -1084,7 +1216,7 @@ Component = React.createClass({
           })
         }, option.name);
       };
-    })(this)), React.DOM.div({
+    })(this)), React.DOM.label(null, this.props.label), React.DOM.div({
       "className": "input-message" + (errors.length > 0 && this.state.dirty ? " active" : "")
     }, errors.map((function(_this) {
       return function(error, index) {
@@ -1103,7 +1235,113 @@ module.exports = Component;
 
 
 
-},{"./mixin":22,"react/addons":80}],24:[function(require,module,exports){
+},{"./mixin-field":20,"react/addons":80}],23:[function(require,module,exports){
+var Component, FormFieldMixin, React, cx, _,
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+React = require("react/addons");
+
+cx = React.addons.classSet;
+
+FormFieldMixin = require("./mixin-field");
+
+_ = require("underscore");
+
+Component = React.createClass({
+  mixins: [FormFieldMixin],
+  getInitialState: function() {
+    return {
+      newValue: this.props.value || this.props["default"] || [],
+      value: null
+    };
+  },
+  handleChange: function(e) {
+    var value, _base;
+    if (e.target.value === "null") {
+      return;
+    }
+    value = this.state.newValue;
+    value.push(e.target.value);
+    value = _(value).uniq();
+    this.setState({
+      newValue: value,
+      value: null
+    });
+    if (typeof (_base = this.props).onUpdate === "function") {
+      _base.onUpdate([], value);
+    }
+    return false;
+  },
+  save: function(e) {
+    if (e != null) {
+      return false;
+    }
+  },
+  render: function() {
+    var availableOptions, errors, getOptionByValue, options;
+    errors = this.state.errors || [];
+    options = [["null", "Add..."]].concat(this.props.options);
+    availableOptions = _.filter(options, (function(_this) {
+      return function(option) {
+        var _ref;
+        return _ref = option[0], __indexOf.call(_this.state.newValue, _ref) < 0;
+      };
+    })(this));
+    getOptionByValue = function(value) {
+      var option, _i, _len;
+      for (_i = 0, _len = options.length; _i < _len; _i++) {
+        option = options[_i];
+        console.log("" + option[0] + " - " + option[1]);
+        if (option[0] === value) {
+          return option[1];
+        }
+      }
+    };
+    return this.transferPropsTo(React.DOM.div({
+      "className": cx({
+        'input-group': true,
+        'input-group-select': true
+      })
+    }, React.DOM.select({
+      "onChange": this.handleChange,
+      "value": "noOp"
+    }, availableOptions.map((function(_this) {
+      return function(option, index) {
+        return React.DOM.option({
+          "key": index,
+          "value": option[0]
+        }, option[1]);
+      };
+    })(this))), _(this.state.newValue).map((function(_this) {
+      return function(value, index) {
+        return React.DOM.span({
+          "href": "#",
+          "key": value,
+          "className": cx({
+            "select-label": true
+          })
+        }, getOptionByValue(value));
+      };
+    })(this)), React.DOM.div({
+      "className": "input-message" + (errors.length > 0 && this.state.dirty ? " active" : "")
+    }, errors.map((function(_this) {
+      return function(error, index) {
+        return React.DOM.div({
+          "key": index,
+          "className": error.type + " " + (!_this.state.dirty ? "hidden" : "")
+        }, error.message);
+      };
+    })(this))), React.DOM.label(null, this.props.label), React.DOM.div({
+      "className": "clear"
+    })));
+  }
+});
+
+module.exports = Component;
+
+
+
+},{"./mixin-field":20,"react/addons":80,"underscore":238}],24:[function(require,module,exports){
 var AsyncSubscriptionMixin, Component, Firebase, FormFieldMixin, React, borderHeight, cx, firebaseSubscription, _,
   __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -1119,7 +1357,7 @@ firebaseSubscription = require("../../firebaseSubscription");
 
 _ = require("underscore");
 
-FormFieldMixin = require("./mixin");
+FormFieldMixin = require("./mixin-field");
 
 borderHeight = function(element) {
   var height, styles;
@@ -1172,15 +1410,18 @@ Component = React.createClass({
     return typeof (_base = this.props).onUpdate === "function" ? _base.onUpdate(errors, value) : void 0;
   },
   handleKeyDown: function(e) {
-    var saveCodes, _ref;
+    var saveCodes, saveHotkey, _ref;
     saveCodes = [9];
+    if (saveHotkey = e.metaKey === true && e.which === 83) {
+      e.preventDefault();
+    }
     if (this.props.type === "input") {
       saveCodes.push(13);
       if (e.which === 13) {
         e.preventDefault();
       }
     }
-    if (_ref = e.which, __indexOf.call(saveCodes, _ref) >= 0) {
+    if ((_ref = e.which, __indexOf.call(saveCodes, _ref) >= 0) || saveHotkey === true) {
       return this.save();
     }
   },
@@ -1322,7 +1563,7 @@ module.exports = Component;
 
 
 
-},{"../../firebase":60,"../../firebaseSubscription":61,"../../subscriptions":65,"./mixin":22,"react":229,"underscore":238}],25:[function(require,module,exports){
+},{"../../firebase":60,"../../firebaseSubscription":61,"../../subscriptions":65,"./mixin-field":20,"react":229,"underscore":238}],25:[function(require,module,exports){
 this.required = function(value) {
   if (!value) {
     return {
@@ -1359,7 +1600,19 @@ this.max = function(max) {
 },{}],26:[function(require,module,exports){
 this.Layout = require("./layout");
 
-this.Home = require("./pages/home");
+this.ElementList = require("./pages/elementList");
+
+this.ElementView = require("./pages/elementView");
+
+this.Settings = require("./pages/settings");
+
+this.Login = require("./pages/login");
+
+this.Logout = require("./pages/logout");
+
+this.NotFound = require("./pages/notFound");
+
+this.Edit = require("./pages/edit");
 
 this.Writing = require("./pages/writing");
 
@@ -1371,23 +1624,11 @@ this.PhotographyView = require("./pages/photographyView");
 
 this.Ideas = require("./pages/ideas");
 
-this.Tags = require("./pages/tags");
-
-this.Settings = require("./pages/settings");
-
-this.New = require("./pages/new");
-
-this.Edit = require("./pages/edit");
-
-this.Login = require("./pages/login");
-
-this.Logout = require("./pages/logout");
-
-this.NotFound = require("./pages/notFound");
+this.ElementForm = require("./pages/elementForm");
 
 
 
-},{"./layout":27,"./pages/edit":28,"./pages/home":29,"./pages/ideas":30,"./pages/login":31,"./pages/logout":32,"./pages/new":33,"./pages/notFound":34,"./pages/photography":35,"./pages/photographyView":36,"./pages/settings":37,"./pages/tags":38,"./pages/writing":39,"./pages/writingView":40}],27:[function(require,module,exports){
+},{"./layout":27,"./pages/edit":28,"./pages/elementForm":29,"./pages/elementList":30,"./pages/elementView":31,"./pages/ideas":32,"./pages/login":33,"./pages/logout":34,"./pages/notFound":35,"./pages/photography":36,"./pages/photographyView":37,"./pages/settings":38,"./pages/writing":39,"./pages/writingView":40}],27:[function(require,module,exports){
 var FIREBASE_URL, Head, Layout, React, RouterMixin, between, components, setAccentColor, _;
 
 React = require("react");
@@ -1863,6 +2104,58 @@ module.exports = Component;
 
 
 },{"../../firebase":60,"../../subscriptions":65,"../widgets/body":44,"../widgets/dropdown":46,"../widgets/simplePagination":56,"../widgets/textareaAutosize":58,"../widgets/toggleShowHide":59,"moment":71,"react":229,"sparkboard-tools":230,"underscore":238}],29:[function(require,module,exports){
+var Body, Component, NewTypes, React, contentForms, cx, _;
+
+_ = require("underscore");
+
+React = require("react/addons");
+
+cx = React.addons.classSet;
+
+Body = require("../widgets/body");
+
+NewTypes = require("../widgets/newTypes");
+
+contentForms = require("../element-forms");
+
+Component = React.createClass({
+  componentDidMount: function() {
+    return window.scrollTo(0, 0);
+  },
+  render: function() {
+    var Form, breadcrumb, formProps, id, type;
+    type = this.props.matchedRoute.params.type || "text";
+    id = this.props.matchedRoute.params.id || null;
+    if (id) {
+      breadcrumb = [
+        {
+          url: null,
+          label: 'edit'
+        }, id
+      ];
+    } else {
+      breadcrumb = ['new'];
+    }
+    Form = contentForms[type];
+    formProps = id ? {
+      id: id
+    } : {};
+    return Body({
+      "breadcrumb": breadcrumb,
+      "sidebar": true
+    }, NewTypes({
+      "className": cx({
+        hidden: id != null
+      })
+    }), Form(formProps, null));
+  }
+});
+
+module.exports = Component;
+
+
+
+},{"../element-forms":6,"../widgets/body":44,"../widgets/newTypes":54,"react/addons":80,"underscore":238}],30:[function(require,module,exports){
 var AsyncSubscriptionMixin, Body, ContentComponents, ContentFilter, DynamicDivider, Home, React, cx, subscriptions;
 
 React = require("react/addons");
@@ -1877,19 +2170,24 @@ Body = require("../widgets/body");
 
 AsyncSubscriptionMixin = subscriptions.AsyncSubscriptionMixin;
 
-ContentComponents = require("../content-types/index");
+ContentComponents = require("../element-views/index");
 
 DynamicDivider = require("../widgets/dynamicDivider");
 
 Home = React.createClass({
   mixins: [AsyncSubscriptionMixin],
+  componentDidMount: function() {
+    return window.scrollTo(0, 0);
+  },
   statics: {
     subscriptions: function(props) {
       var elements, type;
       if (type = props.matchedRoute.params.type) {
         elements = subscriptions.ElementsByIndex("/types/" + type);
       } else {
-        elements = subscriptions.List("/elements");
+        elements = subscriptions.List("/elements", {
+          sort: "reverse"
+        });
       }
       elements.shouldUpdateSubscription = function(oldProps, newProps) {
         return oldProps.matchedRoute.params.type !== newProps.matchedRoute.params.type;
@@ -1914,8 +2212,14 @@ Home = React.createClass({
       var Element;
       Element = ContentComponents[element.type] || React.DOM.div;
       return React.DOM.div({
-        "key": element.id
-      }, Element(element, null), DynamicDivider({
+        "key": element.id,
+        "className": "element-container element-" + element.type
+      }, React.DOM.a({
+        "href": "/edit/" + element.type + "/" + element.id,
+        "className": "edit-content right showIfUser"
+      }, "Edit"), Element({
+        element: element
+      }, null), DynamicDivider({
         "className": cx({
           hidden: index + 1 === elements.length
         })
@@ -1928,7 +2232,62 @@ module.exports = Home;
 
 
 
-},{"../../subscriptions":65,"../content-types/index":13,"../widgets/body":44,"../widgets/contentFilter":45,"../widgets/dynamicDivider":47,"react/addons":80}],30:[function(require,module,exports){
+},{"../../subscriptions":65,"../element-views/index":13,"../widgets/body":44,"../widgets/contentFilter":45,"../widgets/dynamicDivider":47,"react/addons":80}],31:[function(require,module,exports){
+var AsyncSubscriptionMixin, Body, ContentComponents, ContentFilter, Home, React, cx, subscriptions;
+
+React = require("react/addons");
+
+cx = React.addons.classSet;
+
+ContentFilter = require("../widgets/contentFilter");
+
+Body = require("../widgets/body");
+
+ContentComponents = require("../element-views/index");
+
+subscriptions = require("../../subscriptions");
+
+AsyncSubscriptionMixin = subscriptions.AsyncSubscriptionMixin;
+
+Home = React.createClass({
+  mixins: [AsyncSubscriptionMixin],
+  componentDidMount: function() {
+    return window.scrollTo(0, 0);
+  },
+  statics: {
+    subscriptions: function(props) {
+      return {
+        element: subscriptions.Object("/elements/" + props.matchedRoute.params.id)
+      };
+    },
+    getMetadata: function(props) {
+      return {
+        title: props.title ? props.title + (" | " + props.settings.siteTitle) : props.settings.siteTitle,
+        description: props.body ? props.body.slice(0, 121) + "..." : props.settings.siteDescription
+      };
+    }
+  },
+  render: function() {
+    var Element, element;
+    element = this.subs("element");
+    Element = ContentComponents[element.type] || React.DOM.div;
+    return Body({
+      "sidebar": true
+    }, React.DOM.a({
+      "href": "/edit/" + element.type + "/" + element.id,
+      "className": "edit-content right showIfUser"
+    }, "Edit"), Element({
+      element: element,
+      showAll: true
+    }, null));
+  }
+});
+
+module.exports = Home;
+
+
+
+},{"../../subscriptions":65,"../element-views/index":13,"../widgets/body":44,"../widgets/contentFilter":45,"react/addons":80}],32:[function(require,module,exports){
 var Addons, Body, Collection, Component, FIREBASE_URL, Firebase, LinkList, React, SubscriptionMixin, firebaseRelationalSubscription, firebaseSubscription, ownerId, slugify, snapshotToArray, _, _ref, _ref1, _ref2;
 
 _ = require("underscore");
@@ -2051,7 +2410,7 @@ module.exports = Component;
 
 
 
-},{"../../../config":66,"../../firebase":60,"../../models":62,"../widgets/body":44,"../widgets/linkList":52,"react":229,"react/addons":80,"sparkboard-tools":230,"underscore":238}],31:[function(require,module,exports){
+},{"../../../config":66,"../../firebase":60,"../../models":62,"../widgets/body":44,"../widgets/linkList":52,"react":229,"react/addons":80,"sparkboard-tools":230,"underscore":238}],33:[function(require,module,exports){
 var Body, Component, DynamicLoader, React;
 
 React = require("react");
@@ -2105,7 +2464,7 @@ module.exports = Component;
 
 
 
-},{"../body":3,"../widgets/dynamicLoader":48,"react":229}],32:[function(require,module,exports){
+},{"../body":3,"../widgets/dynamicLoader":48,"react":229}],34:[function(require,module,exports){
 var Body, Component, DynamicLoader, React;
 
 React = require("react");
@@ -2134,40 +2493,7 @@ module.exports = Component;
 
 
 
-},{"../body":3,"../widgets/dynamicLoader":48,"react":229}],33:[function(require,module,exports){
-var Body, Component, NewTypes, React, SubscriptionAsyncMixin, contentForms, subscriptions, _;
-
-_ = require("underscore");
-
-React = require("react");
-
-Body = require("../widgets/body");
-
-NewTypes = require("../widgets/newTypes");
-
-contentForms = require("../content-types/forms");
-
-subscriptions = require("../../subscriptions");
-
-SubscriptionAsyncMixin = subscriptions.SubscriptionAsyncMixin;
-
-Component = React.createClass({
-  render: function() {
-    var Form, type;
-    type = this.props.matchedRoute.params.type || "text";
-    Form = contentForms[type];
-    return Body({
-      "breadcrumb": ['new'],
-      "sidebar": true
-    }, NewTypes(null), Form({}, null));
-  }
-});
-
-module.exports = Component;
-
-
-
-},{"../../subscriptions":65,"../content-types/forms":7,"../widgets/body":44,"../widgets/newTypes":54,"react":229,"underscore":238}],34:[function(require,module,exports){
+},{"../body":3,"../widgets/dynamicLoader":48,"react":229}],35:[function(require,module,exports){
 var Body, Component, React;
 
 React = require("react");
@@ -2190,8 +2516,8 @@ module.exports = Component;
 
 
 
-},{"../widgets/body":44,"react":229}],35:[function(require,module,exports){
-var Body, Collection, Component, PhotoList, React, SubscriptionMixin;
+},{"../widgets/body":44,"react":229}],36:[function(require,module,exports){
+var Body, Collection, Component, React, SubscriptionMixin, subscriptions;
 
 React = require("react");
 
@@ -2199,7 +2525,7 @@ Body = require("../body");
 
 SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
 
-PhotoList = require("../../subscriptions").PhotoList;
+subscriptions = require("../../subscriptions");
 
 Collection = require("../../models").Collection;
 
@@ -2208,7 +2534,9 @@ Component = React.createClass({
   statics: {
     subscriptions: function() {
       return {
-        photos: PhotoList()
+        photos: subscriptions.List("/photos", {
+          limit: 500
+        })
       };
     },
     getMetadata: function() {
@@ -2291,7 +2619,7 @@ module.exports = Component;
 
 
 
-},{"../../models":62,"../../subscriptions":65,"../body":3,"react":229,"sparkboard-tools":230}],36:[function(require,module,exports){
+},{"../../models":62,"../../subscriptions":65,"../body":3,"react":229,"sparkboard-tools":230}],37:[function(require,module,exports){
 var Component, DynamicLoader, FIREBASE_URL, Firebase, Nav, React, SubscriptionMixin, firebaseSubscription, simplePagination, snapshotToArray, _, _ref, _ref1;
 
 _ = require("underscore");
@@ -2417,7 +2745,7 @@ module.exports = Component;
 
 
 
-},{"../../firebase":60,"../widgets/dynamicLoader":48,"../widgets/nav":53,"../widgets/simplePagination":56,"react":229,"sparkboard-tools":230,"underscore":238}],37:[function(require,module,exports){
+},{"../../firebase":60,"../widgets/dynamicLoader":48,"../widgets/nav":53,"../widgets/simplePagination":56,"react":229,"sparkboard-tools":230,"underscore":238}],38:[function(require,module,exports){
 var Body, Component, FIREBASE_URL, React, Text, _;
 
 _ = require("underscore");
@@ -2428,7 +2756,7 @@ Body = require("../widgets/body");
 
 FIREBASE_URL = require("../../firebase").FIREBASE_URL;
 
-Text = require("../form/text");
+Text = require("../form-elements/text");
 
 Component = React.createClass({
   render: function() {
@@ -2450,58 +2778,7 @@ module.exports = Component;
 
 
 
-},{"../../firebase":60,"../form/text":24,"../widgets/body":44,"react":229,"underscore":238}],38:[function(require,module,exports){
-var Body, Component, React, SubscriptionMixin, subscriptions, _;
-
-_ = require("underscore");
-
-React = require("react");
-
-Body = require("../body");
-
-SubscriptionMixin = require("sparkboard-tools").SubscriptionMixin;
-
-subscriptions = require("../../subscriptions");
-
-Component = React.createClass({
-  mixins: [SubscriptionMixin],
-  statics: {
-    getMetadata: function() {
-      return {
-        title: "Tags | Matt.is",
-        description: "Sometimes I tag things. Here are my tags."
-      };
-    },
-    subscriptions: function(props) {
-      return {
-        tags: subscriptions.Tags()
-      };
-    }
-  },
-  render: function() {
-    var _ref;
-    return this.transferPropsTo(Body({
-      "breadcrumb": ['tags'],
-      "className": "content " + ((_ref = this.props.tags.length > 0) != null ? _ref : {
-        "": "loading"
-      })
-    }, React.DOM.h1(null, "Tags"), React.DOM.ul({
-      "className": "link-list"
-    }, this.props.tags.map(function(tag) {
-      return React.DOM.li({
-        "key": tag.id
-      }, React.DOM.a({
-        "href": "/tags/" + tag.id
-      }, tag.id));
-    }))));
-  }
-});
-
-module.exports = Component;
-
-
-
-},{"../../subscriptions":65,"../body":3,"react":229,"sparkboard-tools":230,"underscore":238}],39:[function(require,module,exports){
+},{"../../firebase":60,"../form-elements/text":24,"../widgets/body":44,"react":229,"underscore":238}],39:[function(require,module,exports){
 var AsyncSubscriptionMixin, Body, Component, ContentFilter, Link, React, subscriptions, _;
 
 _ = require("underscore");
@@ -2932,7 +3209,7 @@ Component = React.createClass({
   },
   render: function() {
     var links;
-    links = [['Feed', '/'], ['Text', '/type/text'], ['Images', '/type/image'], ['Videos', '/type/video'], ['Links', '/type/link'], ['Books', '/type/book']];
+    links = [['Feed', '/'], ['Text', '/type/text'], ['Images', '/type/image'], ['Videos', '/type/video'], ['Links', '/type/link'], ['Books', '/type/book'], ['People', '/type/person']];
     return this.transferPropsTo(React.DOM.ul({
       "className": "content-filter"
     }, links.map((function(_this) {
@@ -3447,8 +3724,11 @@ Component = React.createClass({
   statics: {
     subscriptions: function(props) {
       return {
-        people: subscriptions.People(),
-        themes: subscriptions.Themes()
+        people: subscriptions.ElementsByIndex("/types/person"),
+        themes: subscriptions.List("/themes", {
+          sort: "a-z"
+        }),
+        settings: subscriptions.Object("/settings")
       };
     }
   },
@@ -3458,7 +3738,7 @@ Component = React.createClass({
   render: function() {
     var subs;
     subs = this.type.subscriptions(this.props);
-    return React.DOM.div(null, Header(null), React.DOM.em(null, "Edited in New York"), React.DOM.div({
+    return React.DOM.div(null, Header(null), React.DOM.em(null, "Edited in ", (this.subs("settings").location)), React.DOM.div({
       "style": {
         marginTop: 13
       },
@@ -3486,16 +3766,12 @@ Component = React.createClass({
       }, theme.name));
     })), React.DOM.h3(null, React.DOM.a({
       "href": "/people/"
-    }, "People \u00bb")), AddNode({
-      "className": "showIfUser",
-      "ref": subs.people.ref,
-      "attribute": "name"
-    }), React.DOM.ul(null, this.subs('people').map(function(person) {
+    }, "People \u00bb")), React.DOM.ul(null, this.subs('people').map(function(person) {
       return React.DOM.li({
         "key": person.id
       }, React.DOM.a({
-        "href": "/people/" + person.id
-      }, person.name));
+        "href": "/person/" + person.id
+      }, person.title));
     })));
   }
 });
@@ -4015,32 +4291,14 @@ var routes;
 
 routes = [
   {
-    path: "/",
-    handler: "Home"
-  }, {
-    path: "/type/:type",
-    handler: "Home"
-  }, {
-    path: "/writing",
-    handler: "Writing"
-  }, {
     path: "/settings",
     handler: "Settings"
-  }, {
-    path: "/new",
-    handler: "New"
-  }, {
-    path: "/new/:type",
-    handler: "New"
   }, {
     path: "/tags/:tag",
     handler: "Writing"
   }, {
     path: "/writing/:id",
     handler: "WritingView"
-  }, {
-    path: "/tags",
-    handler: "Tags"
   }, {
     path: "/ideas",
     handler: "Ideas"
@@ -4059,6 +4317,27 @@ routes = [
   }, {
     path: "/seeing/:id",
     handler: "PhotographyView"
+  }, {
+    path: "/writing",
+    handler: "Writing"
+  }, {
+    path: "/",
+    handler: "ElementList"
+  }, {
+    path: "/new",
+    handler: "ElementForm"
+  }, {
+    path: "/edit/:type/:id",
+    handler: "ElementForm"
+  }, {
+    path: "/:type/:id",
+    handler: "ElementView"
+  }, {
+    path: "/type/:type",
+    handler: "ElementList"
+  }, {
+    path: "/new/:type",
+    handler: "ElementForm"
   }
 ];
 
@@ -4083,47 +4362,53 @@ root = new Firebase(FIREBASE_URL);
 
 async = require("async");
 
-this.List = function(path) {
+this.Object = function(path, options) {
+  if (options == null) {
+    options = {};
+  }
   return firebaseSubscription({
     ref: root.child(path),
     server: true,
+    "default": {},
     parse: function(snapshot) {
-      return snapshotToArray(snapshot).reverse();
-    },
-    "default": []
+      var obj;
+      obj = snapshot != null ? snapshot.val() : void 0;
+      if (obj) {
+        obj.id = snapshot.name();
+        obj.priority = snapshot.getPriority();
+      }
+      return obj;
+    }
   });
 };
 
-this.Themes = function() {
+this.List = function(path, options) {
+  if (options == null) {
+    options = {};
+  }
   return firebaseSubscription({
-    ref: root.child("/themes"),
+    ref: root.child(path),
     server: true,
+    query: function(ref, done) {
+      if (options.limit) {
+        return done(ref.limit(options.limit));
+      } else {
+        return done(ref);
+      }
+    },
     parse: function(snapshot) {
-      return snapshotToArray(snapshot).sort();
+      var list;
+      list = snapshotToArray(snapshot);
+      switch (options.sort) {
+        case "reverse":
+          list = list.reverse();
+          break;
+        case "a-z":
+          list = list.sort();
+      }
+      return list;
     },
     "default": []
-  });
-};
-
-this.People = function() {
-  return firebaseSubscription({
-    ref: root.child("/people"),
-    server: true,
-    parse: function(snapshot) {
-      return snapshotToArray(snapshot).sort();
-    },
-    "default": []
-  });
-};
-
-this.Tags = function() {
-  return firebaseSubscription({
-    ref: root.child("/tags"),
-    server: true,
-    parse: function(snapshot) {
-      return snapshotToArray(snapshot).sort();
-    },
-    "default": _([])
   });
 };
 
@@ -4162,9 +4447,6 @@ this.ElementsByIndex = function(indexPath, options) {
   return firebaseRelationalSubscription({
     indexRef: root.child(indexPath).limit(options.limit),
     dataRef: root.child('/elements'),
-    shouldUpdateSubscription: function(oldProps, newProps) {
-      return oldProps.matchedRoute.params.type !== newProps.matchedRoute.params.type;
-    },
     "default": [],
     server: true,
     parseObject: function(snapshot) {
@@ -4174,7 +4456,17 @@ this.ElementsByIndex = function(indexPath, options) {
       return post;
     },
     parseList: function(list) {
-      return list.reverse();
+      switch (options.sort) {
+        case "reverse":
+          list = list.reverse();
+          break;
+        case "a-z":
+          list = list.sort();
+          break;
+        default:
+          list = list.reverse();
+      }
+      return list;
     }
   });
 };

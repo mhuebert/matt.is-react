@@ -6,7 +6,7 @@ cx = React.addons.classSet
 {AsyncSubscriptionMixin} = require("../../subscriptions")
 firebaseSubscription = require("../../firebaseSubscription")
 _ = require("underscore")
-FormFieldMixin = require("./mixin")
+FormFieldMixin = require("./mixin-field")
 
 borderHeight = (element) ->
     styles = getComputedStyle(element)
@@ -38,10 +38,12 @@ Component = React.createClass
         @props.onUpdate?(errors, value)
     handleKeyDown: (e) ->
         saveCodes = [9]
+        if saveHotkey = (e.metaKey == true and e.which == 83)
+            e.preventDefault()
         if @props.type == "input"
             saveCodes.push 13
             e.preventDefault() if e.which == 13
-        if e.which in saveCodes
+        if e.which in saveCodes or saveHotkey == true
             @save()
     save: (e) ->
         @setState errors: @validate()

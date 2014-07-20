@@ -3,7 +3,10 @@
 
 React = require("react/addons")
 cx = React.addons.classSet
-FormFieldMixin = require("./mixin")
+FormFieldMixin = require("./mixin-field")
+{Firebase} = require("../../firebase")
+{AsyncSubscriptionMixin} = require("../../subscriptions")
+firebaseSubscription = require("../../firebaseSubscription")
 
 saveBlob = (blob, ref) ->
   blob.url || blob[0].url
@@ -11,7 +14,14 @@ saveBlob = (blob, ref) ->
   ref.set url
 
 Component = React.createClass
-    mixins: [FormFieldMixin]
+    mixins: [AsyncSubscriptionMixin, FormFieldMixin]
+    statics:
+        subscriptions: (props) ->
+            return {} if !props.fireRef
+            value: firebaseSubscription
+                ref: new Firebase(props.fireRef)
+                parse: (snapshot) -> snapshot.val()
+                default: null
     upload: (e) ->
         e.preventDefault()
         filepicker.pick
@@ -24,6 +34,13 @@ Component = React.createClass
         , (type, message) =>
             @setState message: message
     componentDidMount: (e) ->
+
+        # TODO: why do I get an error if I put this in getInitialState?
+        @setState 
+            hovering: false
+            message: ""
+            errors: []
+            newValue: null
         element = this.getDOMNode()
         filepicker.makeDropPane element,
             multiple: false
@@ -46,11 +63,7 @@ Component = React.createClass
                     inProgress: true
                     message: percentage
                 return
-    getInitialState: ->
-        hovering: false
-        message: ""
-        errors: []
-        newValue: null
+    
 
     save: (e) ->
         @setState errors: @validate()
@@ -64,10 +77,10 @@ Component = React.createClass
         false if e?
     render: ->
         errors = @state.errors
-        image = @state.newValue || @state.value
+        image = @state.newValue || @state.value 
         @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
             <label>Image</label>
-            <img style={float:'right', margin:'20px 10px 0 10px'} src={if image then image+"/convert?w=30&h=30&fit=clip" else ""} />
+            <img style={float:'right', margin:'0 0 0 10px'} src={if image then image+"/convert?h=64&fit=clip" else ""} />
             <a onClick={@upload} className="input-single-action">Choose...</a>
         </div>
 

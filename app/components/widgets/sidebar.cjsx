@@ -14,14 +14,16 @@ Component = React.createClass
 	mixins: [AsyncSubscriptionMixin]
 	statics:
 			subscriptions: (props) ->
-					people: subscriptions.People()
-					themes: subscriptions.Themes()
+					# people: subscriptions.List("/people", sort: "a-z")
+					people: subscriptions.ElementsByIndex("/types/person")
+					themes: subscriptions.List("/themes", sort: "a-z")
+					settings: subscriptions.Object("/settings")
 	getInitialState: -> {}
 	render: ->
 		subs = this.type.subscriptions(@props)
 		<div>
 			<Header />
-			<em>Edited in New York</em>
+			<em>Edited in {@subs("settings").location}</em>
 			<div style={{marginTop: 13}} className="showIfUser">
 				<Link className="btn btn-white btn-block" href="/new" >New</Link>
 				<Link href="/ideas" >Ideas</Link> • 
@@ -35,10 +37,9 @@ Component = React.createClass
 					<li key={theme.id}><a href="/themes/#{theme.id}">{theme.name}</a></li>
 			}</ul>
 			<h3><a href="/people/">People »</a></h3>
-			<AddNode className="showIfUser" ref={subs.people.ref} attribute="name" />
 			<ul>{
 				@subs('people').map (person) -> 
-					<li key={person.id}><a href="/people/#{person.id}">{person.name}</a></li>
+					<li key={person.id}><a href="/person/#{person.id}">{person.title}</a></li>
 			}</ul>
 		</div>
 

@@ -1,16 +1,22 @@
 
 @Layout = require("./layout")
 
-@Home = require("./pages/home")
+@ElementList = require("./pages/elementList")
+@ElementView = require("./pages/elementView")
+
+@Settings = require("./pages/settings")
+@Login = require("./pages/login")
+@Logout = require("./pages/logout")
+@NotFound = require("./pages/notFound")
+
+
+
+
+@Edit = require("./pages/edit")
 @Writing = require("./pages/writing")
 @WritingView = require("./pages/writingView")
 @Photography = require("./pages/photography")
 @PhotographyView = require("./pages/photographyView")
 @Ideas = require("./pages/ideas")
-@Tags = require("./pages/tags")
-@Settings = require("./pages/settings")
-@New = require("./pages/new")
-@Edit = require("./pages/edit")
-@Login = require("./pages/login")
-@Logout = require("./pages/logout")
-@NotFound = require("./pages/notFound")
+
+@ElementForm = require("./pages/elementForm")

@@ -9,31 +9,37 @@ firebaseSubscription = require("./firebaseSubscription")
 root = new Firebase(FIREBASE_URL)
 async = require("async")
 
-@List = (path) ->
+@Object = (path, options={}) ->
   firebaseSubscription
     ref: root.child(path)
     server: true
+    default: {}
+    parse: (snapshot) ->
+      obj = snapshot?.val()
+      if obj
+        obj.id = snapshot.name()
+        obj.priority = snapshot.getPriority()
+      obj
+@List = (path, options={}) ->
+  firebaseSubscription
+    ref: root.child(path)
+    server: true
+    query: (ref, done) -> 
+      if options.limit
+        done(ref.limit(options.limit))
+      else
+        done(ref)
     parse: (snapshot) -> 
-        snapshotToArray(snapshot).reverse()
+        list = snapshotToArray(snapshot)
+        switch options.sort
+            when "reverse"
+                list = list.reverse()
+            when "a-z"
+                list = list.sort()
+        list
+
     default: []
-@Themes = ->
-  firebaseSubscription
-    ref: root.child("/themes")
-    server: true
-    parse: (snapshot) -> snapshotToArray(snapshot).sort()
-    default: []
-@People = ->
-  firebaseSubscription
-    ref: root.child("/people")
-    server: true
-    parse: (snapshot) -> snapshotToArray(snapshot).sort()
-    default: []
-@Tags = ->
-  firebaseSubscription
-    ref: root.child("/tags")
-    server: true
-    parse: (snapshot) -> snapshotToArray(snapshot).sort()
-    default: _([])
+
 
 @Settings = ->
   firebaseSubscription
@@ -55,15 +61,22 @@ async = require("async")
   firebaseRelationalSubscription
     indexRef: root.child(indexPath).limit(options.limit)
     dataRef: root.child('/elements')
-    shouldUpdateSubscription: (oldProps, newProps) ->
-      oldProps.matchedRoute.params.type != newProps.matchedRoute.params.type
     default: []
     server: true
     parseObject: (snapshot) ->
         post = snapshot.val()
         post.id = snapshot.name()
         post
-    parseList: (list) -> list.reverse()
+    parseList: (list) -> 
+        switch options.sort
+            when "reverse"
+                list = list.reverse()
+            when "a-z"
+                list = list.sort()
+            else
+                list = list.reverse()
+        list
+
 
 @WritingList = (limit=50, indexPath) ->
 
@@ -127,6 +140,15 @@ ReactAsync = require('react-async')
     for path, subscription of @__subscriptions
       subscription.unsubscribe()
       delete @__subscriptions[path]
+  # stateToJSON: (state) ->
+  #   if state.fireRef
+  #     console.log 'packing'
+  #     state.fireRef = state.fireRef.toString()
+  #   state
+  # stateFromJSON: (state) ->
+  #   if state.fireRef
+  #     state.fireRref = new Firebase(state.fireRef)
+  #   state
   componentDidMount: ->
     @subscribe(this.props)
   componentWillUnmount: ->

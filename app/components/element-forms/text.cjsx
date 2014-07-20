@@ -2,50 +2,36 @@
 
 React = require("react/addons")
 cx = React.addons.classSet
-{FIREBASE_URL} = require("../../../firebase")
-Form = require("../../form/form")
-Text = require("../../form/text")
-DateField = require("../../form/date")
-ImageUpload = require("../../form/imageUpload")
-SelectByLabels = require("../../form/selectLabels")
-Computed = require("../../form/computed")
-v = require("../../form/validators")
+{FIREBASE_URL, Firebase} = require("../../firebase")
+
+FormMixin = require("../form-elements/mixin-form")
+Text = require("../form-elements/text")
+DateField = require("../form-elements/date")
+ImageUpload = require("../form-elements/imageUpload")
+SelectMultipleLabels = require("../form-elements/selectMultipleLabels")
+SelectByLabels = require("../form-elements/selectLabels")
+v = require("../form-elements/validators")
 _ = require("underscore")
 
+subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
+
 Component = React.createClass
-    getInitialState: ->
-        data:
-            type: "text"
-        errors: {}
-        fireRef: @props.fireRef
-    update: (name) ->
-        (err, value) =>
-            data = @state.data
-            data[name] = value
-            errors = @state.errors
-            errors[name] = err
-            @setState 
-              data: data  
-              errors: errors
-    errorCount: ->
-      count = 0
-      for name, errorObject of @state.errors
-        if _(errorObject).keys().length > 0
-          count += 1
-      count
-    create: ->
-      if @errorCount() == 0
-        ref = new Firebase(FIREBASE_URL)
-        ref = ref.child("elements").push()
-        id = ref.name()
-        obj = @state.data
-        obj.owner = user.id
-        ref.setWithPriority obj, obj.date
-        @setState fireRef: ref
+    mixins: [AsyncSubscriptionMixin, FormMixin]
+    statics:
+        subscriptions: (props) ->
+          subs =
+            people: subscriptions.List("/people", sort: "a-z")
+          # if props.id
+          #   subs.element = subscriptions.Object("/elements/#{props.id}")
+          subs
+
+    defaults: ->
+      type: "text"
 
     render: ->
-        ref = @state.fireRef
-        <Form payload={@state.data} className="barex">
+        ref = @ref()
+        <form className="barex">
           <Text label="Title" 
                 onUpdate={@update("title")} 
                 className="bare"
@@ -75,6 +61,9 @@ Component = React.createClass
                             ]}/>
           <ImageUpload  onUpdate={@update("image")}
                         fireRef={if ref then ref.child("image").toString() else undefined} />
+          <SelectMultipleLabels label="Related People"
+                                onUpdate={@update("people")} 
+                                options={@subs("people").map((person)->[person.id, person.name])} />
           <p>People</p>
           <p>Topics</p>
           <p>Author</p>
@@ -95,6 +84,6 @@ Component = React.createClass
               <li>A form may contain fields which relate to one another</li>
             </ul>
           </p>
-        </Form>
+        </form>
 
 module.exports = Component

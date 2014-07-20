@@ -1,20 +1,22 @@
 
 routes =  [
-    { path: "/",                 handler: "Home" },
-    { path: "/type/:type",       handler: "Home" },
-    { path: "/writing",          handler: "Writing" },
-    { path: "/settings",         handler: "Settings" },
-    { path: "/new",              handler: "New" },
-    { path: "/new/:type",        handler: "New" },
-    { path: "/tags/:tag",        handler: "Writing" },
-    { path: "/writing/:id",      handler: "WritingView" },
-    { path: "/tags",             handler: "Tags" },
-    { path: "/ideas",            handler: "Ideas" },
-    { path: "/ideas/:id",        handler: "Edit" },
-    { path: "/login",            handler: "Login" },
-    { path: "/logout",           handler: "Logout" },
-    { path: "/seeing",           handler: "Photography" },
+
+    { path: "/settings",         handler: "Settings" }
+    { path: "/tags/:tag",        handler: "Writing" }
+    { path: "/writing/:id",      handler: "WritingView" }
+    { path: "/ideas",            handler: "Ideas" }
+    { path: "/ideas/:id",        handler: "Edit" }
+    { path: "/login",            handler: "Login" }
+    { path: "/logout",           handler: "Logout" }
+    { path: "/seeing",           handler: "Photography" }
     { path: "/seeing/:id",       handler: "PhotographyView" }
+    { path: "/writing",          handler: "Writing" }
+    { path: "/",                 handler: "ElementList" }
+    { path: "/new",              handler: "ElementForm" }
+    { path: "/edit/:type/:id",   handler: "ElementForm" }
+    { path: "/:type/:id",        handler: "ElementView" }
+    { path: "/type/:type",       handler: "ElementList" }
+    { path: "/new/:type",        handler: "ElementForm" }
     # { path: "*",                 handler: "NotFound" }
 ]
 

@@ -20,6 +20,7 @@ Component = React.createClass
 			['Videos', '/type/video']
 			['Links', '/type/link']
 			['Books', '/type/book']
+			['People', '/type/person']
 		]
 
 		@transferPropsTo <ul className="content-filter">

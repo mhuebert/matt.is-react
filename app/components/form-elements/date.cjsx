@@ -48,10 +48,10 @@ months[11] = "December"
 
 React = require("react/addons")
 cx = React.addons.classSet
-FormFieldMixin = require("./mixin")
+FieldMixin = require("./mixin-field")
 
 Component = React.createClass
-    mixins: [FormFieldMixin]
+    mixins: [FieldMixin]
     getInitialState: -> 
         today = new Date()
         year: today.getFullYear()
@@ -100,7 +100,7 @@ Component = React.createClass
                 if year % 100 != 0 or (year % 100 == 0 and year % 400 == 0)
                     monthLength = 29
 
-        @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
+        @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true, 'input-group-select': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
             
             <select ref="month" onChange={@handleChange} value={@state.month}>
             {
