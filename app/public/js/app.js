@@ -533,18 +533,19 @@ Component = React.createClass({
     var element;
     element = this.props.element;
     return React.DOM.div({
-      "className": "element-image"
-    }, React.DOM.p(null, element.title), React.DOM.a({
-      "href": "/" + element.type + "/" + element.id
+      "className": "element"
     }, React.DOM.img({
       "className": cx({
+        imagePrimary: true,
         hidden: !element.image
       }),
       "style": {
         marginBottom: 18
       },
-      "src": (element.image ? element.image + "/convert?w=500&h=500&fit=clip" : "")
-    })), React.DOM.p(null, element.body));
+      "src": (element.image ? element.image + "/convert?w=600&h=600&fit=clip" : "")
+    }), React.DOM.h2(null, React.DOM.a({
+      "href": "/" + element.type + "/" + element.id
+    }, element.title)), React.DOM.p(null, element.body));
   }
 });
 
@@ -1094,9 +1095,11 @@ this.componentDidMount = function() {
 
 
 },{}],21:[function(require,module,exports){
-var FIREBASE_URL, Firebase, _ref;
+var FIREBASE_URL, Firebase, getRootComponent, _ref;
 
 _ref = require("../../firebase"), FIREBASE_URL = _ref.FIREBASE_URL, Firebase = _ref.Firebase;
+
+getRootComponent = require("sparkboard-tools").utils.getRootComponent;
 
 this.getInitialState = function() {
   return {};
@@ -1132,7 +1135,7 @@ this.errorCount = function() {
 };
 
 this.create = function() {
-  var defaults, id, obj, ref;
+  var c, defaults, id, obj, ref;
   if (this.errorCount() === 0) {
     ref = new Firebase(FIREBASE_URL);
     ref = ref.child("elements").push();
@@ -1145,7 +1148,10 @@ this.create = function() {
     }
     _.extend(obj, this.state.data);
     obj.owner = user.id;
-    return ref.setWithPriority(obj, obj.date);
+    c = getRootComponent(this);
+    return ref.setWithPriority(obj, obj.date, function() {
+      return c.navigate("/edit/" + obj.type + "/" + (ref.name()));
+    });
   }
 };
 
@@ -1159,7 +1165,7 @@ this.ref = function() {
 
 
 
-},{"../../firebase":60}],22:[function(require,module,exports){
+},{"../../firebase":60,"sparkboard-tools":230}],22:[function(require,module,exports){
 var Component, FormFieldMixin, React, cx;
 
 React = require("react/addons");
@@ -2217,7 +2223,7 @@ Home = React.createClass({
       }, React.DOM.a({
         "href": "/edit/" + element.type + "/" + element.id,
         "className": "edit-content right showIfUser"
-      }, "Edit"), Element({
+      }), Element({
         element: element
       }, null), DynamicDivider({
         "className": cx({

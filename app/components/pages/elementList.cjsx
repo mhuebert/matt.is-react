@@ -37,7 +37,8 @@ Home = React.createClass
                     Element = ContentComponents[element.type] || React.DOM.div
 
                     <div key={element.id} className={"element-container element-#{element.type}"}>
-                        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser">Edit</a>
+                        <a  href={"/edit/#{element.type}/#{element.id}"} 
+                            className="edit-content right showIfUser"></a>
                         {Element({element: element}, null)}
                         <DynamicDivider className={cx(hidden:(index+1 == elements.length))} />
                     </div>

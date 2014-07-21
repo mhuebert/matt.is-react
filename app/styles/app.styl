@@ -953,18 +953,28 @@ form
             display block
         .show-more-trigger
             display none
-.edit-content
+a.edit-content
     color #777
-    text-transform lowercase
-    font-style italic
-    line-height 36px
-    position relative
-    z-index 1
+    position absolute
+    left 5px
+    width 15px
+    height 15px
+    background #ddd
+    display inline-block
+    &:hover
+        background #000
 .element, .element-container
-    position relative
+    // position relative
+    clear both
 .element-title, .element-title:visited
     color black
 a.element-permalink
     color #999
 .element-text .element-permalink
     line-height 36px
+.element-person
+    // .element
+    //     background white
+    // box-shadow(0,0,10px,rgba(0,0,0,0.1))
+    .imagePrimary
+        width 100%

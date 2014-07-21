@@ -6,13 +6,15 @@ cx = React.addons.classSet
 Component = React.createClass
     render: ->
         element = @props.element
-        <div className="element-image">
-          <p>
-            {element.title}
-          </p>
-          <a href={"/#{element.type}/#{element.id}"}>
-            <img className={cx(hidden:!element.image)} style={marginBottom:18} src={if element.image then element.image+"/convert?w=500&h=500&fit=clip" else ""} />
-          </a>
+        <div className="element">
+            <img  className={cx(imagePrimary: true,hidden:!element.image)} 
+                  style={marginBottom:18} 
+                  src={if element.image then element.image+"/convert?w=600&h=600&fit=clip" else ""} />         
+          <h2>
+            <a href={"/#{element.type}/#{element.id}"}>
+              {element.title}
+            </a>
+          </h2>
           <p>{element.body}</p>
         </div>
 

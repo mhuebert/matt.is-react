@@ -1,4 +1,5 @@
 {FIREBASE_URL, Firebase} = require("../../firebase")
+{getRootComponent} = require("sparkboard-tools").utils
 
 @getInitialState = -> {}
 
@@ -28,7 +29,9 @@
       _.extend obj, defaults
     _.extend obj, @state.data
     obj.owner = user.id
+    c = getRootComponent(this)
+    ref.setWithPriority obj, obj.date, ->
+      c.navigate "/edit/#{obj.type}/#{ref.name()}"
 
-    ref.setWithPriority obj, obj.date
 
 @ref = -> if @props.id then (new Firebase(FIREBASE_URL+"/elements/#{@props.id}")) else null
