@@ -35,7 +35,7 @@ Home = React.createClass
     render: ->
         elements = _(@subs("elements")).filter (element) -> element.status != "idea"
         <Body sidebar={true}>
-            <ContentFilter />
+            <ContentFilter className="hidden" />
             {
                 elements.map (element, index) ->
                     Element = ContentComponents[element.type] || React.DOM.div

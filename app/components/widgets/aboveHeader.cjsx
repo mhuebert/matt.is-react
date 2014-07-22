@@ -19,7 +19,7 @@ Component = React.createClass
                   <Link key={slug} href={url}>{slug}</Link>
               }
           </div>
-          <span className="right">Search</span>
+          <span className="right hidden">Search</span>
           <div className="clear" />
         </div>
 

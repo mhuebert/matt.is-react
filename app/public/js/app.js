@@ -531,8 +531,9 @@ Component = React.createClass({
     };
   },
   render: function() {
-    var element;
+    var element, permalink;
     element = this.props.element;
+    permalink = element.permalink ? "/" + element.permalink : "/" + element.type + "/" + element.id;
     return React.DOM.div({
       "className": "element element-" + element.type
     }, React.DOM.img({
@@ -547,7 +548,7 @@ Component = React.createClass({
     }), React.DOM.h2(null, React.DOM.a({
       "style": this.state.titleStyle,
       "ref": "link",
-      "href": "/" + element.type + "/" + element.id
+      "href": permalink
     }, element.title)), React.DOM.p(null, element.body));
   }
 });
@@ -597,7 +598,7 @@ Component = React.createClass({
     }
   },
   render: function() {
-    var body, date, element, multiple, readableDate, style;
+    var body, date, element, multiple, permalink, readableDate, style;
     element = this.props.element;
     body = (element.body || "").split(/[\s\n\r]*?<break\s*?\/>\s?/m);
     if (body[1] != null) {
@@ -610,6 +611,7 @@ Component = React.createClass({
     date = new Date(element.date);
     readableDate = "" + (date.getFullYear()) + "/" + (date.getMonth()) + "/" + (date.getDate());
     style = element.image ? this.state.titleStyle : {};
+    permalink = element.permalink ? "/" + element.permalink : "/" + element.type + "/" + element.id;
     return React.DOM.div({
       "className": "element element-text"
     }, React.DOM.img({
@@ -622,7 +624,7 @@ Component = React.createClass({
       "src": (element.image ? element.image + "/convert?w=500&h=500&fit=clip" : "")
     }), React.DOM.h2(null, React.DOM.a({
       "style": style,
-      "href": (element.permalink ? "/" + element.permalink : "/" + element.type + "/" + element.id)
+      "href": permalink
     }, element.title)), React.DOM.div({
       "onClick": this.maybeshowAll,
       "className": cx({
@@ -2314,7 +2316,9 @@ Home = React.createClass({
     });
     return Body({
       "sidebar": true
-    }, ContentFilter(null), elements.map(function(element, index) {
+    }, ContentFilter({
+      "className": "hidden"
+    }), elements.map(function(element, index) {
       var Element;
       Element = ContentComponents[element.type] || React.DOM.div;
       return React.DOM.div({
@@ -3204,7 +3208,7 @@ Component = React.createClass({
         "href": url
       }, slug);
     })), React.DOM.span({
-      "className": "right"
+      "className": "right hidden"
     }, "Search"), React.DOM.div({
       "className": "clear"
     }));
