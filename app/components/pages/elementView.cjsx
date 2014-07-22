@@ -19,7 +19,7 @@ Home = React.createClass
         subscriptions: (props) ->
             element = subscriptions.Object("/elements/#{props.matchedRoute.params.id}")
             element.shouldUpdateSubscription = (oldProps, newProps) ->
-                console.log shouldUpdate = oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
+                shouldUpdate = oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
                 shouldUpdate
                 
             element: element
@@ -29,7 +29,8 @@ Home = React.createClass
     render: ->
         element = @subs("element")
         Element = ContentComponents[element.type] || React.DOM.div
-        <Body sidebar={true}>
+        breadcrumb = [["type/"+element.type, element.type]]
+        <Body sidebar={true} breadcrumb={breadcrumb}>
         <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser"></a>
         {Element({element: element, showAll: true}, null)}
         </Body>

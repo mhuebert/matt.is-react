@@ -34,6 +34,7 @@ Home = React.createClass
             description: props.settings.siteDescription
     render: ->
         elements = _(@subs("elements")).filter (element) -> element.status != "idea"
+        
         <Body sidebar={true}>
             <ContentFilter className="hidden" />
             {

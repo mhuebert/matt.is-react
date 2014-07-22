@@ -15,8 +15,12 @@ Component = React.createClass
               </Link>
               {
                 breadcrumb.map (slug, index) ->
-                  url = "/" + breadcrumb[0..index].join("/")
-                  <Link key={slug} href={url}>{slug}</Link>
+                  if typeof slug == 'object'
+                    url = "/"+slug[0]
+                    slug = slug[1]
+                  else
+                    url = "/" + breadcrumb[0..index].join("/")
+                  <Link key={index} href={url}>{slug}</Link>
               }
           </div>
           <span className="right hidden">Search</span>

@@ -2370,7 +2370,7 @@ Home = React.createClass({
       element = subscriptions.Object("/elements/" + props.matchedRoute.params.id);
       element.shouldUpdateSubscription = function(oldProps, newProps) {
         var shouldUpdate;
-        console.log(shouldUpdate = oldProps.matchedRoute.params.id !== newProps.matchedRoute.params.id);
+        shouldUpdate = oldProps.matchedRoute.params.id !== newProps.matchedRoute.params.id;
         return shouldUpdate;
       };
       return {
@@ -2385,11 +2385,13 @@ Home = React.createClass({
     }
   },
   render: function() {
-    var Element, element;
+    var Element, breadcrumb, element;
     element = this.subs("element");
     Element = ContentComponents[element.type] || React.DOM.div;
+    breadcrumb = [["type/" + element.type, element.type]];
     return Body({
-      "sidebar": true
+      "sidebar": true,
+      "breadcrumb": breadcrumb
     }, React.DOM.a({
       "href": "/edit/" + element.type + "/" + element.id,
       "className": "edit-content right showIfUser"
@@ -3155,9 +3157,14 @@ Component = React.createClass({
       "className": "hidden last-update" + (breadcrumb.length === 0 ? "" : " hidden")
     }, "Updated: 3 hours ago"), breadcrumb.map(function(slug, index) {
       var url;
-      url = "/" + breadcrumb.slice(0, +index + 1 || 9e9).join("/");
+      if (typeof slug === 'object') {
+        url = "/" + slug[0];
+        slug = slug[1];
+      } else {
+        url = "/" + breadcrumb.slice(0, +index + 1 || 9e9).join("/");
+      }
       return Link({
-        "key": slug,
+        "key": index,
         "href": url
       }, slug);
     })), React.DOM.span({
