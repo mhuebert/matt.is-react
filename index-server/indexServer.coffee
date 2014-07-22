@@ -18,14 +18,14 @@ server = IndexServer
     indexPath: "/types/"
     priority: (snap) -> snap.child("date").val()
   ,
-    type: "ManyToMany"
+    type: "manyToMany"
     sourcePath: "/elements/"
     sourceAttribute: "topics"
     indexPath: "/related/topics/"
     keyTransform: (key) -> slugify(key)
     priority: (snap) -> snap.child("date").val()
   ,
-    type: "ManyToMany"
+    type: "manyToMany"
     sourcePath: "/elements/"
     sourceAttribute: "people"
     indexPath: "/related/people/"
