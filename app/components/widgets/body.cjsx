@@ -4,7 +4,7 @@ React = require("react")
 
 Sidebar = require("./sidebar")
 AboveHeader = require("./aboveHeader")
-Header = require("./Header")
+Header = require("./header")
 Link = require("./link")
 ContentFilter = require("./contentFilter")
 
