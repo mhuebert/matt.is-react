@@ -23,7 +23,7 @@
   "homepage": "https://github.com/mhuebert/matt.is-react",
   "dependencies": {
     "underscore": "^1.6.0",
-    "react": "^0.10.0",
+    "react": "^0.11.0",
     "coffee-script": "^1.7.1",
     "express": "^3.5.0",
     "node-jsx": "^0.10.0",
@@ -37,7 +37,7 @@
     "firebase-index-server": "sparkboard/firebase-index-server",
     "react-router": "mhuebert/react-router",
     "node-cjsx": "^0.1.2",
-    "react-async": "^0.9.4",
+    "react-async": "andreypopp/react-async",
     "fibers": "^1.0.1"
   },
   "devDependencies": {

@@ -116,15 +116,15 @@ ReactAsync = require('react-async')
 @AsyncSubscriptionMixin =
   mixins: [ReactAsync.Mixin]
   subs: (path) ->
-    @state[path] || this.type.subscriptions?(this.props)[path].default
+    @state[path] || @constructor.subscriptions?(this.props)[path].default
   getInitialStateAsync: (cb) ->
     @__subscriptions = {}
     # state = {subscriptions: {}}
-    # for path, subscription of this.type.subscriptions?(this.props)
+    # for path, subscription of this.constructor.subscriptions?(this.props)
     #   state[path] = state[path] || subscription.default 
     #   state.subscriptions[path] = {}
     tasks = {}
-    subscriptions = this.type.subscriptions?(this.props)
+    subscriptions = @constructor.subscriptions?(this.props)
     for path, subscription of subscriptions
       @__subscriptions[path] = subscription
       tasks[path] = fetchOnce(subscription)
@@ -132,7 +132,7 @@ ReactAsync = require('react-async')
       cb(null, results)
   subscribe: (props) ->
     @__subscriptions = {}
-    for path, subscription of @type.subscriptions?(props)
+    for path, subscription of @constructor.subscriptions?(props)
       do (path, subscription) =>
           subscription.subscribe setSubscriptionStateCallback(this, path, subscription.default)
           @__subscriptions[path] = subscription

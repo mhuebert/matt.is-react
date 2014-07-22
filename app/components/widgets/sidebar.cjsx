@@ -19,7 +19,7 @@ Component = React.createClass
 					settings: subscriptions.Object("/settings")
 	getInitialState: -> {}
 	render: ->
-		subs = this.type.subscriptions(@props)
+		subs = @constructor.subscriptions(@props)
 		people = _.filter @subs('people'), (person) -> person.status != 'idea'
 
 		<div>
