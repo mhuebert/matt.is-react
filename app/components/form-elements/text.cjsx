@@ -46,9 +46,9 @@ Component = React.createClass
         if e.which in saveCodes or saveHotkey == true
             @save()
     save: (e) ->
-        @setState errors: @validate()
-        return if !@props.fireRef
         return if !@hasChanged()
+        @setState errors: @validate(@state.newValue)
+        return if !@props.fireRef
         ref = new Firebase(@props.fireRef)
         @setState 
             undoValue: @state.value
@@ -68,19 +68,23 @@ Component = React.createClass
             @clearAutoSize() 
     clearAutoSize: ->
         return if @props.type != "textarea"
+        doc = document.documentElement;
+        left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)
+        top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0)
         textarea = this.refs.textElement.getDOMNode()
         textarea.style.height = "auto"
         textarea.style.height = textarea.scrollHeight + "px"
+        window.scrollTo left, top
     componentDidMount: ->
         @autoSize()
+        if @props.autoFocus == true
+            this.refs.textElement.getDOMNode().focus()
     componentDidUpdate: ->
         @autoSize()
-    hasErrors: ->
-        (@state.errors || []).length > 0
     render: ->
         hasUndo = @state.undoValue?
         type = if @props.type == "textarea" then "textarea" else "input"
-        errors = @state?.errors || []
+        errors = @errors() || []
 
         textElementProps = 
             className: cx(error: (errors.length > 0 and @state.dirty))
@@ -112,7 +116,7 @@ Component = React.createClass
             <div className={cx(actions:true, hidden:(!@props.fireRef))}>
               <a tabIndex="-1" className={cx(hidden: !hasUndo)} onClick={@undo}  href="#">Undo</a>
               <a tabIndex="-1" className={cx(hidden: !@hasChanged())} onClick={@revert}  href="#">Revert</a>
-              <a tabIndex="-1" className={cx(hidden: !@hasChanged())} onClick={@save} href="#">Save</a>
+              <a tabIndex="-1" className={cx(hidden: (!@hasChanged() or @hasErrors()))} onClick={@save} href="#">Save</a>
             </div>
         </div>
 

@@ -30,6 +30,10 @@ body, input, textarea, select, button
     line-height 140%    
 .right-col
     h3
+        font-family 'Georgia'
+        font-weight bold
+        font-size 11px
+        text-transform uppercase
         margin 13px 0 3px 0
         color black
         a:visited
@@ -51,16 +55,13 @@ body, input, textarea, select, button
         &:focus
             border-color #aaa
             outline none
+            
 
 .right
     float right
 .clear
     clear both
-h3
-    font-family 'Georgia'
-    font-weight bold
-    font-size 11px
-    text-transform uppercase
+
 
 .content-filter
     border-bottom 5px solid black
@@ -411,6 +412,11 @@ h1, .h1, h2
         color black
 h2
     font-size 30px
+.left-col
+    h3
+        font-size 20px
+        margin-bottom 18px
+
 .text-center
     text-align center
 .nav-main
@@ -682,7 +688,7 @@ ul.writing-list
 .content
     // margin 0 190px 0 18px
     margin 0 auto
-    max-width 800px
+    max-width 700px
     &.single-col
         margin-right 18px
         // .left-col
@@ -691,7 +697,7 @@ ul.writing-list
         //     border none
 .left-col
     box-sizing border-box
-    width 610px
+    width 510px
     padding 0 18px 0
     float left
     margin-bottom 18px
@@ -717,16 +723,15 @@ ul.writing-list
     margin-bottom 18px
     ul, .btn-block
         margin-bottom 13px
-    border-bottom 5px solid black
-    // &:after
-    //     content " "
-    //     border-bottom 5px solid black
-    //     display block
+    &:after
+        content " "
+        border-bottom 5px solid black
+        display block
 .left-col .header
     display none
 .inner-content
     margin 30px 40px 30px 0
-@media(max-width:800px)
+@media(max-width:700px)
     .left-col .header
         display block
     .right-col .header
@@ -956,9 +961,9 @@ form
 a.edit-content
     color #777
     position absolute
-    left 5px
-    width 15px
-    height 15px
+    left 3px
+    width 12px
+    height 12px
     background #ddd
     display inline-block
     &:hover
@@ -970,11 +975,32 @@ a.edit-content
     color black
 a.element-permalink
     color #999
-.element-text .element-permalink
-    line-height 36px
+.element-text 
+    img
+        max-width 100%
+        box-sizing border-box
 .element-person
     // .element
     //     background white
     // box-shadow(0,0,10px,rgba(0,0,0,0.1))
     .imagePrimary
         width 100%
+a.show-more-trigger
+    display inline-block
+    font-weight bold
+.left-col hr, .left-col .hr
+    background transparent
+    border none
+    border-top 1px solid #ddd
+    border-bottom 1px solid #eee
+    margin 0 0 18px 0
+    position relative
+    &:before
+        position absolute
+        left 0
+        top 0
+        width 10px
+        height 10px
+        border-radius(10px)
+        background #000
+        display block

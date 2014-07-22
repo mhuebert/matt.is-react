@@ -4,19 +4,23 @@
             ".write": "(data.child('ownerId').val() == null || data.child('ownerId').val() == auth.id)",
             ".read": true
         },
-        "themes": {
+        "topics": {
             ".read": true,
-            ".write": true
+            ".write": "auth.id == '15538074'"
         },
         "people": {
             ".read": true,
-            ".write": true
+            ".write": "auth.id == '15538074'"
         },
         "elements": {
             ".read": true,
             ".write": "auth.id == '15538074'"
         },
         "types": {
+            ".read": true,
+            ".write": "auth.id == '15538074'"
+        },
+        "related": {
             ".read": true,
             ".write": "auth.id == '15538074'"
         },
@@ -58,7 +62,7 @@
         },
         "photos": {
             "$photo": {
-                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)"
+                ".write": "auth.id == '15538074'"
             },
             ".read": true
         },
@@ -68,13 +72,13 @@
                     ".validate": "root.child('permalinks').child(newData.val()).exists()"
                 },
                 ".read": "data.child('public').val() == true || data.child('owner').val() == auth.id",
-                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)",
+                ".write": "auth.id == '15538074'",
                 ".validate": "newData.child('owner').val() == auth.id"
             }
         },
         "permalinks": {
             "$link": {
-                ".write": "auth != null && (!data.exists() || data.child('owner').val() == auth.id)",
+                ".write": "auth.id == '15538074'",
                 ".validate": "newData.child('redirect').isString()"
             },
             ".read": true

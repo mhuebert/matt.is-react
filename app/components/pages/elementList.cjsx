@@ -9,7 +9,7 @@ Body = require("../widgets/body")
 {AsyncSubscriptionMixin} = subscriptions
 ContentComponents = require("../element-views/index")
 DynamicDivider = require("../widgets/dynamicDivider")
-
+_ = require("underscore")
 
 
 Home = React.createClass
@@ -20,16 +20,20 @@ Home = React.createClass
         subscriptions: (props) ->
             if type = props.matchedRoute.params.type
                 elements = subscriptions.ElementsByIndex("/types/"+type)
+            else if topic = props.matchedRoute.params.topic
+                elements = subscriptions.ElementsByIndex("/related/topics/"+topic)
             else
                 elements = subscriptions.List("/elements", sort: "reverse")
             elements.shouldUpdateSubscription = (oldProps, newProps) ->
-                oldProps.matchedRoute.params.type != newProps.matchedRoute.params.type
+                o = oldProps.matchedRoute.params
+                n = newProps.matchedRoute.params
+                o.type != n.type or o.topic != n.topic
             elements: elements
         getMetadata: (props) ->
             title: props.settings.siteTitle
             description: props.settings.siteDescription
     render: ->
-        elements = @subs("elements")
+        elements = _(@subs("elements")).filter (element) -> element.status != "idea"
         <Body sidebar={true}>
             <ContentFilter />
             {

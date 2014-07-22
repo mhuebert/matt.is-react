@@ -12,6 +12,9 @@
         @setState 
           data: data  
           errors: errors
+        if @errorCount() > 0
+          @setState valid: false
+
 @errorCount = ->
   count = 0
   for name, errorObject of @state.errors

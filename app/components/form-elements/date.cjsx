@@ -49,17 +49,21 @@ months[11] = "December"
 React = require("react/addons")
 cx = React.addons.classSet
 FieldMixin = require("./mixin-field")
+firebaseSubscription = require("../../firebaseSubscription")
+{Firebase} = require("../../firebase")
+
+subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
 
 Component = React.createClass
-    mixins: [FieldMixin]
-    getInitialState: -> 
-        today = new Date()
-        year: today.getFullYear()
-        month: today.getMonth()
-        day: today.getDate()
-        hours: today.getHours()
-        newValue: @props.default
-        errors: []
+    mixins: [AsyncSubscriptionMixin, FieldMixin]
+    statics:
+        subscriptions: (props) ->
+            return {} if !props.fireRef
+            value: firebaseSubscription
+                ref: new Firebase(props.fireRef)
+                parse: (snapshot) -> snapshot.val()
+                default: (new Date()).getTime()
     dateInWords: (date) ->
         days[date.getDay()]+", "+months[date.getMonth()]+" "+date.getDate()+", "+date.getFullYear()
     handleBlur: -> 
@@ -67,62 +71,68 @@ Component = React.createClass
         @setState 
             focus: false
     handleChange: ->
-        state = 
+        components = 
             year: @refs.year.getDOMNode().value
             month: @refs.month.getDOMNode().value
             day: @refs.day.getDOMNode().value
             hours: @refs.hours.getDOMNode().value
-            minutes: @refs.minutes.getDOMNode().value
-        state.newValue = (new Date(state.year, state.month, state.day, state.hours)).getTime()
+        newValue = (new Date(components.year, components.month, components.day, components.hours)).getTime()
         # state.dateInWords = @dateInWords new Date(state.year, state.month, state.day)
-        @props.onUpdate?([], state.newValue)
-        @setState state
+        @props.onUpdate?([], newValue)
+        @setState newValue: newValue
 
 
     save: (e) ->
-        @setState errors: @validate()
+        @setState errors: @validate(@state.newValue)
         return if !@props.fireRef
-        return if !@hasChanged()
+        return if !@hasChanged() or @hasErrors()
         ref = new Firebase(@props.fireRef)
         @setState 
             undoValue: @state.value
-        return if @state.errors.length > 0
         ref.set @state.newValue, (error) ->
             console.log "Handle response to save"
         false if e?
     render: ->
         errors = @state.errors || []
-        monthLength = daysInMonth[@state.month]
+        value = @state.newValue || @state.value
+        valueDate = new Date(value)
+        year = valueDate.getFullYear()
+        month = valueDate.getMonth()
+        day = valueDate.getDate()
+        hours = valueDate.getHours()
+        minutes = valueDate.getMinutes()
+
+        monthLength = daysInMonth[month]
         currentYear = (new Date()).getFullYear()
-        if parseInt(@state.month) == 1
-            year = parseInt @state.year
+        if parseInt(month) == 1
+            year = parseInt year
             if year % 2 == 0 and year % 4 == 0
                 if year % 100 != 0 or (year % 100 == 0 and year % 400 == 0)
                     monthLength = 29
 
         @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true, 'input-group-select': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
             
-            <select ref="month" onChange={@handleChange} value={@state.month}>
+            <select ref="month" onChange={@handleChange} value={month}>
             {
                 months.map (month, index) =>
                     <option value={index} key={index}>{month}</option>
             }
             </select>
 
-            <select ref="day" onChange={@handleChange} value={@state.day}>
+            <select ref="day" onChange={@handleChange} value={day}>
             {
                 [0..monthLength-1].map (index) =>
                     <option value={index} key={index}>{index+1}</option>
             }
             </select>
-            <select ref="year" onChange={@handleChange} value={@state.year}>
+            <select ref="year" onChange={@handleChange} value={year}>
             {
                 [currentYear-10...currentYear+2].map (index) =>
                     <option value={index} key={index}>{index}</option>
             }
             </select>
         
-            <select ref="hours" onChange={@handleChange} value={@state.hours}>
+            <select ref="hours" onChange={@handleChange} value={hours}>
             {
                 [0..23].map (index) =>
                     if index < 12

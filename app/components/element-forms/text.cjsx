@@ -9,7 +9,7 @@ Text = require("../form-elements/text")
 DateField = require("../form-elements/date")
 ImageUpload = require("../form-elements/imageUpload")
 SelectMultipleLabels = require("../form-elements/selectMultipleLabels")
-SelectByLabels = require("../form-elements/selectLabels")
+SelectByLabels = require("../form-elements/selectByLabels")
 v = require("../form-elements/validators")
 _ = require("underscore")
 
@@ -31,10 +31,11 @@ Component = React.createClass
 
     render: ->
         ref = @ref()
-        <form className="barex">
+        <form >
           <Text label="Title" 
                 onUpdate={@update("title")} 
                 className="bare"
+                autoFocus={true}
                 fireRef={if ref then ref.child("title").toString() else undefined}
                 inputStyles={
                   fontSize: 20
@@ -50,15 +51,6 @@ Component = React.createClass
                       validators={[v.required]}}
                       default={(new Date()).getTime()} 
                       fireRef={if ref then ref.child("date").toString() else undefined}/>
-          <SelectByLabels onUpdate={@update("status")} 
-                          label="Status"
-                          className="input-inline"
-                          default="idea"
-                          fireRef={if ref then ref.child("status").toString() else undefined}
-                          options={[
-                                {name: "Idea", value:"idea"}
-                                {name: "Published", value:"published"}
-                            ]}/>
           <ImageUpload  onUpdate={@update("image")}
                         fireRef={if ref then ref.child("image").toString() else undefined} />
           <SelectMultipleLabels label="Related People"
@@ -74,8 +66,6 @@ Component = React.createClass
           <p>
             Things to consider:
             <ul>
-              <li>URLs for viewing elements (distinguished by type)</li>
-              <li>Edit link for elements</li>
               <li>permalinks</li>
               <li>meaningful slugs</li>
               <li>Validations may be asyncronous</li>

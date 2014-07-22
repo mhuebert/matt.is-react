@@ -14,12 +14,18 @@ marked.setOptions
 React = require("react/addons")
 cx = React.addons.classSet
 
+
+titleStyle = require("../widgets/titleStyle")
+
 Component = React.createClass
+    mixins: [titleStyle.Mixin]
     getInitialState: ->
         showAll: @props.showAll || false
+        titleStyle: {}
     maybeshowAll: (e) ->
         if "show-more-trigger" in e.target.classList
             @setState showAll: true
+            e.preventDefault()
     render: ->
         element = @props.element
         body = (element.body || "").split(/[\s\n\r]*?<break\s*?\/>\s?/m)
@@ -34,9 +40,11 @@ Component = React.createClass
         date = new Date(element.date)
         readableDate = "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}"
 
+        style = if element.image then @state.titleStyle else {}
+          
         <div className="element element-text">
-            <h2><a href={"/#{element.type}/#{element.id}"}>{element.title}</a></h2>
             <img className={cx(hidden:!element.image)} style={marginBottom:18} src={if element.image then element.image+"/convert?w=500&h=500&fit=clip" else ""} />
+            <h2><a style={style} href={if element.permalink then "/"+element.permalink else "/#{element.type}/#{element.id}"}>{element.title}</a></h2>
             <div onClick={@maybeshowAll} className={cx("text-body":true, "show-more": @state.showAll)} dangerouslySetInnerHTML={{__html: body}} />
 
         </div>

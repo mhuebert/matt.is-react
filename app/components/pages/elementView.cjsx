@@ -17,7 +17,12 @@ Home = React.createClass
         window.scrollTo(0,0)
     statics:
         subscriptions: (props) ->
-            element: subscriptions.Object("/elements/#{props.matchedRoute.params.id}")
+            element = subscriptions.Object("/elements/#{props.matchedRoute.params.id}")
+            element.shouldUpdateSubscription = (oldProps, newProps) ->
+                console.log shouldUpdate = oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
+                shouldUpdate
+                
+            element: element
         getMetadata: (props) ->
             title: if props.title then props.title+" | #{props.settings.siteTitle}" else props.settings.siteTitle
             description: if props.body then props.body[0..120]+"..." else props.settings.siteDescription
@@ -25,7 +30,7 @@ Home = React.createClass
         element = @subs("element")
         Element = ContentComponents[element.type] || React.DOM.div
         <Body sidebar={true}>
-        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser">Edit</a>
+        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser"></a>
         {Element({element: element, showAll: true}, null)}
         </Body>
 

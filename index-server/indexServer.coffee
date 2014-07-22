@@ -18,16 +18,26 @@ server = IndexServer
     indexPath: "/types/"
     priority: (snap) -> snap.child("date").val()
   ,
-    type: "oneToMany"
+    type: "ManyToMany"
     sourcePath: "/elements/"
     sourceAttribute: "topics"
     indexPath: "/related/topics/"
+    keyTransform: (key) -> slugify(key)
     priority: (snap) -> snap.child("date").val()
   ,
-    type: "oneToMany"
+    type: "ManyToMany"
     sourcePath: "/elements/"
     sourceAttribute: "people"
     indexPath: "/related/people/"
     priority: (snap) -> snap.child("date").val()
-
+  , 
+    type: "derivedPriority"
+    sourcePath: "/elements"
+    priority: (snap) -> snap.child("date").val()
+  ,
+    type: "permalink"
+    sourcePath: "/elements"
+    sourceAttribute: "permalink"
+    indexPath: "/permalinks"
+    getRedirect: (snap) -> "/#{snap.child('type').val()}/#{snap.name()}"
   ]

@@ -9,16 +9,19 @@ module.exports =
   settings:
     write: "(data.child('ownerId').val() == null || data.child('ownerId').val() == auth.id)"
     read: true
-  themes:
+  topics:
     read: true
-    write: true
+    write: isAdmin
   people:
     read: true
-    write: true
+    write: isAdmin
   elements:
     read: true
     write: isAdmin
   types:
+    read: true
+    write: isAdmin
+  related:
     read: true
     write: isAdmin
   tags:
@@ -51,12 +54,12 @@ module.exports =
   photos:
     read: true
     $photo:
-      write: ownerOrNew
+      write: isAdmin
 
   posts:
     $post:
       read: "data.child('public').val() == true || data.child('owner').val() == auth.id"
-      write: ownerOrNew
+      write: isAdmin
       validate: userOwnsObject
       permalink:
         validate: "root.child('permalinks').child(newData.val()).exists()"
@@ -64,5 +67,5 @@ module.exports =
   permalinks:
     read: true
     $link:
-      write: ownerOrNew
+      write: isAdmin
       validate: "newData.child('redirect').isString()"

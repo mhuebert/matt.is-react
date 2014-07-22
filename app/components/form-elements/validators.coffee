@@ -1,5 +1,5 @@
 @required = (value) ->
-  if !value
+  if !value or value == ""
     type: "error"
     message: "Required"
 

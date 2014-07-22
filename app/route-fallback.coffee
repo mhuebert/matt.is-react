@@ -6,7 +6,7 @@ module.exports = (path, callback) ->
   refPath = FIREBASE_URL+"/permalinks#{path}"
   ref = new Firebase(refPath)
   ref.once "value", (snap) ->
-    redirect = snap.val()?.redirect
+    redirect = snap.val()
     if redirect and (matchedRoute = Router.matchStaticRoute(redirect))
       callback(matchedRoute)
       return

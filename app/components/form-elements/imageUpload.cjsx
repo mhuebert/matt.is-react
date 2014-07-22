@@ -66,7 +66,7 @@ Component = React.createClass
     
 
     save: (e) ->
-        @setState errors: @validate()
+        @setState errors: @validate(@state.newValue)
         @props.onUpdate?(@state.errors, @state.newValue)
         return if !@props.fireRef
         return if !@hasChanged()
@@ -81,7 +81,7 @@ Component = React.createClass
         @transferPropsTo <div className={cx(focus: @state.focus, 'input-group': true, 'input-inline': true)}} onFocus={@handleFocus} onBlur={@handleBlur}>
             <label>Image</label>
             <img style={float:'right', margin:'0 0 0 10px'} src={if image then image+"/convert?h=64&fit=clip" else ""} />
-            <a onClick={@upload} className="input-single-action">Choose...</a>
+            <a href="#" onClick={@upload} className="input-single-action">Choose...</a>
         </div>
 
 module.exports = Component

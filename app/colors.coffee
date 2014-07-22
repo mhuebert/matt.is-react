@@ -1,3 +1,5 @@
+@colors = colors = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff']
+
 componentToHex = (c) ->
   hex = c.toString(16)
   (if hex.length is 1 then "0" + hex else hex)
@@ -85,3 +87,8 @@ rgbToString = (r, g, b) ->
   darkened = [hsl[0], hsl[1], hsl[2]-amount]
   rgb = hslToRgb.apply null, darkened
   rgbToHex.apply(null, rgb)
+
+between = (n1, n2) ->
+  Math.floor (Math.random()*(n2-n1))+n1
+# @RandomColorMixin = ->
+  

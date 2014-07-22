@@ -7,8 +7,7 @@ Header = require("./header")
 
 subscriptions = require("../../subscriptions")
 {AsyncSubscriptionMixin} = subscriptions
-
-initialState = {themes: [], people: [], subscriptions: {themes: [], people: []}}
+_ = require("underscore")
 
 Component = React.createClass
 	mixins: [AsyncSubscriptionMixin]
@@ -16,11 +15,13 @@ Component = React.createClass
 			subscriptions: (props) ->
 					# people: subscriptions.List("/people", sort: "a-z")
 					people: subscriptions.ElementsByIndex("/types/person")
-					themes: subscriptions.List("/themes", sort: "a-z")
+					topics: subscriptions.List("/topics", sort: "a-z")
 					settings: subscriptions.Object("/settings")
 	getInitialState: -> {}
 	render: ->
 		subs = this.type.subscriptions(@props)
+		people = _.filter @subs('people'), (person) -> person.status != 'idea'
+
 		<div>
 			<Header />
 			<em>Edited in {@subs("settings").location}</em>
@@ -30,15 +31,14 @@ Component = React.createClass
 				<Link href="/settings" >Settings</Link> • 
 				<Link href="/logout" >Sign Out</Link>
 			</div>
-			<h3><a href="/themes/">Topics »</a></h3>
-			<AddNode className="showIfUser" ref={subs.themes.ref} attribute="name" />
+			<h3><a href="/topics/">Topics »</a></h3>
 			<ul>{
-				@subs('themes').map (theme) -> 
-					<li key={theme.id}><a href="/themes/#{theme.id}">{theme.name}</a></li>
+				@subs('topics').map (topic) -> 
+					<li key={topic.id}><a href="/topics/#{topic.id}">{topic.val}</a></li>
 			}</ul>
-			<h3><a href="/people/">People »</a></h3>
+			<h3 className="hidden"><a href="/people/">People »</a></h3>
 			<ul>{
-				@subs('people').map (person) -> 
+				people.map (person) -> 
 					<li key={person.id}><a href="/person/#{person.id}">{person.title}</a></li>
 			}</ul>
 		</div>
