@@ -6,7 +6,10 @@ Addons = require("react/addons")
 
 {Firebase, FIREBASE_URL} = require("../../firebase")
 
-{SubscriptionMixin, firebaseSubscription, firebaseRelationalSubscription} = require("sparkboard-tools")
+
+{subscriptionByIndex} = require("firebase-subscriptions")
+SubscriptionMixin = require("react-subscriptions").mixin
+
 {Collection} = require("../../models")
 {snapshotToArray, slugify} = require("sparkboard-tools").utils
 
@@ -25,7 +28,7 @@ Component = React.createClass
         subscriptions: (props) ->
             # The data structure here will be mirrored in 'props',
             # so the following data will be found in 'props.ideas'.
-            ideas: firebaseRelationalSubscription
+            ideas: subscriptionByIndex
                 indexRef: new Firebase(FIREBASE_URL+"/users/#{ownerId}/ideas")
                 dataRef: new Firebase(FIREBASE_URL+"/posts")
                 default: _([])

@@ -2,15 +2,12 @@
 _ = require("underscore")
 
 {snapshotToArray, getRootComponent} = require("sparkboard-tools").utils
-{firebaseRelationalSubscription} = require("sparkboard-tools")
-
-firebaseSubscription = require("./firebaseSubscription")
+{subscriptionByIndex, subscription} = require("firebase-subscriptions")
 
 root = new Firebase(FIREBASE_URL)
-async = require("async")
 
 @Object = (path, options={}) ->
-  firebaseSubscription
+  subscription
     ref: root.child(path)
     server: true
     default: {}
@@ -21,7 +18,7 @@ async = require("async")
         obj.priority = snapshot.getPriority()
       obj
 @List = (path, options={}) ->
-  firebaseSubscription
+  subscription
     ref: root.child(path)
     server: true
     query: (ref, done) -> 
@@ -42,12 +39,12 @@ async = require("async")
 
 
 @Settings = ->
-  firebaseSubscription
+  subscription
     ref: root.child("/settings")
     server: true
     default: {}
 @PhotoList = (limit=500) ->
-  firebaseSubscription
+  subscription
     ref: root.child('/photos')
     query: (ref, done) -> done(ref.limit(limit))
     server: true
@@ -58,7 +55,7 @@ async = require("async")
 
 @ElementsByIndex = (indexPath, options={limit:50,offset:0}) ->
 
-  firebaseRelationalSubscription
+  subscriptionByIndex
     indexRef: root.child(indexPath).limit(options.limit)
     dataRef: root.child('/elements')
     default: []
@@ -84,7 +81,7 @@ async = require("async")
   # we've received in the url.
   
 
-  firebaseRelationalSubscription
+  subscriptionByIndex
     indexRef: root.child(indexPath).limit(limit)
     dataRef: root.child('/posts')
     shouldUpdateSubscription: (oldProps, newProps) ->
@@ -98,75 +95,5 @@ async = require("async")
         post
     parseList: (list) -> list.reverse()
 
-setSubscriptionStateCallback = (owner, path, defaultData) ->
-  (data) ->
-    state = {}
-    state[path] = data || defaultData
-    owner.setState(state)
 
-fetchOnce = (subscription) ->
-  (callback) ->
-    subscription.subscribe (data) ->
-      subscription.unsubscribe()
-      callback(null, data||subscription.default)
-
-
-ReactAsync = require('react-async')
-
-@AsyncSubscriptionMixin =
-  mixins: [ReactAsync.Mixin]
-  subs: (path) ->
-    @state[path] || @constructor.subscriptions?(this.props)[path].default
-  getInitialStateAsync: (cb) ->
-    @__subscriptions = {}
-    # state = {subscriptions: {}}
-    # for path, subscription of this.constructor.subscriptions?(this.props)
-    #   state[path] = state[path] || subscription.default 
-    #   state.subscriptions[path] = {}
-    tasks = {}
-    subscriptions = @constructor.subscriptions?(this.props)
-    for path, subscription of subscriptions
-      @__subscriptions[path] = subscription
-      tasks[path] = fetchOnce(subscription)
-    async.parallel tasks, (err, results) ->
-      cb(null, results)
-  subscribe: (props) ->
-    @__subscriptions = {}
-    for path, subscription of @constructor.subscriptions?(props)
-      do (path, subscription) =>
-          subscription.subscribe setSubscriptionStateCallback(this, path, subscription.default)
-          @__subscriptions[path] = subscription
-  unsubscribe: ->
-    for path, subscription of @__subscriptions
-      subscription.unsubscribe()
-      delete @__subscriptions[path]
-  # stateToJSON: (state) ->
-  #   if state.fireRef
-  #     console.log 'packing'
-  #     state.fireRef = state.fireRef.toString()
-  #   state
-  # stateFromJSON: (state) ->
-  #   if state.fireRef
-  #     state.fireRref = new Firebase(state.fireRef)
-  #   state
-  componentDidMount: ->
-    @subscribe(this.props)
-  componentWillUnmount: ->
-    @unsubscribe()
-  componentWillReceiveProps: (newProps) ->
-    pathsToUpdate = []
-    
-    for path, subscription of @__subscriptions
-      if subscription.shouldUpdateSubscription?(this.props, newProps)
-        pathsToUpdate.push(path)
-    
-    if pathsToUpdate.length > 0
-      # Without this timeout, we were setting new props before these props
-      # could be applied, which resulted in errors (parentNode undefined, etc.)
-      # setTimeout =>
-      newSubscriptions = @type.subscriptions(newProps)
-      for path in pathsToUpdate
-        @__subscriptions[path].unsubscribe()
-        @__subscriptions[path] = newSubscriptions[path]
-        @__subscriptions[path].subscribe setSubscriptionStateCallback(this, path)
-      # , 50
+@AsyncSubscriptionMixin = require("react-subscriptions").mixin

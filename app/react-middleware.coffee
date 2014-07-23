@@ -9,7 +9,7 @@ _ = require("underscore")
 ReactAsync = require('react-async')
 
 {safeStringify} = require("sparkboard-tools").utils
-{fetchSubscriptions} = require("sparkboard-tools")
+{fetchSubscriptions} = require("react-subscriptions").fetch
 {Firebase, FIREBASE_URL} = require("./firebase")
 
 # root component:

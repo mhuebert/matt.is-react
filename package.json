@@ -29,7 +29,6 @@
     "node-jsx": "^0.10.0",
     "url-pattern": "^0.5.0",
     "firebase": "^1.0.10-2",
-    "async": "^0.2.10",
     "marked": "^0.3.2",
     "moment": "^2.5.1",
     "sparkboard-tools": "sparkboard/sparkboard-tools",
@@ -37,8 +36,10 @@
     "firebase-index-server": "sparkboard/firebase-index-server",
     "react-router": "mhuebert/react-router",
     "node-cjsx": "^0.1.2",
-    "react-async": "andreypopp/react-async",
-    "fibers": "^1.0.1"
+    "react-async": "^0.9.4",
+    "fibers": "^1.0.1",
+    "react-subscriptions": "git://github.com/sparkboard/react-subscriptions.git#25413e934c04dd7b81619b8aff08334f481c35d7",
+    "firebase-subscriptions": "git://github.com/sparkboard/firebase-subscriptions.git#dd5145ff6ad67897d04fdce5211de43a4ca79e26"
   },
   "devDependencies": {
     "coffeeify": "~0.6.0",
