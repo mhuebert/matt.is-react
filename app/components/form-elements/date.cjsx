@@ -90,7 +90,7 @@ Component = React.createClass
         @setState 
             undoValue: @state.value
         ref.set @state.newValue, (error) ->
-            console.log "Handle response to save"
+            # console.log "Handle response to save"
         false if e?
     render: ->
         errors = @state.errors || []
