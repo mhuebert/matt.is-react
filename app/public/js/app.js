@@ -1555,7 +1555,16 @@ Component = React.createClass({
     textarea.style.height = textarea.scrollHeight + "px";
     return window.scrollTo(left, top);
   },
+  componentWillMount: function() {
+    return console.log("componentWillMount", this.state);
+  },
   componentDidMount: function() {
+    console.log("componentDidMount", this.state);
+    setTimeout((function(_this) {
+      return function() {
+        return console.log("timeout", _this.state);
+      };
+    })(this), 100);
     this.autoSize();
     if (this.props.autoFocus === true) {
       return this.refs.textElement.getDOMNode().focus();

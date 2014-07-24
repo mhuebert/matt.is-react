@@ -4,10 +4,13 @@
         if error = validation(value)
             errors.push error
     errors
+
 @errors = ->
     @state.errors || []
+
 @hasErrors = ->
     @errors().length > 0
+
 @revert = ->
     @setState newValue: undefined
     false

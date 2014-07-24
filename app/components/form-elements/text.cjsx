@@ -75,7 +75,13 @@ Component = React.createClass
         textarea.style.height = "auto"
         textarea.style.height = textarea.scrollHeight + "px"
         window.scrollTo left, top
+    componentWillMount: ->
+        console.log "componentWillMount", @state
     componentDidMount: ->
+        console.log "componentDidMount", @state
+        setTimeout =>
+            console.log "timeout", @state
+        , 100
         @autoSize()
         if @props.autoFocus == true
             this.refs.textElement.getDOMNode().focus()
