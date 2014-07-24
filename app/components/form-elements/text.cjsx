@@ -89,9 +89,9 @@ Component = React.createClass
     componentWillReceiveProps: (nextProps) ->
         if @props.fireRef and !nextProps.fireRef
             @replaceState {}
+            @autoFocus()
         setTimeout =>
             @clearAutoSize()
-            @autoFocus()
         , 100
     render: ->
         hasUndo = @state.undoValue?

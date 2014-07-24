@@ -1574,11 +1574,11 @@ Component = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (this.props.fireRef && !nextProps.fireRef) {
       this.replaceState({});
+      this.autoFocus();
     }
     return setTimeout((function(_this) {
       return function() {
-        _this.clearAutoSize();
-        return _this.autoFocus();
+        return _this.clearAutoSize();
       };
     })(this), 100);
   },
