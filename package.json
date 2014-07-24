@@ -38,7 +38,7 @@
     "node-cjsx": "^0.1.2",
     "react-async": "^0.9.4",
     "fibers": "^1.0.1",
-    "react-subscriptions": "git://github.com/sparkboard/react-subscriptions.git#a157a37",
+    "react-subscriptions": "git://github.com/sparkboard/react-subscriptions.git#4b1ddcd",
     "firebase-subscriptions": "git://github.com/sparkboard/firebase-subscriptions.git#dd5145ff6a"
   },
   "devDependencies": {
