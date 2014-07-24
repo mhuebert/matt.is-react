@@ -11643,6 +11643,9 @@ module.exports = {
     },
     getInitialStateAsync: function(cb) {
       var path, subscription, subscriptions, tasks, _base;
+      if (typeof window !== "undefined" && window !== null) {
+        return;
+      }
       this.__subscriptions = {};
       tasks = {};
       subscriptions = typeof (_base = this.constructor).subscriptions === "function" ? _base.subscriptions(this.props) : void 0;
@@ -11698,7 +11701,7 @@ module.exports = {
         }
       }
       if (pathsToUpdate.length > 0) {
-        newSubscriptions = this.type.subscriptions(newProps);
+        newSubscriptions = this.constructor.subscriptions(newProps);
         _results = [];
         for (_i = 0, _len = pathsToUpdate.length; _i < _len; _i++) {
           path = pathsToUpdate[_i];
