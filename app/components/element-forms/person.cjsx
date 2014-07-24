@@ -23,6 +23,8 @@ Component = React.createClass
 
           <ImageUpload  onUpdate={@update("image")}
                         fireRef={if ref then ref.child("image").toString() else undefined} />
+          <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content showIfUser"></a>
+          
           <Text label="Intro" 
                 onUpdate={@update("body")} 
                 type="textarea"

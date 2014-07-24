@@ -34,16 +34,20 @@ Home = React.createClass
             description: props.settings.siteDescription
     render: ->
         elements = _(@subs("elements")).filter (element) -> element.status != "idea"
-        
-        <Body sidebar={true}>
+        if topic = @props.matchedRoute.params.topic
+            breadcrumb = [["topics/#{topic}", topic]]
+        else if type = @props.matchedRoute.params.type
+            breadcrumb = [["topics/#{type}", type]]
+        else
+            breadcrumb = [] 
+        <Body sidebar={true} breadcrumb={breadcrumb}>
             <ContentFilter className="hidden" />
             {
                 elements.map (element, index) ->
                     Element = ContentComponents[element.type] || React.DOM.div
 
                     <div key={element.id} className={"element-container element-#{element.type}"}>
-                        <a  href={"/edit/#{element.type}/#{element.id}"} 
-                            className="edit-content right showIfUser"></a>
+                        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content showIfUser"></a>
                         {Element({element: element}, null)}
                         <DynamicDivider className={cx(hidden:(index+1 == elements.length))} />
                     </div>

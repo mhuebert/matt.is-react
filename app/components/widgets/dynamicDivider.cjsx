@@ -18,7 +18,7 @@ Component = React.createClass
         loader = this.refs.divider.getDOMNode()
         styles = {}
 
-        width = between(65,90)
+        width = between(25,110)
         height = between(10,17)
         color = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0,4)]
         rotation = between(5, 20)/10

@@ -11,17 +11,26 @@ NewTypes = require("../widgets/newTypes")
 contentForms = require("../element-forms")
 
 SelectByLabels = require("../form-elements/selectByLabels")
-# subscriptions = require("../../subscriptions")
-# {SubscriptionAsyncMixin} = subscriptions
+subscriptions = require("../../subscriptions")
+{AsyncSubscriptionMixin} = subscriptions
 
 Component = React.createClass
+    mixins: [AsyncSubscriptionMixin]
     componentDidMount: ->
-      window.scrollTo(0,0)
+        window.scrollTo(0,0)
+    statics:
+        subscriptions: (props) ->
+            id = props.matchedRoute.params.id
+            element = subscriptions.Object("/elements/#{id}")
+            element.shouldUpdateSubscription = (oldProps, newProps) ->
+                shouldUpdate = oldProps.matchedRoute.params.id != newProps.matchedRoute.params.id
+                shouldUpdate
+            element: element
     render: ->
         type = @props.matchedRoute.params.type || "text"
         id = @props.matchedRoute.params.id || null
-        if id
-            breadcrumb = [{url: null, label: 'edit'}, id]
+        if slug = @state.element?.permalink
+            breadcrumb = [slug]
         else
             breadcrumb = ['new']
         Form = contentForms[type]

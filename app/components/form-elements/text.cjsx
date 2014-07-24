@@ -22,6 +22,8 @@ Component = React.createClass
                 ref: new Firebase(props.fireRef)
                 parse: (snapshot) -> snapshot.val()
                 default: null
+                shouldUpdateSubscription: (oldProps, newProps) ->
+                    oldProps.fireRef != newProps.fireRef
     getInitialState: -> {}
     getDefaultProps: -> type: "input"
     handleBlur: -> 
@@ -77,12 +79,20 @@ Component = React.createClass
         window.scrollTo left, top
 
     componentDidMount: ->
-
         @autoSize()
+        @autoFocus()
+    autoFocus: ->
         if @props.autoFocus == true
             this.refs.textElement.getDOMNode().focus()
     componentDidUpdate: ->
         @autoSize()
+    componentWillReceiveProps: (nextProps) ->
+        if @props.fireRef and !nextProps.fireRef
+            @replaceState {}
+        setTimeout =>
+            @clearAutoSize()
+            @autoFocus()
+        , 100
     render: ->
         hasUndo = @state.undoValue?
         type = if @props.type == "textarea" then "textarea" else "input"
@@ -93,7 +103,7 @@ Component = React.createClass
             onChange: @handleChange
             onKeyDown: @handleKeyDown
             onKeyUp: @handleKeyUp
-            value: if @state.newValue == undefined then @state.value else @state.newValue
+            value: (if @state.newValue == undefined then @state.value else @state.newValue) || ""
             name: if type == "input" then @props.name else ""
             ref: "textElement"
             placeholder: @props.placeholder || "Type here..."

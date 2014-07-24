@@ -46,7 +46,10 @@ Component = React.createClass
           
         <div className="element element-text">
             <img className={cx(hidden:!element.image)} style={marginBottom:18} src={if element.image then element.image+"/convert?w=500&h=500&fit=clip" else ""} />
-            <h2><a style={style} href={permalink}>{element.title}</a></h2>
+            <h2>
+              <a style={style} href={permalink}>{element.title}</a>
+            </h2>
+            
             <div onClick={@maybeshowAll} className={cx("text-body":true, "show-more": @state.showAll)} dangerouslySetInnerHTML={{__html: body}} />
 
         </div>

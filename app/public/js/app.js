@@ -300,6 +300,9 @@ Component = React.createClass({
     }), ImageUpload({
       "onUpdate": this.update("image"),
       "fireRef": (ref ? ref.child("image").toString() : void 0)
+    }), React.DOM.a({
+      "href": "/edit/" + element.type + "/" + element.id,
+      "className": "edit-content showIfUser"
     }), Text({
       "label": "Intro",
       "onUpdate": this.update("body"),
@@ -1452,7 +1455,10 @@ Component = React.createClass({
           parse: function(snapshot) {
             return snapshot.val();
           },
-          "default": null
+          "default": null,
+          shouldUpdateSubscription: function(oldProps, newProps) {
+            return oldProps.fireRef !== newProps.fireRef;
+          }
         })
       };
     }
@@ -1555,12 +1561,26 @@ Component = React.createClass({
   },
   componentDidMount: function() {
     this.autoSize();
+    return this.autoFocus();
+  },
+  autoFocus: function() {
     if (this.props.autoFocus === true) {
       return this.refs.textElement.getDOMNode().focus();
     }
   },
   componentDidUpdate: function() {
     return this.autoSize();
+  },
+  componentWillReceiveProps: function(nextProps) {
+    if (this.props.fireRef && !nextProps.fireRef) {
+      this.replaceState({});
+    }
+    return setTimeout((function(_this) {
+      return function() {
+        _this.clearAutoSize();
+        return _this.autoFocus();
+      };
+    })(this), 100);
   },
   render: function() {
     var errors, hasUndo, textElement, textElementProps, type;
@@ -1574,7 +1594,7 @@ Component = React.createClass({
       onChange: this.handleChange,
       onKeyDown: this.handleKeyDown,
       onKeyUp: this.handleKeyUp,
-      value: this.state.newValue === void 0 ? this.state.value : this.state.newValue,
+      value: (this.state.newValue === void 0 ? this.state.value : this.state.newValue) || "",
       name: type === "input" ? this.props.name : "",
       ref: "textElement",
       placeholder: this.props.placeholder || "Type here...",
@@ -2183,7 +2203,7 @@ module.exports = Component;
 
 
 },{"../../firebase":60,"../../subscriptions":65,"../widgets/body":43,"../widgets/dropdown":45,"../widgets/simplePagination":55,"../widgets/textareaAutosize":57,"../widgets/toggleShowHide":59,"moment":73,"react":392,"sparkboard-tools":393,"underscore":401}],29:[function(require,module,exports){
-var Body, Component, FIREBASE_URL, NewTypes, React, SelectByLabels, contentForms, cx, _;
+var AsyncSubscriptionMixin, Body, Component, FIREBASE_URL, NewTypes, React, SelectByLabels, contentForms, cx, subscriptions, _;
 
 _ = require("underscore");
 
@@ -2201,21 +2221,36 @@ contentForms = require("../element-forms");
 
 SelectByLabels = require("../form-elements/selectByLabels");
 
+subscriptions = require("../../subscriptions");
+
+AsyncSubscriptionMixin = subscriptions.AsyncSubscriptionMixin;
+
 Component = React.createClass({
+  mixins: [AsyncSubscriptionMixin],
   componentDidMount: function() {
     return window.scrollTo(0, 0);
   },
+  statics: {
+    subscriptions: function(props) {
+      var element, id;
+      id = props.matchedRoute.params.id;
+      element = subscriptions.Object("/elements/" + id);
+      element.shouldUpdateSubscription = function(oldProps, newProps) {
+        var shouldUpdate;
+        shouldUpdate = oldProps.matchedRoute.params.id !== newProps.matchedRoute.params.id;
+        return shouldUpdate;
+      };
+      return {
+        element: element
+      };
+    }
+  },
   render: function() {
-    var Form, breadcrumb, formProps, id, type;
+    var Form, breadcrumb, formProps, id, slug, type, _ref;
     type = this.props.matchedRoute.params.type || "text";
     id = this.props.matchedRoute.params.id || null;
-    if (id) {
-      breadcrumb = [
-        {
-          url: null,
-          label: 'edit'
-        }, id
-      ];
+    if (slug = (_ref = this.state.element) != null ? _ref.permalink : void 0) {
+      breadcrumb = [slug];
     } else {
       breadcrumb = ['new'];
     }
@@ -2252,7 +2287,7 @@ module.exports = Component;
 
 
 
-},{"../../firebase":60,"../element-forms":6,"../form-elements/selectByLabels":22,"../widgets/body":43,"../widgets/newTypes":53,"react/addons":233,"underscore":401}],30:[function(require,module,exports){
+},{"../../firebase":60,"../../subscriptions":65,"../element-forms":6,"../form-elements/selectByLabels":22,"../widgets/body":43,"../widgets/newTypes":53,"react/addons":233,"underscore":401}],30:[function(require,module,exports){
 var AsyncSubscriptionMixin, Body, ContentComponents, ContentFilter, DynamicDivider, Home, React, cx, subscriptions, _;
 
 React = require("react/addons");
@@ -2308,12 +2343,20 @@ Home = React.createClass({
     }
   },
   render: function() {
-    var elements;
+    var breadcrumb, elements, topic, type;
     elements = _(this.subs("elements")).filter(function(element) {
       return element.status !== "idea";
     });
+    if (topic = this.props.matchedRoute.params.topic) {
+      breadcrumb = [["topics/" + topic, topic]];
+    } else if (type = this.props.matchedRoute.params.type) {
+      breadcrumb = [["topics/" + type, type]];
+    } else {
+      breadcrumb = [];
+    }
     return Body({
-      "sidebar": true
+      "sidebar": true,
+      "breadcrumb": breadcrumb
     }, ContentFilter({
       "className": "hidden"
     }), elements.map(function(element, index) {
@@ -2324,7 +2367,7 @@ Home = React.createClass({
         "className": "element-container element-" + element.type
       }, React.DOM.a({
         "href": "/edit/" + element.type + "/" + element.id,
-        "className": "edit-content right showIfUser"
+        "className": "edit-content showIfUser"
       }), Element({
         element: element
       }, null), DynamicDivider({
@@ -2386,14 +2429,15 @@ Home = React.createClass({
     var Element, breadcrumb, element;
     element = this.subs("element");
     Element = ContentComponents[element.type] || React.DOM.div;
-    breadcrumb = [["type/" + element.type, element.type]];
+    if (element.permalink) {
+      breadcrumb = [element.permalink];
+    } else {
+      breadcrumb = [];
+    }
     return Body({
       "sidebar": true,
       "breadcrumb": breadcrumb
-    }, React.DOM.a({
-      "href": "/edit/" + element.type + "/" + element.id,
-      "className": "edit-content right showIfUser"
-    }), Element({
+    }, Element({
       element: element,
       showAll: true
     }, null));
@@ -3412,7 +3456,7 @@ Component = React.createClass({
     var color, height, loader, rotation, styles, width;
     loader = this.refs.divider.getDOMNode();
     styles = {};
-    width = between(65, 90);
+    width = between(25, 110);
     height = between(10, 17);
     color = ['#fc3500', '#fff77f', '#00ffa8', '#ff00b4', '#00fcff'][between(0, 4)];
     rotation = between(5, 20) / 10;
@@ -10411,6 +10455,9 @@ module.exports = {
     },
     getInitialStateAsync: function(cb) {
       var path, subscription, subscriptions, tasks, _base;
+      if (typeof window !== "undefined" && window !== null) {
+        return;
+      }
       this.__subscriptions = {};
       tasks = {};
       subscriptions = typeof (_base = this.constructor).subscriptions === "function" ? _base.subscriptions(this.props) : void 0;
@@ -10471,8 +10518,12 @@ module.exports = {
         for (_i = 0, _len = pathsToUpdate.length; _i < _len; _i++) {
           path = pathsToUpdate[_i];
           this.__subscriptions[path].unsubscribe();
-          this.__subscriptions[path] = newSubscriptions[path];
-          _results.push(this.__subscriptions[path].subscribe(setSubscriptionStateCallback(this, path)));
+          if (newSubscriptions[path]) {
+            this.__subscriptions[path] = newSubscriptions[path];
+            _results.push(this.__subscriptions[path].subscribe(setSubscriptionStateCallback(this, path)));
+          } else {
+            _results.push(delete this.__subscriptions[path]);
+          }
         }
         return _results;
       }

@@ -29,9 +29,11 @@ Home = React.createClass
     render: ->
         element = @subs("element")
         Element = ContentComponents[element.type] || React.DOM.div
-        breadcrumb = [["type/"+element.type, element.type]]
+        if element.permalink
+            breadcrumb = [element.permalink]
+        else
+            breadcrumb = []
         <Body sidebar={true} breadcrumb={breadcrumb}>
-        <a href={"/edit/#{element.type}/#{element.id}"} className="edit-content right showIfUser"></a>
         {Element({element: element, showAll: true}, null)}
         </Body>
 
